@@ -87,13 +87,14 @@
 		<a href="http://yoursite.com/about" title="大神" target="_blank" itemprop="author">大神</a>
 		
   <p class="article-time">
-    <time datetime="2015-05-04T08:33:30.000Z" itemprop="datePublished"> 发表于 2015-05-04</time>
+    <time datetime="2015-05-04T08:52:08.000Z" itemprop="datePublished"> 发表于 2015-05-04</time>
     
   </p>
 </header>
     <div class="article-content">
         
-        <p>iOS Concurrency Programming Guide</p>
+        <p>title: { { title } }<br>date: { { date } }<br>categories: iOS开发</p>
+<h2 id="tags:_iOS">tags: iOS </h2><p>iOS Concurrency Programming Guide</p>
 <p>iOS 和 Mac OS 传统的并发编程模型是线程，不过线程模型伸缩性不强，而且编写正确的线程代码也不容易。Mac OS 和 iOS 采取 asynchronous design approach 来解决并发的问题。</p>
 <p>引入的异步技术有两个：</p>
 <p>Grand Central Dispatch：系统管理线程，你不需要编写线程代码。只需定义想要执行的任务，然后添加到适当的dispatch queue。Grand Central Dispatch会负责创建线程和调度你的任务。系统直接提供线程管理，比应用实现更加高效。</p>
