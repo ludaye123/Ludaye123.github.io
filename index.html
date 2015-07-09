@@ -144,6 +144,143 @@
           
           
             
+              <a class="post-title-link" href="/2015/07/09/deepcopy-vs-shallowcopy/">
+                深复制VS浅复制
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2015-07-09
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/iOS开发/">iOS开发</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>苹果官方内存管理原则：<br>1.谁创建谁负责release：如果使用 alloc、new、copy、mutablecopy来创建对象，那么必须要调用release或者autorelease来释放对象。<br>2.谁retain谁负责release：只要你对对象使用了retain方法，那么必须要调用release或者autorelease来释放对象。</p>
+<p>深复制 VS 浅复制 (deep copy VS shallow copy)</p>
+<p>深复制：通过复制操作后，返回一个新的副本对象，对此副本对象的任何操作不会影响到原对象，当然原对象的任何操作也不会影响到副本对象。在OC中的深复制本质上是产生了一个新的对象，<br>也就是常说的内容复制(内容拷贝)；</p>
+<p>浅复制：通过复制操作后，得到一个副本对象，在OC中本质上是对于原对象的指针复制，没有产生新的对象。</p>
+<p>copy VS mutablecopy</p>
+<p>shallow copy eg:<br>/**</p>
+<ul>
+<li><p>浅复制<br>*/</p>
+<pre><code><span class="built_in">NSString</span> *scrStr  = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"deep copy vs shallow copy"</span>];
+<span class="built_in">NSString</span> *copyStr = [scrStr <span class="keyword">copy</span>];
+
+<span class="built_in">NSLog</span>(<span class="string">@"scrStr = %p,copyStr = %p \n"</span>,scrStr,copyStr); <span class="comment">// 内存地址: scrStr = 0x100211d90,copyStr = 0x100211d90  一致</span>
+<span class="built_in">NSLog</span>(<span class="string">@"scrStr = %@,copyStr = %@ \n"</span>,scrStr,copyStr); <span class="comment">// 打印内容: scrStr = deep copy vs shallow copy,copyStr = deep copy vs shallow copy </span>
+</code></pre></li>
+</ul>
+<p>deep copy eg:<br>/**</p>
+<ul>
+<li><p>深复制<br>*/</p>
+<pre><code><span class="built_in">NSString</span> *scrStr  = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"deep copy vs shallow copy"</span>];
+<span class="built_in">NSMutableString</span> *copyStr = [scrStr mutableCopy];
+
+<span class="built_in">NSLog</span>(<span class="string">@"scrStr = %p,copyStr = %p \n"</span>,scrStr,copyStr); <span class="comment">//内存地址: scrStr = 0x100208490,copyStr = 0x100208490 内存地址不一致，说明生产了新的对象</span>
+<span class="built_in">NSLog</span>(<span class="string">@"scrStr = %@,copyStr = %@ \n"</span>,scrStr,copyStr); <span class="comment">//打印内容: scrStr = deep copy vs shallow copy,copyStr = deep copy vs shallow copy </span>
+</code></pre></li>
+</ul>
+<p>deep copy eg:<br>/**</p>
+<ul>
+<li><p>深复制<br>*/</p>
+<pre><code><span class="built_in">NSMutableString</span> *scrStr  = [<span class="built_in">NSMutableString</span> stringWithFormat:<span class="string">@"deep copy vs shallow copy"</span>];
+<span class="built_in">NSString</span> *copyStr = [scrStr mutableCopy];
+
+<span class="built_in">NSLog</span>(<span class="string">@"scrStr = %p,copyStr = %p \n"</span>,scrStr,copyStr); <span class="comment">//内存地址: scrStr = 0x100111f10,copyStr = 0x100111fe0 内存地址不一致，说明生产了新的对象</span>
+<span class="built_in">NSLog</span>(<span class="string">@"scrStr = %@,copyStr = %@ \n"</span>,scrStr,copyStr); <span class="comment">//打印内容: scrStr = deep copy vs shallow copy,copyStr = deep copy vs shallow copy </span>
+</code></pre></li>
+</ul>
+<p>/**</p>
+<ul>
+<li><p>深复制<br>*/</p>
+<pre><code><span class="built_in">NSMutableString</span> *scrStr  = [<span class="built_in">NSMutableString</span> stringWithFormat:<span class="string">@"deep copy vs shallow copy"</span>];
+<span class="built_in">NSMutableString</span> *copyStr = [scrStr mutableCopy];
+
+<span class="built_in">NSLog</span>(<span class="string">@"scrStr = %p,copyStr = %p \n"</span>,scrStr,copyStr); <span class="comment">//内存地址: scrStr = 0x100111f10,copyStr = 0x100111fe0 内存地址不一致，说明生产了新的对象</span>
+<span class="built_in">NSLog</span>(<span class="string">@"scrStr = %@,copyStr = %@ \n"</span>,scrStr,copyStr); <span class="comment">//打印内容: scrStr = deep copy vs shallow copy,copyStr = deep copy vs shallow copy </span>
+</code></pre></li>
+</ul>
+<p>通过以上几个示例，当使用copy方法时，返回的是一个不可变副本，也就是相当于指针拷贝，使用mutablecopy方法时，会返回一个可变副本，相当于内容拷贝，会生成新的对象。</p>
+<p>Copy 内存管理</p>
+<p>浅复制内存管理 eg:</p>
+<pre><code><span class="built_in">NSString</span> *scrStr  = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"deep copy vs shallow copy"</span>];
+<span class="built_in">NSString</span> *copyStr = [scrStr <span class="keyword">copy</span>];
+<span class="built_in">NSLog</span>(<span class="string">@"srcStr = %zd,copyStr = %zd"</span>,[scrStr retainCount],[copyStr retainCount]); <span class="comment">//引用计数: srcStr = 2,copyStr = 2</span>
+[copyStr release];
+</code></pre><p>深复制内存管理 eg:</p>
+<pre><code><span class="built_in">NSMutableString</span> *scrStr  = [<span class="built_in">NSMutableString</span> stringWithFormat:<span class="string">@"deep copy vs shallow copy"</span>];
+<span class="built_in">NSString</span> *copyStr = [scrStr <span class="keyword">copy</span>];        
+<span class="built_in">NSLog</span>(<span class="string">@"srcStr = %zd,copyStr = %zd"</span>,[scrStr retainCount],[copyStr retainCount]); <span class="comment">//引用计数: srcStr = 1,copyStr = 1</span>
+[copyStr release];
+</code></pre><p>浅复制：没有产生新对象，但是原对象(副本对象)的引用计数会加1，上例中srcStr对象非自己生成，无需再调用release，但copyStr是srcStr对象的副本，所以需要调用release释放内存<br>深复制：产生新对象，原对象的引用计数不变，副本对象的引用计数为1，上例中srcStr对象非自己生成，无需再调用release,但copyStr是srcStr深复制而来，所以需要调用release释放内存</p>
+<p>总结：</p>
+<pre><code>深复制：
+      1.原对象和副本对象不是指向同一个对象
+      2.原对象的引用计数不变，副本对象的引用计数为1
+      3.深复制的实质是生成新的对象
+
+浅复制：
+     1.原对象和副本对象指向同一个对象
+     2.原对象(副本对象)的引用计数加1，相当于做了一次retain操作
+     3.浅复制的实质没有产生新对象，仅是指针拷贝
+</code></pre>
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2015/05/19/xcode-update-plugin-problem/">
                 Xcode升级插件失效修复方法
               </a>
@@ -1005,7 +1142,7 @@ dispatch_resume<span class="comment">(source)</span>;
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">3</span>
+              <span class="site-state-item-count">4</span>
               <span class="site-state-item-name">文章</span>
             </a>
           </div>
