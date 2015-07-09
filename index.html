@@ -188,47 +188,31 @@
 <p>深复制：通过复制操作后，返回一个新的副本对象，对此副本对象的任何操作不会影响到原对象，当然原对象的任何操作也不会影响到副本对象。在OC中的深复制本质上是产生了一个新的对象，<br>也就是常说的内容复制(内容拷贝)；</p>
 <p>浅复制：通过复制操作后，得到一个副本对象，在OC中本质上是对于原对象的指针复制，没有产生新的对象。</p>
 <p>copy VS mutablecopy</p>
-<p>shallow copy eg:<br>/**</p>
-<ul>
-<li><p>浅复制<br>*/</p>
+<p>shallow copy eg:</p>
 <pre><code><span class="built_in">NSString</span> *scrStr  = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"deep copy vs shallow copy"</span>];
 <span class="built_in">NSString</span> *copyStr = [scrStr <span class="keyword">copy</span>];
 
 <span class="built_in">NSLog</span>(<span class="string">@"scrStr = %p,copyStr = %p \n"</span>,scrStr,copyStr); <span class="comment">// 内存地址: scrStr = 0x100211d90,copyStr = 0x100211d90  一致</span>
 <span class="built_in">NSLog</span>(<span class="string">@"scrStr = %@,copyStr = %@ \n"</span>,scrStr,copyStr); <span class="comment">// 打印内容: scrStr = deep copy vs shallow copy,copyStr = deep copy vs shallow copy </span>
-</code></pre></li>
-</ul>
-<p>deep copy eg:<br>/**</p>
-<ul>
-<li><p>深复制<br>*/</p>
+</code></pre><p>deep copy eg:</p>
 <pre><code><span class="built_in">NSString</span> *scrStr  = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"deep copy vs shallow copy"</span>];
 <span class="built_in">NSMutableString</span> *copyStr = [scrStr mutableCopy];
 
 <span class="built_in">NSLog</span>(<span class="string">@"scrStr = %p,copyStr = %p \n"</span>,scrStr,copyStr); <span class="comment">//内存地址: scrStr = 0x100208490,copyStr = 0x100208490 内存地址不一致，说明生产了新的对象</span>
 <span class="built_in">NSLog</span>(<span class="string">@"scrStr = %@,copyStr = %@ \n"</span>,scrStr,copyStr); <span class="comment">//打印内容: scrStr = deep copy vs shallow copy,copyStr = deep copy vs shallow copy </span>
-</code></pre></li>
-</ul>
-<p>deep copy eg:<br>/**</p>
-<ul>
-<li><p>深复制<br>*/</p>
+</code></pre><p>deep copy eg:</p>
 <pre><code><span class="built_in">NSMutableString</span> *scrStr  = [<span class="built_in">NSMutableString</span> stringWithFormat:<span class="string">@"deep copy vs shallow copy"</span>];
 <span class="built_in">NSString</span> *copyStr = [scrStr mutableCopy];
 
 <span class="built_in">NSLog</span>(<span class="string">@"scrStr = %p,copyStr = %p \n"</span>,scrStr,copyStr); <span class="comment">//内存地址: scrStr = 0x100111f10,copyStr = 0x100111fe0 内存地址不一致，说明生产了新的对象</span>
 <span class="built_in">NSLog</span>(<span class="string">@"scrStr = %@,copyStr = %@ \n"</span>,scrStr,copyStr); <span class="comment">//打印内容: scrStr = deep copy vs shallow copy,copyStr = deep copy vs shallow copy </span>
-</code></pre></li>
-</ul>
-<p>/**</p>
-<ul>
-<li><p>深复制<br>*/</p>
+</code></pre><p>deep copy eg:</p>
 <pre><code><span class="built_in">NSMutableString</span> *scrStr  = [<span class="built_in">NSMutableString</span> stringWithFormat:<span class="string">@"deep copy vs shallow copy"</span>];
 <span class="built_in">NSMutableString</span> *copyStr = [scrStr mutableCopy];
 
 <span class="built_in">NSLog</span>(<span class="string">@"scrStr = %p,copyStr = %p \n"</span>,scrStr,copyStr); <span class="comment">//内存地址: scrStr = 0x100111f10,copyStr = 0x100111fe0 内存地址不一致，说明生产了新的对象</span>
 <span class="built_in">NSLog</span>(<span class="string">@"scrStr = %@,copyStr = %@ \n"</span>,scrStr,copyStr); <span class="comment">//打印内容: scrStr = deep copy vs shallow copy,copyStr = deep copy vs shallow copy </span>
-</code></pre></li>
-</ul>
-<p>通过以上几个示例，当使用copy方法时，返回的是一个不可变副本，也就是相当于指针拷贝，使用mutablecopy方法时，会返回一个可变副本，相当于内容拷贝，会生成新的对象。</p>
+</code></pre><p>通过以上几个示例，当使用copy方法时，返回的是一个不可变副本，也就是相当于指针拷贝，使用mutablecopy方法时，会返回一个可变副本，相当于内容拷贝，会生成新的对象。</p>
 <p>Copy 内存管理</p>
 <p>浅复制内存管理 eg:</p>
 <pre><code><span class="built_in">NSString</span> *scrStr  = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"deep copy vs shallow copy"</span>];
