@@ -4,7 +4,7 @@
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     
-    <title>大神的iOS开发博客 | iOS移动应用开发</title>
+    <title>利用Quart2D给图片添加水印以及截取圆形图片 | 大神的iOS开发博客</title>
     <meta name="renderer" content="webkit">
     <meta name="HandheldFriendly" content="True">
     <meta name="MobileOptimized" content="320">
@@ -15,11 +15,11 @@
     <meta name="description" content="爱好电影、编程和书籍。擅长Objective-C开发，喜欢在Mac上开发有趣使用的iOS应用。关注互联网、科技、敏捷开发以及iOS。">
 
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="大神的iOS开发博客 | iOS移动应用开发">
+    <meta name="twitter:title" content="利用Quart2D给图片添加水印以及截取圆形图片 | 大神的iOS开发博客">
     <meta name="twitter:description" content="爱好电影、编程和书籍。擅长Objective-C开发，喜欢在Mac上开发有趣使用的iOS应用。关注互联网、科技、敏捷开发以及iOS。">
 
     <meta property="og:type" content="article">
-    <meta property="og:title" content="大神的iOS开发博客 | iOS移动应用开发">
+    <meta property="og:title" content="利用Quart2D给图片添加水印以及截取圆形图片 | 大神的iOS开发博客">
     <meta property="og:description" content="爱好电影、编程和书籍。擅长Objective-C开发，喜欢在Mac上开发有趣使用的iOS应用。关注互联网、科技、敏捷开发以及iOS。">
 
     
@@ -35,7 +35,7 @@
     <meta name="generator" content="hexo"/>
     
 
-    <link rel="canonical" href="http://linfeng1009.gitcafe.io"/>
+    <link rel="canonical" href="http://linfeng1009.gitcafe.io/2015/07/28/quart2d/"/>
 
     
 
@@ -152,97 +152,72 @@ var _hmt = _hmt || [];
 
     <div class="content-wrapper">
         <div class="content-wrapper__inner">
-            <div class="main-post-list">
-    
-  <ol class="post-list">
-  
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2015/07/28/quart2d/" title="link to post.title">利用Quart2D给图片添加水印以及截取圆形图片</a></h2>
-      <p class="excerpt">
-    
-      一、添加水印为了不让图片被别人滥用，造成侵权，一般都会给图片加上水印。在iOS里面添加水印可以通过[CoreGraphics]框架提供的方法来操作。一般思路：        1.开启一个跟原图大小一致的context        2.将水印文字设置添加在原图上的位置并绘制在当前的context        3.从当前的context获取新的图片        4.关闭当前的context    代码实现：
-+ (UIImage *)imageNamed:(NSString *)name wa
-    &hellip;
-      </p>
-      <div class="post-list__meta"><time datetime="2015-07-28T08:47:30.000Z" class="post-list__meta--date date">2015-07-28</time> &#8226; <span class="post-list__meta--tags tags">于&nbsp;
+            <article class="post-container post-container--single">
+
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="2015-07-28T08:47:30.000Z" class="post-list__meta--date date">2015-07-28</time> &#8226; <span class="post-meta__tags tags">于&nbsp;
   <a class="tag-link" href="/tags/iOS-Quart2D/">iOS, Quart2D</a>
-</span><a class="btn-border-small" href="/2015/07/28/quart2d/">继续阅读</a></div>
-      <hr class="post-list__divider" />
-    </li>
-  
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2015/07/13/modified-by-helensong/" title="link to post.title">手机号码正则表达式</a></h2>
-      <p class="excerpt">
-    
-      /手机号码验证 MODIFIED BY HELENSONG//**
+</span>
+    </div>
+    <h1 class="post-title">利用Quart2D给图片添加水印以及截取圆形图片</h1>
+  </header>
 
-手机号码
-移动：134[0-8],135,136,137,138,139,150,151,157,158,159,182,187,188
-联通：130,131,132,152,155,156,185,186
-电信：133,1349,153,180,189/NSString  MOBILE = @”^1(3[0-9]|5[0-35-9]|8[025-9])\d{8}$”;/10  中国移动：China Mobile11  134
-    &hellip;
-      </p>
-      <div class="post-list__meta"><time datetime="2015-07-13T02:08:12.000Z" class="post-list__meta--date date">2015-07-13</time> &#8226; <span class="post-list__meta--tags tags">于&nbsp;
-  <a class="tag-link" href="/tags/iOS/">iOS</a>
-</span><a class="btn-border-small" href="/2015/07/13/modified-by-helensong/">继续阅读</a></div>
-      <hr class="post-list__divider" />
-    </li>
-  
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2015/07/09/deepcopy-vs-shallowcopy/" title="link to post.title">深复制VS浅复制</a></h2>
-      <p class="excerpt">
-    
-      苹果官方内存管理原则：1.谁创建谁负责release：如果使用 alloc、new、copy、mutablecopy来创建对象，那么必须要调用release或者autorelease来释放对象。2.谁retain谁负责release：只要你对对象使用了retain方法，那么必须要调用release或者autorelease来释放对象。
-深复制 VS 浅复制 (deep copy VS shallow copy)
-深复制：通过复制操作后，返回一个新的副本对象，对此副本对象的任何操作不会影响到原对象
-    &hellip;
-      </p>
-      <div class="post-list__meta"><time datetime="2015-07-09T06:26:48.000Z" class="post-list__meta--date date">2015-07-09</time> &#8226; <span class="post-list__meta--tags tags">于&nbsp;
-  <a class="tag-link" href="/tags/iOS/">iOS</a>
-</span><a class="btn-border-small" href="/2015/07/09/deepcopy-vs-shallowcopy/">继续阅读</a></div>
-      <hr class="post-list__divider" />
-    </li>
-  
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2015/05/19/xcode-update-plugin-problem/" title="link to post.title">Xcode升级插件失效修复方法</a></h2>
-      <p class="excerpt">
-    
-      1.打开终端，输入以下代码获取到DVTPlugInCompatibilityUUID     defaults read /Applications/Xcode.app/Contents/Info DVTPlugInCompatibilityUUID2.然后输入如下命令   【最后一项是获取到的DVTPlugInCompatibilityUUID】     find ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins -n
-    &hellip;
-      </p>
-      <div class="post-list__meta"><time datetime="2015-05-19T01:08:50.000Z" class="post-list__meta--date date">2015-05-19</time> &#8226; <span class="post-list__meta--tags tags">于&nbsp;
-  <a class="tag-link" href="/tags/Xcode/">Xcode</a>
-</span><a class="btn-border-small" href="/2015/05/19/xcode-update-plugin-problem/">继续阅读</a></div>
-      <hr class="post-list__divider" />
-    </li>
-  
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2015/05/04/iOS-Concurrentcy-Programming/" title="link to post.title">iOS并发编程指南</a></h2>
-      <p class="excerpt">
-    
-      iOS Concurrency Programming Guide
-iOS 和 Mac OS 传统的并发编程模型是线程，不过线程模型伸缩性不强，而且编写正确的线程代码也不容易。Mac OS 和 iOS 采取 asynchronous design approach 来解决并发的问题。
-引入的异步技术有两个：
-Grand Central Dispatch：系统管理线程，你不需要编写线程代码。只需定义想要执行的任务，然后添加到适当的dispatch queue。Grand Central Dispa
-    &hellip;
-      </p>
-      <div class="post-list__meta"><time datetime="2015-05-04T08:53:51.000Z" class="post-list__meta--date date">2015-05-04</time> &#8226; <span class="post-list__meta--tags tags">于&nbsp;
-  <a class="tag-link" href="/tags/iOS/">iOS</a>
-</span><a class="btn-border-small" href="/2015/05/04/iOS-Concurrentcy-Programming/">继续阅读</a></div>
-      <hr class="post-list__divider" />
-    </li>
-  
-    
-  </ol>
+  <section class="post">
+    <p>一、添加水印<br>为了不让图片被别人滥用，造成侵权，一般都会给图片加上水印。在iOS里面添加水印可以通过[CoreGraphics]框架提供的方法来操作。<br>一般思路：<br>        1.开启一个跟原图大小一致的context<br>        2.将水印文字设置添加在原图上的位置并绘制在当前的context<br>        3.从当前的context获取新的图片<br>        4.关闭当前的context<br>    代码实现：</p>
+<pre><code>+ (<span class="built_in">UIImage</span> *)imageNamed:(<span class="built_in">NSString</span> *)name waterMark:(<span class="built_in">NSString</span> *)mark
+{
+    <span class="built_in">CGFloat</span> textWidth = <span class="number">0</span>;
+    <span class="built_in">UIImage</span> *originImage = [<span class="keyword">self</span> imageNamed:name];
+    textWidth = [mark boundingRectWithSize:<span class="built_in">CGSizeMake</span>(MAXFLOAT, <span class="number">20.0</span>) options:<span class="built_in">NSStringDrawingUsesLineFragmentOrigin</span> attributes:@{<span class="built_in">NSFontAttributeName</span>:[<span class="built_in">UIFont</span> systemFontOfSize:<span class="number">15.0</span>]} context:<span class="literal">nil</span>]<span class="variable">.size</span><span class="variable">.width</span>;
+    <span class="built_in">UIGraphicsBeginImageContextWithOptions</span>(originImage<span class="variable">.size</span>, <span class="literal">NO</span>, <span class="number">0.0</span>);
+    [originImage drawAtPoint:<span class="built_in">CGPointZero</span>];
+    [mark drawAtPoint:<span class="built_in">CGPointMake</span>(<span class="number">10.0</span>,<span class="number">5.0</span>) withAttributes:@{<span class="built_in">NSFontAttributeName</span>:[<span class="built_in">UIFont</span> systemFontOfSize:<span class="number">22.0</span>],<span class="built_in">NSForegroundColorAttributeName</span>:[<span class="built_in">UIColor</span> redColor]}];
+    <span class="built_in">UIImage</span> *newImage = <span class="built_in">UIGraphicsGetImageFromCurrentImageContext</span>();
+    <span class="built_in">UIGraphicsEndImageContext</span>();
+
+    <span class="keyword">return</span> newImage;
+}
+</code></pre><p> 效果图片如下：<br><img src="http://7xkpsz.com1.z0.glb.clouddn.com/watermark.png" alt="水印"></p>
+<p>二、截取圆形图片<br>在平常项目开发中设计会有一些圆形的图片，例如用户头像。大多会去设置View的layer的cornerRadius和masksToBounds.<br>    self.imageView.layer.cornerRadius = 50.0;<br>    self.imageView.layer.masksToBounds = YES;<br>这样做虽然能够达到我们要的效果，每一次加载都要去将视图的图层去渲染，这样严重影响性能。在项目中不推荐这样使用，有更好的方法去达到这种效果—-截图图片<br>在原图的基础上去截取一个圆形的图片，关键点就是在原图上绘制一个正切圆。<br>    代码实现：</p>
+<pre><code>+ (<span class="built_in">UIImage</span> *)circleImageWithNamed:(<span class="built_in">NSString</span> *)name
+{
+    <span class="built_in">UIImage</span> *originImage = [<span class="keyword">self</span> imageNamed:name];
+    <span class="built_in">CGFloat</span> newImageW = originImage<span class="variable">.size</span><span class="variable">.width</span> &lt; originImage<span class="variable">.size</span><span class="variable">.height</span>? originImage<span class="variable">.size</span><span class="variable">.width</span> : originImage<span class="variable">.size</span><span class="variable">.height</span>;
+    <span class="built_in">UIGraphicsBeginImageContextWithOptions</span>(originImage<span class="variable">.size</span>, <span class="literal">NO</span>, <span class="number">0.0</span>);
+    <span class="built_in">UIBezierPath</span> *path = [<span class="built_in">UIBezierPath</span> bezierPathWithOvalInRect:<span class="built_in">CGRectMake</span>(<span class="number">0.0</span>, <span class="number">0.0</span>, newImageW, newImageW)];
+    [path addClip];
+    [originImage drawAtPoint:<span class="built_in">CGPointZero</span>];
+    <span class="built_in">UIImage</span> *newImage = <span class="built_in">UIGraphicsGetImageFromCurrentImageContext</span>();
+    <span class="built_in">UIGraphicsEndImageContext</span>();
+
+    <span class="keyword">return</span> newImage;
+}
+</code></pre><p> 效果图如下：<br> <img src="http://7xkpsz.com1.z0.glb.clouddn.com/circle.png" alt="截取圆图"></p>
+
+  </section>
+
+</article>
 
 
-
-</div>
+<section class="post-comments">
+  <!-- 多说评论框 start -->
+  <div class="ds-thread" data-thread-key="http://linfeng1009.gitcafe.io/2015/07/28/quart2d/" data-title="利用Quart2D给图片添加水印以及截取圆形图片" data-url="http://linfeng1009.gitcafe.io/2015/07/28/quart2d/"></div>
+  <!-- 多说评论框 end -->
+  <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+  <script type="text/javascript">
+  var duoshuoQuery = {short_name:"dashen1009"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共JS代码 end -->
+</section>
 
 
 
