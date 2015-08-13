@@ -4,7 +4,7 @@
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     
-    <title>手机号码正则表达式 | 大神的iOS开发博客</title>
+    <title>iOS开发常用正则表达式 | 大神的iOS开发博客</title>
     <meta name="renderer" content="webkit">
     <meta name="HandheldFriendly" content="True">
     <meta name="MobileOptimized" content="320">
@@ -15,11 +15,11 @@
     <meta name="description" content="擅长Objective-C开发，喜欢在Mac上开发iOS应用，常混迹于互联网、科技、敏捷开发范畴。">
 
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="手机号码正则表达式 | 大神的iOS开发博客">
+    <meta name="twitter:title" content="iOS开发常用正则表达式 | 大神的iOS开发博客">
     <meta name="twitter:description" content="擅长Objective-C开发，喜欢在Mac上开发iOS应用，常混迹于互联网、科技、敏捷开发范畴。">
 
     <meta property="og:type" content="article">
-    <meta property="og:title" content="手机号码正则表达式 | 大神的iOS开发博客">
+    <meta property="og:title" content="iOS开发常用正则表达式 | 大神的iOS开发博客">
     <meta property="og:description" content="擅长Objective-C开发，喜欢在Mac上开发iOS应用，常混迹于互联网、科技、敏捷开发范畴。">
 
     
@@ -160,28 +160,28 @@ var _hmt = _hmt || [];
   <a class="tag-link" href="/tags/iOS/">iOS</a>
 </span>
     </div>
-    <h1 class="post-title">手机号码正则表达式</h1>
+    <h1 class="post-title">iOS开发常用正则表达式</h1>
   </header>
 
   <section class="post">
-    <p>/<em>手机号码验证 MODIFIED BY HELENSONG</em>/<br>/**</p>
+    <p>1.手机号码<br>/**</p>
 <ul>
-<li>手机号码</li>
 <li>移动：134[0-8],135,136,137,138,139,150,151,157,158,159,182,187,188</li>
 <li>联通：130,131,132,152,155,156,185,186</li>
-<li><p>电信：133,1349,153,180,189<br><em>/<br>NSString </em> MOBILE = @”^1(3[0-9]|5[0-35-9]|8[025-9])\d{8}$”;<br>/<strong><br>10 <em> 中国移动：China Mobile<br>11 </em> 134[0-8],135,136,137,138,139,150,151,157,158,159,182,187,188<br>12 <em>/<br>NSString </em> CM = @”^1(34[0-8]|(3[5-9]|5[017-9]|8[278])\d)\d{7}$”;<br>/</strong><br>15 <em> 中国联通：China Unicom<br>16 </em> 130,131,132,152,155,156,185,186<br>17 <em>/<br>NSString </em> CU = @”^1(3[0-2]|5[256]|8[56])\d{8}$”;<br>/<strong><br>20 <em> 中国电信：China Telecom<br>21 </em> 133,1349,153,180,189<br>22 <em>/<br>NSString </em> CT = @”^1((33|53|8[09])[0-9]|349)\d{7}$”;<br>/</strong><br>25 <em> 大陆地区固话及小灵通<br>26 </em> 区号：010,020,021,022,023,024,025,027,028,029<br>27 <em> 号码：七位或八位<br>28 </em>/<br>// NSString * PHS = @”^0(10|2[0-5789]|\d{3})\d{7,8}$”;</p>
-<p>  NSPredicate <em>regextestmobile = [NSPredicate predicateWithFormat:@”SELF MATCHES %@”, MOBILE];<br>  NSPredicate </em>regextestcm = [NSPredicate predicateWithFormat:@”SELF MATCHES %@”, CM];<br>  NSPredicate <em>regextestcu = [NSPredicate predicateWithFormat:@”SELF MATCHES %@”, CU];<br>  NSPredicate </em>regextestct = [NSPredicate predicateWithFormat:@”SELF MATCHES %@”, CT];</p>
-<p>  if (([regextestmobile evaluateWithObject:mobileNum] == YES)<br>  || ([regextestcm evaluateWithObject:mobileNum] == YES)<br>  || ([regextestct evaluateWithObject:mobileNum] == YES)<br>  || ([regextestcu evaluateWithObject:mobileNum] == YES))<br>  {</p>
-<pre><code><span class="keyword">return</span> <span class="literal">YES</span>;
-</code></pre><p>  }<br>  else<br>  {</p>
-<pre><code><span class="keyword">return</span> <span class="literal">NO</span>;
-</code></pre><p>  }</p>
-<p>  //以上集合一起，并兼容14开头的</p>
-<ul>
-<li>(BOOL)isMobileNumber:(NSString <em>)mobileNum<br>{<br>  NSString </em> phoneRegex = @”^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$”;<br>  BOOL isMatch = [mobileNum isMatchedByRegex:phoneRegex];<br>  return isMatch;<br>}</li>
+<li>电信：133,1349,153,180,189<br><em>/<br>NSString </em> MOBILE = @”^1(3[0-9]|5[0-35-9]|8[025-9])\d{8}$”;</li>
 </ul>
-</li>
-</ul>
+<p>/<em>*<br>10 </em> 中国移动：China Mobile<br>11 <em> 134[0-8],135,136,137,138,139,150,151,157,158,159,182,187,188<br>12 </em>/<br>NSString * CM = @”^1(34[0-8]|(3[5-9]|5[017-9]|8[278])\d)\d{7}$”;</p>
+<p>/<em>*<br>15 </em> 中国联通：China Unicom<br>16 <em> 130,131,132,152,155,156,185,186<br>17 </em>/<br>NSString * CU = @”^1(3[0-2]|5[256]|8[56])\d{8}$”;</p>
+<p>/<em>*<br>20 </em> 中国电信：China Telecom<br>21 <em> 133,1349,153,180,189<br>22 </em>/<br>NSString * CT = @”^1((33|53|8[09])[0-9]|349)\d{7}$”;</p>
+<p>/<em>*<br>25 </em> 大陆地区固话及小灵通<br>26 <em> 区号：010,020,021,022,023,024,025,027,028,029<br>27 </em> 号码：七位或八位<br>28 <em>/<br>// NSString </em> PHS = @”^0(10|2[0-5789]|\d{3})\d{7,8}$”;</p>
+<p>以上集合一起，并兼容14开头的</p>
+<pre><code>+ (<span class="built_in">BOOL</span>)isMobileNumber:(<span class="built_in">NSString</span> *)mobileNum
+{
+    <span class="built_in">NSString</span> * phoneRegex = <span class="string">@"^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$"</span>;
+    <span class="built_in">BOOL</span> isMatch = [mobileNum isMatchedByRegex:phoneRegex];
+    <span class="keyword">return</span> isMatch;
+}
+</code></pre><p>2.邮箱验证<br>       NSString *emailRegex = @”[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}”; </p>
 
   </section>
 
@@ -190,7 +190,7 @@ var _hmt = _hmt || [];
 
 <section class="post-comments">
   <!-- 多说评论框 start -->
-  <div class="ds-thread" data-thread-key="http://linfeng1009.gitcafe.io/2015/07/13/modified-by-helensong/" data-title="手机号码正则表达式" data-url="http://linfeng1009.gitcafe.io/2015/07/13/modified-by-helensong/"></div>
+  <div class="ds-thread" data-thread-key="http://linfeng1009.gitcafe.io/2015/07/13/modified-by-helensong/" data-title="iOS开发常用正则表达式" data-url="http://linfeng1009.gitcafe.io/2015/07/13/modified-by-helensong/"></div>
   <!-- 多说评论框 end -->
   <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
   <script type="text/javascript">
