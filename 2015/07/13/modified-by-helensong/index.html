@@ -164,24 +164,35 @@ var _hmt = _hmt || [];
   </header>
 
   <section class="post">
-    <p>1.手机号码<br>/**</p>
+    <p>1.手机号码</p>
 <ul>
 <li>移动：134[0-8],135,136,137,138,139,150,151,157,158,159,182,187,188</li>
 <li>联通：130,131,132,152,155,156,185,186</li>
-<li>电信：133,1349,153,180,189<br><em>/<br>NSString </em> MOBILE = @”^1(3[0-9]|5[0-35-9]|8[025-9])\d{8}$”;</li>
+<li><p>电信：133,1349,153,180,189<br>NSString * MOBILE = @”^1(3[0-9]|5[0-35-9]|8[025-9])\d{8}$”;</p>
+</li>
+<li><p>中国移动：China Mobile</p>
+</li>
+<li><p>134[0-8],135,136,137,138,139,150,151,157,158,159,182,187,188<br>NSString * CM = @”^1(34[0-8]|(3[5-9]|5[017-9]|8[278])\d)\d{7}$”;</p>
+</li>
+<li><p>中国联通：China Unicom</p>
+</li>
+<li><p>130,131,132,152,155,156,185,186<br>NSString * CU = @”^1(3[0-2]|5[256]|8[56])\d{8}$”;</p>
+</li>
+<li><p>中国电信：China Telecom</p>
+</li>
+<li><p>133,1349,153,180,189<br>NSString * CT = @”^1((33|53|8[09])[0-9]|349)\d{7}$”;</p>
+</li>
+<li><p>大陆地区固话及小灵通</p>
+</li>
+<li>区号：010,020,021,022,023,024,025,027,028,029</li>
+<li><p>号码：七位或八位<br>NSString * PHS = @”^0(10|2[0-5789]|\d{3})\d{7,8}$”;</p>
+<p>  以上集合一起，并兼容14开头的</p>
+<ul>
+<li>(BOOL)isMobileNumber:(NSString <em>)mobileNum<br>{<br>  NSString </em> phoneRegex = @”^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$”;<br>  BOOL isMatch = [mobileNum isMatchedByRegex:phoneRegex];<br>  return isMatch;<br>}</li>
 </ul>
-<p>/<em>*<br>10 </em> 中国移动：China Mobile<br>11 <em> 134[0-8],135,136,137,138,139,150,151,157,158,159,182,187,188<br>12 </em>/<br>NSString * CM = @”^1(34[0-8]|(3[5-9]|5[017-9]|8[278])\d)\d{7}$”;</p>
-<p>/<em>*<br>15 </em> 中国联通：China Unicom<br>16 <em> 130,131,132,152,155,156,185,186<br>17 </em>/<br>NSString * CU = @”^1(3[0-2]|5[256]|8[56])\d{8}$”;</p>
-<p>/<em>*<br>20 </em> 中国电信：China Telecom<br>21 <em> 133,1349,153,180,189<br>22 </em>/<br>NSString * CT = @”^1((33|53|8[09])[0-9]|349)\d{7}$”;</p>
-<p>/<em>*<br>25 </em> 大陆地区固话及小灵通<br>26 <em> 区号：010,020,021,022,023,024,025,027,028,029<br>27 </em> 号码：七位或八位<br>28 <em>/<br>// NSString </em> PHS = @”^0(10|2[0-5789]|\d{3})\d{7,8}$”;</p>
-<p>以上集合一起，并兼容14开头的</p>
-<pre><code>+ (<span class="built_in">BOOL</span>)isMobileNumber:(<span class="built_in">NSString</span> *)mobileNum
-{
-    <span class="built_in">NSString</span> * phoneRegex = <span class="string">@"^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$"</span>;
-    <span class="built_in">BOOL</span> isMatch = [mobileNum isMatchedByRegex:phoneRegex];
-    <span class="keyword">return</span> isMatch;
-}
-</code></pre><p>2.邮箱验证<br>       NSString *emailRegex = @”[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}”; </p>
+</li>
+</ul>
+<p>2.邮箱验证<br>       NSString *emailRegex = @”[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}”; </p>
 
   </section>
 
