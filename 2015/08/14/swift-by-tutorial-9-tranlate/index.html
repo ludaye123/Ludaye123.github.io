@@ -248,7 +248,50 @@ board[<span class="number">4</span>, <span class="number">5</span>] = BoardCellS
 <p>在你编译工程之前，确保Swift文件你希望测试已经正确关联，你可以查看这些信息通过File Inspector，确保 BoardCellState.swift, BoardLocation.swift and Board.swift中每一个都选中SwiftReversi and SwiftReversiTests targets，否则测试不能够编译。<br><img src="http://7xkpsz.com1.z0.glb.clouddn.com/2.png" alt=""></p>
 <p>选择Product\Test从Xcode菜单(快捷键⌘U)编译和运行测试，一个满意的迹象，测试通过将呈现给你:<br><img src="http://7xkpsz.com1.z0.glb.clouddn.com/3.png" alt=""></p>
 <p>你还将看到测试的进展在控制台和代码中每个测试用例的旁边有个绿色的标志。<br><img src="http://7xkpsz.com1.z0.glb.clouddn.com/4.png" alt=""></p>
+<p>暴露cell的位置经过下标在Board类中非常优雅，但是它有一个小弱点，如果行或列提供一个越界的值给下标方法，意想不到的事情会发生，是时候改变这种情况了。</p>
+<p>在Board的实现中，添加下面的方法到这个类的下面:</p>
+<pre><code><span class="func"><span class="keyword">func</span> <span class="title">isWithinBounds</span><span class="params">(location: BoardLocation)</span></span> -&gt; <span class="type">Bool</span> 
+{
+ <span class="keyword">return</span> location.row &gt;= <span class="number">0</span> &amp;&amp; location.row &lt; boardSize &amp;&amp; location.column &gt;= <span class="number">0</span> &amp;&amp; location.column &lt; boardSize 
+}
+</code></pre><p>上面简单保证BoardLocation行和列属性值是合法的。</p>
+<p>更新下标的实现(将BoardLoaction参数)充分检查:</p>
+<pre><code><span class="keyword">subscript</span>(location: <span class="type">BoardLocation</span>) -&gt; <span class="type">BoardCellState</span> 
+{ 
+    <span class="keyword">get</span>
+     {
+        <span class="built_in">assert</span>(isWithinBounds(location),<span class="string">"row or column index out of bounds"</span>)
+        <span class="keyword">return</span> cells[location.row * boardSize + location.column] 
+    }
+    <span class="keyword">set</span> 
+    {
+         <span class="built_in">assert</span>(isWithinBounds(location),<span class="string">"row or column index out of bounds"</span>) 
+         cells[location.row * boardSize + location.column] = newValue
+    }
+ }
+</code></pre><p>以上代码添加断言给下标的get方法和set方法，结果，如果row或column的值越界，应用将会终止并且你会跳到调试器如果你在调试模式下。</p>
+<pre><code>Swift vs. Objective-<span class="keyword">C</span>
+是时候暂停快速比较Swift和Objective-<span class="keyword">C</span>实现的黑白棋。
 
+在两者的实现之间在语法上明显不同，语法放一旁，这儿有一些显著的不同点。
+
+Swift的下标提供一个重要的提升在Objective-<span class="keyword">C</span>代码上，设置cell的值需要调用一个很长的方法:
+[board setCellState:BoardCellStateWhitePiece forColumn:<span class="number">4</span> andRow:<span class="number">5</span>];
+
+Swift替代的非常简洁:
+board[<span class="number">4</span>, <span class="number">5</span>] = .<span class="keyword">White</span>
+
+当涉及初始化cells数组时，Objective-<span class="keyword">C</span>实现使用memset如下:
+memset(_board, <span class="number">0</span>, sizeof(NSUInteger) * <span class="number">8</span> * <span class="number">8</span>);
+
+你真的不应该使用<span class="keyword">C</span>的API和Swift，因此，Swift的实现使用一个可替代的接近方法，用值填充数组在初始化期间：
+cells = <span class="keyword">Array</span>(count: boardSize * boardSize, repeatedValue: BoardCellState.<span class="keyword">Empty</span>)
+这个方法的意图使得代码更加简洁。
+
+最后，Swift应用使用一维数组存储单元格，然而Objective-<span class="keyword">C</span>实现使用二位数组，有一个很好的性能的原因,我们将到本章后面,与上面memset联系使用。
+
+在后面的步骤中,您将添加逻辑,克隆游戏板。Objective-<span class="keyword">C</span>实现使用<span class="keyword">C</span> memcpy函数,你可以很容易地应用<span class="number">2</span>维数组,而迅速实施简单复制数组的副本。幸运的是,下标将隐藏实现细节从所有其他类和子类在这个应用程序。
+</code></pre>
   </section>
 
 </article>
