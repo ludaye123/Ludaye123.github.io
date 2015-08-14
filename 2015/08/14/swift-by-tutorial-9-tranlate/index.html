@@ -269,7 +269,7 @@ board[<span class="number">4</span>, <span class="number">5</span>] = BoardCellS
          cells[location.row * boardSize + location.column] = newValue
     }
  }
-</code></pre><p>以上代码添加断言给下标的get方法和set方法，结果，如果row或column的值越界，应用将会终止并且你会跳到调试器如果你在调试模式下。</p>
+</code></pre><p>以上代码添加断言给下标的get方法和set方法，结果，如果row或column的值越界，应用将会终止并且跳到调试器如果你在调试模式下。</p>
 <pre><code>Swift vs. Objective-<span class="keyword">C</span>
 是时候暂停快速比较Swift和Objective-<span class="keyword">C</span>实现的黑白棋。
 
@@ -288,10 +288,54 @@ memset(_board, <span class="number">0</span>, sizeof(NSUInteger) * <span class="
 cells = <span class="keyword">Array</span>(count: boardSize * boardSize, repeatedValue: BoardCellState.<span class="keyword">Empty</span>)
 这个方法的意图使得代码更加简洁。
 
-最后，Swift应用使用一维数组存储单元格，然而Objective-<span class="keyword">C</span>实现使用二位数组，有一个很好的性能的原因,我们将到本章后面,与上面memset联系使用。
+最后，Swift应用使用一维数组存储单元格，然而Objective-<span class="keyword">C</span>实现使用二位数组，有一个很好的性能的原因,我们将到本章后面,
+与上面memset联系使用。
 
-在后面的步骤中,您将添加逻辑,克隆游戏板。Objective-<span class="keyword">C</span>实现使用<span class="keyword">C</span> memcpy函数,你可以很容易地应用<span class="number">2</span>维数组,而迅速实施简单复制数组的副本。幸运的是,下标将隐藏实现细节从所有其他类和子类在这个应用程序。
-</code></pre>
+在后面的步骤中,您将添加逻辑,克隆游戏板。Objective-<span class="keyword">C</span>实现使用<span class="keyword">C</span> memcpy函数,你可以很容易地应用<span class="number">2</span>维数组,而迅速实施简单复制数组的副本。
+幸运的是,下标将隐藏实现细节从所有其他类和子类在这个应用程序。
+</code></pre><p>额外的游戏状态</p>
+<p>现在的Board类相当的普通，你可以使用它做一系列的棋盘游戏，接下来，你要添加Board的子类和黑白棋详细的逻辑。</p>
+<p>添加一个Swift文件到Model组中，命名为ReversiBoard.swift并且添加下面的代码:</p>
+<pre><code><span class="keyword">import</span> <span class="type">Foundation</span>
+<span class="class"><span class="keyword">class</span> <span class="title">ReversiBoard</span>: <span class="title">Board</span> 
+</span>{
+    private (<span class="keyword">set</span>) <span class="keyword">var</span> blackScore = <span class="number">0</span>, whiteScore = <span class="number">0</span> 
+    <span class="func"><span class="keyword">func</span> <span class="title">setInitialState</span><span class="params">()</span></span> 
+    {
+        <span class="keyword">super</span>[<span class="number">3</span>,<span class="number">3</span>] = .<span class="type">White</span> 
+        <span class="keyword">super</span>[<span class="number">4</span>,<span class="number">4</span>] = .<span class="type">White</span> 
+        <span class="keyword">super</span>[<span class="number">3</span>,<span class="number">4</span>] = .<span class="type">Black</span>
+        <span class="keyword">super</span>[<span class="number">4</span>,<span class="number">3</span>] = .<span class="type">Black</span>
+        blackScore = <span class="number">2</span>
+        whiteScore = <span class="number">2</span> 
+    }
+}
+</code></pre><p>ReversiBoard是Board的子类，添加一个简单setInitialState方法，初始化棋盘中为游戏设置开始位置。</p>
+<p>当添加游戏逻辑,有很多次当你需要向导在棋盘上的所有cell应用一些逻辑或操作。而不是有多个嵌套循环(一个行和列)的内循环,它集中这个逻辑是有意义的。</p>
+<p>打开 Board.swift，在文件的下面添加下面的方法:</p>
+<pre><code>func cellVisitor(<span class="function"><span class="keyword">fn</span>: </span>(BoardLocation) -&gt;()) 
+{
+    <span class="keyword">for</span> column <span class="keyword">in</span> <span class="number">0</span>..&lt;boardSize 
+    {
+        <span class="keyword">for</span> row <span class="keyword">in</span> <span class="number">0</span>..&lt;boardSize 
+        {
+            <span class="keyword">let</span> location = BoardLocation(row: row, column: column) 
+            <span class="function"><span class="keyword">fn</span></span>(location)
+        }
+     }
+}
+</code></pre><p>上面的函数遍历每一个cell,提供的功能应用到每一个cell。理解这种方法最简单的方式就是看它的实际应用。</p>
+<p>在同一文件中，添加clearBoard方法</p>
+<pre><code><span class="func"><span class="keyword">func</span> <span class="title">clearBoard</span><span class="params">()</span></span> 
+{
+    cellVisitor { <span class="keyword">self</span>[$<span class="number">0</span>] = .<span class="type">Empty</span> }
+}
+</code></pre><p>上面的调用cellVisitor,传递闭包,作为方法的fn的参数。cellVisitor调用这个函数对于每个单元格,与$ 0参数(使用速记符号)是BoardLocation为每个迭代。clearBoard的最终结果是一个板,每一个单元格的值设置为空。</p>
+<p>最后，返回ReversiBoard.swift,在setInitialState方法顶部调用清理棋盘方法:</p>
+<pre><code><span class="function"><span class="title">clearBoard</span><span class="params">()</span></span>
+</code></pre><p>现在设置初始状态将清除，在添加起始位置块之前。</p>
+<p>形象化棋盘<br>not finish</p>
+
   </section>
 
 </article>
