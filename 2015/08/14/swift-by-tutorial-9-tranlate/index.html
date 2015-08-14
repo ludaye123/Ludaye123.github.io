@@ -229,8 +229,10 @@ var _hmt = _hmt || [];
         self[BoardLocation(<span class="string">row:</span> row, <span class="string">column:</span> column)] = newValue
     }
  }
-</code></pre><p>上面公开了一个下标，你可以使用如下:<br>    var board = Board()<br>    board[4, 5] = BoardCellState.White</p>
-<p>下标允许你去创建一个非常灵活的API给你的Swift类，你也可以定义多个下标，允许你有多种方式去访问类的数据</p>
+</code></pre><p>上面公开了一个下标，你可以使用如下:</p>
+<pre><code><span class="tag">var</span> board = <span class="function"><span class="title">Board</span><span class="params">()</span></span>
+board[<span class="number">4</span>, <span class="number">5</span>] = BoardCellState.White
+</code></pre><p>下标允许你去创建一个非常灵活的API给你的Swift类，你也可以定义多个下标，允许你有多种方式去访问类的数据</p>
 <p>为了演练你刚刚添加的代码，你需要创建UI来充分利用这个模型，然而，有一更直接并且立刻使用的机制-单元测试！</p>
 <p>打开SwiftReversiTests.swift并且添加下面的方法到SwiftReversiTests类:</p>
 <pre><code><span class="func"><span class="keyword">func</span> <span class="title">test_subscript_setWithValidCoords_cellStateIsChanged</span><span class="params">()</span></span> 
