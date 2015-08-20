@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    
+    <title>制作pod库并提交到Cocoapods | 大神的iOS开发博客</title>
+    <meta name="renderer" content="webkit">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta name="description" content="擅长Objective-C开发，喜欢在Mac上开发iOS应用，常混迹于各大iOS开发论坛。">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="制作pod库并提交到Cocoapods | 大神的iOS开发博客">
+    <meta name="twitter:description" content="擅长Objective-C开发，喜欢在Mac上开发iOS应用，常混迹于各大iOS开发论坛。">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="制作pod库并提交到Cocoapods | 大神的iOS开发博客">
+    <meta property="og:description" content="擅长Objective-C开发，喜欢在Mac上开发iOS应用，常混迹于各大iOS开发论坛。">
+
+    
+    <meta name="author" content="大神">
+    
+    <link rel="stylesheet" href="/css/vno.css" type="text/css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" type="text/css">
+
+    
+    <link rel="icon" href="/images/favicon.png">
+    
+
+    <meta name="generator" content="hexo"/>
+    
+
+    <link rel="canonical" href="http://linfeng1009.gitcafe.io/2015/08/20/create-pods/"/>
+
+    
+
+    <meta name="baidu-site-verification" content="m1n9RLGcrV" />
+    
+<script type="text/javascript">
+#申请的百度统计代码
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?7c3a425add5fae9a1970c9b53a04242a";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</head>
+
+<body class="home-template no-js">
+
+    <span class="mobile btn-mobile-menu">
+        <i class="fa fa-list btn-mobile-menu__icon"></i>
+        <i class="fa fa-angle-up btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+<header class="panel-cover panel-cover--collapsed" style="background-image: url(/images/background-cover.jpg)">
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        <a href="/" title="前往 大神的iOS开发博客 的主页"><img src="/images/logo2.jpg" width="80" alt="大神的iOS开发博客 logo" class="panel-cover__logo logo" /></a>
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage for 大神的iOS开发博客">大神的iOS开发博客</a></h1>
+        
+        <span class="panel-cover__subtitle panel-subtitle">知识来源于分解</span>
+        
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">擅长Objective-C开发，喜欢在Mac上开发iOS应用，常混迹于各大iOS开发论坛。</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+
+        <div class="navigation-wrapper">
+          <div>
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+              <li class="navigation__item"><a href="/#blog" title="访问博客" class="blog-button">文章归档</a></li>
+            
+              <li class="navigation__item"><a href="/projects">项目作品</a></li>
+            
+              <li class="navigation__item"><a href="/about">关于我</a></li>
+            
+            </ul>
+          </nav>
+          </div>
+          <div>
+          <nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+  <!-- Weibo-->
+  
+  <li class="navigation__item">
+    <a href="http://weibo.com/2502328960/profile?topnav=1&amp;wvr=6" title="我的微博" target="_blank">
+      <i class='social fa fa-weibo'></i>
+      <span class="label">Weibo</span>
+    </a>
+  </li> 
+
+
+  <!-- Github -->
+  
+  <li class="navigation__item">
+    <a href="https://github.com/ludaye123" title="查看我的GitHub主页" target="_blank">
+      <i class='social fa fa-github'></i>
+      <span class="label">Github</span>
+    </a>
+  </li>
+
+
+<!-- Stack Overflow -->
+        
+
+  <!-- Google Plus -->
+  
+
+<!-- Facebook -->
+
+  
+<!-- Twitter -->
+
+  
+
+
+  <li class="navigation__item">
+    <a href="mailto:1057105719@qq.com" title="邮件联系我" target="_blank">
+      <i class='social fa fa-envelope'></i>
+      <span class="label">Email</span>
+    </a>
+  </li>
+
+
+  </ul>
+</nav>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay cover-blue"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner">
+            <article class="post-container post-container--single">
+
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="2015-08-20T05:35:14.000Z" class="post-list__meta--date date">2015-08-20</time> &#8226; <span class="post-meta__tags tags">于&nbsp;
+  <a class="tag-link" href="/tags/Cocoapods/">Cocoapods</a>
+</span>
+    </div>
+    <h1 class="post-title">制作pod库并提交到Cocoapods</h1>
+  </header>
+
+  <section class="post">
+    <p>摘自:<a href="http://yulingtianxia.com/blog/2014/05/26/publish-your-pods-on-cocoapods-with-trunk/" target="_blank" rel="external">玉令天下</a></p>
+<p>简介<br>2014年5月20日，CocoaPods不再接受向CocoaPods/Specs的pull request，官方的说法是为了安全考虑，防止每个人的pod被其他人修改，于是CocoaPods团队开发了trunk服务，这样每个人都是其发布的pod的owner，没有权限的人无法修改，这样更安全。<br>更改后的提交架构是这样的：(来自官方图片)</p>
+<p>以前的podspec文件都是ruby格式，而trunk为我们带来了更轻便的json格式，你后你可以用json来配置你的pod了。不用担心过去我们发布的pod，他们依然健在，并且trunk会将podspec文件转化为podspec.json文件。<br>这里给出一个官方的介绍链接：<a href="http://blog.cocoapods.org/CocoaPods-Trunk/#transition" target="_blank" rel="external">http://blog.cocoapods.org/CocoaPods-Trunk/#transition</a><br>废话不多说，简要介绍下如何使用trunk新建我们的pod：<br>开始注册<br>trunk需要CocoaPods 0.33版本以上，用pod —version命令查看版本，如果版本低，需要升级：</p>
+<p>sudo gem install cocoapods<br>pod setup<br>然后会一直卡在Setting up CocoaPods master repo这里，这条命令用于跟新本地电脑上的保存的Pods依赖库tree。由于每天有很多人会创建或者更新Pods依赖库，这条命令执行的时候会相当慢，还请耐心等待。我们需要经常执行这条命令，否则有新的Pods依赖库的时候执行pod search命令是搜不出来的。再开启一个终端，通过cd ~/.cocoapods命令进入cocoapods根目录，然后通过du -sh *命令查看总的文件大小，如果隔一阵子会增加，那么说明一切正常，下载速度取决于你的网络。<br>更新完成后，下一步是注册trunk，这一步需要自备梯子，否则就会出现这种问题</p>
+<p>pod trunk register yulingtianxia@gmail.com ‘Yang Xiaoyu’ —description=’macbook pro’ —verbose<br>上面的命令是我注册时使用的，你需要把邮箱和名字以及描述替换成你的，加上—verbose可以输出详细debug信息，方便出错时查看。<br>注册后CocoaPods会给你的邮箱发送验证链接，点击后就注册成功了，可以用pod trunk me命令查看自己的注册信息：</p>
+<p>bogon:YXYNumberAnimationLabel yangxiaoyu$ pod trunk me</p>
+<ul>
+<li>Name:     Yang Xiaoyu</li>
+<li>Email:    yulingtianxia@gmail.com</li>
+<li>Since:    May 25th, 20:27</li>
+<li><p>Sessions: </p>
+<ul>
+<li>May 25th, 20:27 - September 30th, 22:41. IP: 23.228.209.171<br>Description: macbook pro<br>上面是我的注册信息，CocoaPods不通过密码来验证用户，而是通过一个session token。<br>部署你的Pod<br>首先你需要建立一个podspec文件，这是我的podspec文件：<br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>Pod::Spec.new do |s|<br>s.name         = “YXYNumberAnimationLabel”<br>s.version      = “1.0.1”<br>s.summary      = “一个可以动起来的数字Label”<br>s.description  = &lt;&lt;-DESC<pre><code> 通过设置数字变化的插值来展现动画效果
+<span class="keyword">DESC</span>
+</code></pre>s.homepage     = “<a href="https://github.com/yulingtianxia/YXYNumberAnimationLabel" target="_blank" rel="external">https://github.com/yulingtianxia/YXYNumberAnimationLabel</a>“</li>
+</ul>
+<p>s.license      = ‘MIT’<br>s.author       = { “YangXiaoyu” =&gt; “yulingtianxia@gmail.com” }<br>s.social_media_url = “<a href="http://twitter.com/yulingtianxia" target="_blank" rel="external">http://twitter.com/yulingtianxia</a>“<br>s.source       = { :git =&gt; “<a href="https://github.com/yulingtianxia/YXYNumberAnimationLabel.git" target="_blank" rel="external">https://github.com/yulingtianxia/YXYNumberAnimationLabel.git</a>“, :tag =&gt; s.version.to_s }</p>
+<p>s.platform     = :ios, ‘6.0’<br>s.requires_arc = true</p>
+<p>s.source_files = ‘YXYNumberAnimationLabel/*’<br>s.frameworks = ‘Foundation’, ‘UIKit’</p>
+<h1 id="s-private_header_files_=_‘Classes/ios/private/*-h’">s.private_header_files = ‘Classes/ios/private/*.h’</h1><h1 id="s-dependency_‘FLKAutoLayout’,_‘~&gt;_0-1’">s.dependency ‘FLKAutoLayout’, ‘~&gt; 0.1’</h1><p>end<br>具体配置什么的大家走很熟悉，这里只是讲述使用trunk后需要注意的地方和新的操作<br>在验证和上传你的podspec文件到trunk之前，需要将你的源码push到Github上，tag一个版本号并发布一个release版本，这样podspec文件中的s.source的值才能是准确的：<br>1<br>2<br>3<br>4<br>git add -A &amp;&amp; git commit -m “Release 1.0.1.”<br>git tag ‘1.0.1’<br>git push —tags<br>git push origin master<br>这两条命令是为pod添加版本号并打上tag:<br>1<br>2<br>set the new version to 1.0.1<br>set the new tag to 1.0.1<br>在你podspec文件下的路径运行pod trunk push YXYNumberAnimationLabel.podspec 命令，同样需要翻墙梯子自备，别忘了将YXYNumberAnimationLabel.podspec替换成你的podspec文件名。<br>pod trunk push命令做了如下三个工作：<br>验证你本地的podspec文件（你也可以用pod lib lint命令来验证）<br>上传你的podspec文件到trunk<br>将你的podspec文件转化成trunk需要的JSON文件<br>如果部署成功，CocosPods会在Twitter上@你<br>就像文章最开始的架构图描述的那样，你在trunk中的操作依然会在CocoaPods/Specs仓库中更新。以后再做更改时只需要更新版本号然后通过trunk来提交，不用向CocoaPods/Specspull request并等待审核和merge了。<br>运行pod setup来更新你的Pods依赖库tree后，再使用pod search YXYNumberAnimationLabel命令来查找刚刚加入的名字叫YXYNumberAnimationLabel的依赖库：<br>1<br>2<br>3<br>4<br>5<br>6<br>-&gt; YXYNumberAnimationLabel (1.0.1)<br>一个可以动起来的数字Label<br>pod ‘YXYNumberAnimationLabel’, ‘~&gt; 1.0.1’</p>
+<ul>
+<li>Homepage: <a href="https://github.com/yulingtianxia/YXYNumberAnimationLabel" target="_blank" rel="external">https://github.com/yulingtianxia/YXYNumberAnimationLabel</a></li>
+<li>Source:   <a href="https://github.com/yulingtianxia/YXYNumberAnimationLabel.git" target="_blank" rel="external">https://github.com/yulingtianxia/YXYNumberAnimationLabel.git</a></li>
+<li>Versions: 1.0.1, 1.0.0 [master repo]<br>将其他人加入到你的Pod<br>为了让其他人也有权限来和你一起建设你的代码，你需要运行下面的命令来赋予别人权限，假如我将kyle@cocoapods.org加入到我的名字叫ARAnalytics的库中，我需要运行下面的命令：<br>1<br>pod trunk add-owner ARAnalytics kyle@cocoapods.org</li>
+</ul>
+</li>
+</ul>
+
+  </section>
+
+</article>
+
+
+<section class="post-comments">
+  <!-- 多说评论框 start -->
+  <div class="ds-thread" data-thread-key="http://linfeng1009.gitcafe.io/2015/08/20/create-pods/" data-title="制作pod库并提交到Cocoapods" data-url="http://linfeng1009.gitcafe.io/2015/08/20/create-pods/"></div>
+  <!-- 多说评论框 end -->
+  <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+  <script type="text/javascript">
+  var duoshuoQuery = {short_name:"dashen1009"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共JS代码 end -->
+</section>
+
+
+
+            <footer class="footer">
+    <span class="footer__copyright">
+        本站点采用<a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>
+    </span>
+    <span class="footer__copyright">
+        基于 <a href="http://hexo.io">Hexo</a> 搭建，感谢 <a href="https://gitcafe.com/">GitCafe</a> 提供免费的托管服务
+    </span>
+    <span class="footer__copyright">
+        &copy; 2015 - 本站由 <a href="/">@大神</a> 创建,
+        使用<a href="https://github.com/lenbo-ma/hexo-theme-vno">hexo-theme-vno</a>主题,
+        修改自<a href="http://github.com/onevcat/vno" target="_blank">Vno</a>
+    </span>
+
+   <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?7c3a425add5fae9a1970c9b53a04242a";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+    <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1255886342'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s4.cnzz.com/z_stat.php%3Fid%3D1255886342%26online%3D1%26show%3Dline' type='text/javascript'%3E%3C/script%3E"));</script>
+
+</footer>
+
+        </div>
+    </div>
+
+    <script src="http://cdn.bootcss.com/jquery/2.1.4/jquery.min.js" type="text/javascript"></script>
+    <script src="/js/main.js" type="text/javascript"></script>
+
+     
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-42596364-1', 'auto');
+	ga('send', 'pageview');
+</script>
+
+</body>
+</html>
