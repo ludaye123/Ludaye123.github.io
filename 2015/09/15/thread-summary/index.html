@@ -90,14 +90,14 @@
       <a href="http://linfeng1009.gitcafe.io" title="大神">大神</a>
     </p>
   <p class="article-time">
-    <time datetime="2015-09-15T07:16:56.000Z" itemprop="datePublished">2015-09-15</time>
-    更新日期:<time datetime="2015-09-15T07:16:56.000Z" itemprop="dateModified">2015-09-15</time>
+    <time datetime="2015-09-15T07:19:45.000Z" itemprop="datePublished">2015-09-15</time>
+    更新日期:<time datetime="2015-09-15T07:19:45.000Z" itemprop="dateModified">2015-09-15</time>
     
   </p>
 </header>
     <div class="entry">
 		
-        <p>iOS开发中，实现线程的方式总体有三种<br>1.NSThread<br>2.NSOperate 和 NSOperateQueue<br>3.GCD<br>还有一种更加底层的PAI，pthread</p>
+        <p>iOS开发中，实现线程的方式总体有三种<br>1.NSThread<br>2.NSOperate 和 NSOperateQueue<br>3.GCD<br>还有一种更加底层的API,用pthread来实现</p>
 <h3 id="NSThread">NSThread</h3><p>一个NSThread对象控制一条线程的执行。用这个类当你想要让一个OC方法运行在它自己的执行线程中。线程特别有用 当你需要执行一个漫长的任务时,但是又不想阻塞应用中其他部分的执行。另外,你能够用线程去避免阻塞应用的主线程,处理用户界面和相关的事件操作。线程也能别用来把一个大的任务分解成多个小得任务,从而引领性能提升在多核计算机上。</p>
 <h4 id="1-NSThread的使用">1.NSThread的使用</h4><p>创建一个NSThread对象，官方提供了两个方法</p>
 <pre><code><span class="pp">- <span class="params">(instancetype)</span>initWithTarget:<span class="params">(id)</span>target
