@@ -15,7 +15,7 @@
 	})();
 	</script>
   
-  <title>利用Quart2D给图片添加水印以及截取圆形图片 | 大神的iOS开发博客</title>
+  <title>iOS多线程总结之NSOperation 和 NSOperationQueue | 大神的iOS开发博客</title>
   <meta name="author" content="大神">
   
   <meta name="description" content="擅长Objective-C开发，喜欢在Mac上开发iOS应用，常混迹于各大iOS开发论坛。">
@@ -23,7 +23,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="利用Quart2D给图片添加水印以及截取圆形图片"/>
+  <meta property="og:title" content="iOS多线程总结之NSOperation 和 NSOperationQueue"/>
   <meta property="og:site_name" content="大神的iOS开发博客"/>
 
   
@@ -83,77 +83,101 @@
   <div class="post-content">
     <header class="article-info clearfix">
   <h1 itemprop="name">
-	利用Quart2D给图片添加水印以及截取圆形图片
+	iOS多线程总结之NSOperation 和 NSOperationQueue
   </h1>
   <p class="article-author">By
     
       <a href="http://linfeng1009.gitcafe.io" title="大神">大神</a>
     </p>
   <p class="article-time">
-    <time datetime="2015-09-15T07:28:42.000Z" itemprop="datePublished">2015-09-15</time>
-    更新日期:<time datetime="2015-09-15T07:28:42.000Z" itemprop="dateModified">2015-09-15</time>
+    <time datetime="2015-09-16T08:07:18.000Z" itemprop="datePublished">2015-09-16</time>
+    更新日期:<time datetime="2015-09-16T08:07:18.000Z" itemprop="dateModified">2015-09-16</time>
     
   </p>
 </header>
     <div class="entry">
 		
-        <p>一、添加水印<br>为了不让图片被别人滥用，造成侵权，一般都会给图片加上水印。在iOS里面添加水印可以通过[CoreGraphics]框架提供的方法来操作。<br>一般思路：<br>        1.开启一个跟原图大小一致的context<br>        2.将水印文字设置添加在原图上的位置并绘制在当前的context<br>        3.从当前的context获取新的图片<br>        4.关闭当前的context<br>    代码实现：</p>
-<pre><code>+ (<span class="built_in">UIImage</span> *)imageNamed:(<span class="built_in">NSString</span> *)name waterMark:(<span class="built_in">NSString</span> *)mark
+        <h2 id="NSOperation">NSOperation</h2><h3 id="1-NSOperation概述">1.NSOperation概述</h3><p><code>NSOperation</code>类是一个抽象类，你用来封装代码和数据与单一任务关联。因为它是抽象的，不能直接使用这个类，但可以直接子类化或者是使用系统定义好的子类(<code>NSInvocationOperation</code> or <code>NSBlockOperation</code>)去执行实际任务。尽管是抽象的，<code>NSOperation</code>基本实现包括了重要的逻辑确保安全执行你的任务。这些内建的逻辑允许你集中精力在实际实现的任务中，而不是粘合代码来确保它和系统其他的对象正常运行。</p>
+<p>一个操作对象是一个单一的对象，它只执行任务一次并且不能用来重复执行。你执行操作通过把它们加入到一个操作队列(<code>NSOperationQueue</code>的对象)中，操作队列中的操作就会直接执行在一个不同的线程，间接的使用<code>libdispatch</code>库(通常讲的GCD)</p>
+<h3 id="2-NSOperation的子类">2.NSOperation的子类</h3><p><code>NSOperation</code>是一个抽象类，系统预先给我们提供了两个子类，分别是:<code>NSInvocationOperation</code>和<code>NSBlockOperation</code>.</p>
+<h4 id="2-1_NSInvocationOperation">2.1 NSInvocationOperation</h4><p><code>NSInvocationOperation</code>类是<code>NSOperation</code>的具体子类，管理执行单一封装的任务，你可以使用这个类去启动一个操作，由指定的对象调用选择器。这个类实现非并发操作。</p>
+<h4 id="2-1-1_使用方法">2.1.1 使用方法</h4><p>初始化方法，返回一个<code>NSInvocationOperation</code>对象，指定的目标对象和选择器进行初始化</p>
+<pre><code><span class="pp">- <span class="params">(instancetype)</span>initWithTarget:<span class="params">(id)</span>target
+                  selector:<span class="params">(<span class="variable">SEL</span>)</span>sel
+                    object:<span class="params">(id)</span>arg</span>
+</code></pre><p>eg:</p>
+<pre><code>- (<span class="keyword">void</span>)viewDidLoad
 {
-    <span class="built_in">CGFloat</span> textWidth = <span class="number">0</span>;
-    <span class="built_in">UIImage</span> *originImage = [<span class="keyword">self</span> imageNamed:name];
-    textWidth = [mark boundingRectWithSize:<span class="built_in">CGSizeMake</span>(MAXFLOAT, <span class="number">20.0</span>) options:<span class="built_in">NSStringDrawingUsesLineFragmentOrigin</span> attributes:@{<span class="built_in">NSFontAttributeName</span>:[<span class="built_in">UIFont</span> systemFontOfSize:<span class="number">15.0</span>]} context:<span class="literal">nil</span>]<span class="variable">.size</span><span class="variable">.width</span>;
-    <span class="built_in">UIGraphicsBeginImageContextWithOptions</span>(originImage<span class="variable">.size</span>, <span class="literal">NO</span>, <span class="number">0.0</span>);
-    [originImage drawAtPoint:<span class="built_in">CGPointZero</span>];
-    [mark drawAtPoint:<span class="built_in">CGPointMake</span>(<span class="number">10.0</span>,<span class="number">5.0</span>) withAttributes:@{<span class="built_in">NSFontAttributeName</span>:[<span class="built_in">UIFont</span> systemFontOfSize:<span class="number">22.0</span>],<span class="built_in">NSForegroundColorAttributeName</span>:[<span class="built_in">UIColor</span> redColor]}];
-    <span class="built_in">UIImage</span> *newImage = <span class="built_in">UIGraphicsGetImageFromCurrentImageContext</span>();
-    <span class="built_in">UIGraphicsEndImageContext</span>();
+    [<span class="keyword">super</span> viewDidLoad];
+     <span class="built_in">NSInvocationOperation</span> *invocaitonOperation = [[<span class="built_in">NSInvocationOperation</span> alloc]
+     initWithTarget:<span class="keyword">self</span> selector:<span class="keyword">@selector</span>(downLoadTask) object:<span class="literal">nil</span>];
+   <span class="comment">// [invocaitonOperation start];</span>
+       <span class="built_in">NSOperationQueue</span> *operationQueue = [[<span class="built_in">NSOperationQueue</span> alloc] init];
+    [operationQueue addOperation:invocaitonOperation];
+}    
 
-    <span class="keyword">return</span> newImage;
-}
-</code></pre><p> 效果图片如下：<br><img src="http://7xkpsz.com1.z0.glb.clouddn.com/watermark.png" alt="水印"></p>
-<p>二、截取圆形图片<br>在平常项目开发中设计会有一些圆形的图片，例如用户头像。大多会去设置View的layer的cornerRadius和masksToBounds.<br>    self.imageView.layer.cornerRadius = 50.0;<br>    self.imageView.layer.masksToBounds = YES;<br>这样做虽然能够达到我们要的效果，每一次加载都要去将视图的图层去渲染，这样严重影响性能。在项目中不推荐这样使用，有更好的方法去达到这种效果—-截图图片<br>在原图的基础上去截取一个圆形的图片，关键点就是在原图上绘制一个正切圆。<br>    代码实现：</p>
-<pre><code>+ (<span class="built_in">UIImage</span> *)circleImageWithNamed:(<span class="built_in">NSString</span> *)name
+- (<span class="keyword">void</span>)downLoadTask
 {
-    <span class="built_in">UIImage</span> *originImage = [<span class="keyword">self</span> imageNamed:name];
-    <span class="built_in">CGFloat</span> newImageW = originImage<span class="variable">.size</span><span class="variable">.width</span> &lt; originImage<span class="variable">.size</span><span class="variable">.height</span>? originImage<span class="variable">.size</span><span class="variable">.width</span> : originImage<span class="variable">.size</span><span class="variable">.height</span>;
-    <span class="built_in">UIGraphicsBeginImageContextWithOptions</span>(originImage<span class="variable">.size</span>, <span class="literal">NO</span>, <span class="number">0.0</span>);
-    <span class="built_in">UIBezierPath</span> *path = [<span class="built_in">UIBezierPath</span> bezierPathWithOvalInRect:<span class="built_in">CGRectMake</span>(<span class="number">0.0</span>, <span class="number">0.0</span>, newImageW, newImageW)];
-    [path addClip];
-    [originImage drawAtPoint:<span class="built_in">CGPointZero</span>];
-    <span class="built_in">UIImage</span> *newImage = <span class="built_in">UIGraphicsGetImageFromCurrentImageContext</span>();
-    <span class="built_in">UIGraphicsEndImageContext</span>();
-
-    <span class="keyword">return</span> newImage;
+      <span class="built_in">NSLog</span>(<span class="string">@"%@"</span>,[<span class="built_in">NSThread</span> currentThread]);
+      TODO: &lt;<span class="built_in">NSThread</span>: <span class="number">0x7fc8cb502b60</span>&gt;{number = <span class="number">1</span>, name = main}
+      这里打印出当成线程的信息，是主线程，也就是说如果直接调用其start方法并不会去创建一个新的线程执
+      行任务，只是在当前线程中执行
+   TODO: &lt;<span class="built_in">NSThread</span>: <span class="number">0x7fb18a59a410</span>&gt;{number = <span class="number">2</span>, name = (null)}
+   修改上面的代码，把操作添加到操作队列后，在操作队列中会自动调用start,并且产生新的线程
+   <span class="built_in">NSBlockOperation</span> 同样如此
 }
-</code></pre><p> 效果图如下：<br> <img src="http://7xkpsz.com1.z0.glb.clouddn.com/circle.png" alt="截取圆图"></p>
-<p> 三、绘制纯色图片<br> 在开发过程会有遇到给Button设置背景色情况，直接设置Button的backgourndcolor就没有高亮的效果，所以直接根据颜色去绘制一张纯色的图片<br>     代码实现:</p>
-<pre><code> + (<span class="built_in">UIImage</span> *)imageWith<span class="built_in">UIColor</span>:(<span class="built_in">UIColor</span> *)color
-{
-    <span class="built_in">CGRect</span> rect = <span class="built_in">CGRectMake</span>(<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">10.0</span>, <span class="number">10.0</span>);
-    <span class="built_in">UIGraphicsBeginImageContextWithOptions</span>(rect<span class="variable">.size</span>, <span class="literal">NO</span>, <span class="number">0.0</span>);
-    <span class="built_in">CGContextRef</span> context = <span class="built_in">UIGraphicsGetCurrentContext</span>();
-    <span class="built_in">CGContextSetFillColorWithColor</span>(context, color<span class="variable">.CGColor</span>);
-    <span class="built_in">CGContextFillRect</span>(context, rect);
-    <span class="built_in">UIImage</span> *image = <span class="built_in">UIGraphicsGetImageFromCurrentImageContext</span>();
-    <span class="built_in">UIGraphicsEndImageContext</span>();
+</code></pre><h4 id="2-2_NSBlockOperation">2.2 NSBlockOperation</h4><p><code>NSBlockOperation</code>是<code>NSOperation</code>的另一个具体的子类，管理并发执行的一个或多个block。你可以使用这个对象立马执行多个block，并没有为每个block创建一个单独操作对象。当执行超过一个block时，这个操作本身会考虑只有当所有的block执行完成后才会结束。Blocks增加到一个block操作中会分发一个默认的优先级的工作队列，block本身不应该设想关于配置它们执行的环境。</p>
+<h4 id="2-2-1_使用方法">2.2.1 使用方法</h4><p>指定一个block创建并返回<code>NSBlockOperation</code>对象</p>
+<pre><code>+ (instancetype)<span class="string">blockOperationWithBlock:</span>(<span class="typename">void</span> (^)(<span class="typename">void</span>))block
+- (<span class="typename">void</span>)<span class="string">addExecutionBlock:</span>(<span class="typename">void</span> (^)(<span class="typename">void</span>))block  <span class="comment">// 增加多个block</span>
+</code></pre><p>eg: </p>
+<pre><code><span class="built_in">NSBlockOperation</span> *blockOperation = [<span class="built_in">NSBlockOperation</span> blockOperationWithBlock:^{
 
-    <span class="keyword">return</span> image;
-}
-</code></pre><p>GitHub: <a href="https://github.com/ludaye123/UIImage-Quartz2D" target="_blank" rel="external">https://github.com/ludaye123/UIImage-Quartz2D</a></p>
+    <span class="built_in">NSLog</span>(<span class="string">@"%@"</span>,[<span class="built_in">NSThread</span> currentThread]);
+
+}];
+
+<span class="comment">//    [blockOperation start];</span>
+<span class="built_in">NSOperationQueue</span> *operationQueue = [[<span class="built_in">NSOperationQueue</span> alloc] init];
+[operationQueue addOperation:blockOperation];
+</code></pre><h4 id="2-3_自定义NSOperation">2.3 自定义NSOperation</h4><p>对于非并发的操作，你仅重载一个main方法即可，在这个方法中，你放置需要执行所给任务的代码，当然你也可以自定义一个初始化方法来构造和创建自定义类的对象。也许你可能想要定义getter和setter方法来访问数据从这个操作中，然而，如果你自定义的getter和setter方法，你必须确保这些方法能被安全的调用从多线程中。</p>
+<p>如果你想要创建一个并发操作，你至少需要重载下面的方法和属性。</p>
+<pre><code><span class="built_in">start</span>
+asynchronous
+executing
+finished
+</code></pre><p>对于一个并发操作，你的<code>start</code>方法是负责启动异步操作的方式。是否生产一个线程或者调用一个异步方法，你要从这个方法实现。在开始操作，你的<code>start</code>方法应该更新这个操作的执行状态通过<code>executing</code>属性记录。做这个操作是通过发送KVO通知给<code>executing</code>关键路径，这让其他与这个操作有联系的对象知道这个操作现在已经在运行，你的<code>executing</code>属性必须在线程安全的方式下提供状态变化。</p>
+<h3 id="3-NSOperation_依赖">3.NSOperation 依赖</h3><p>依赖是一种便捷的方式去执行操作按照指定的命令。你能添加和移除依赖给一个操作使用<code>addDependency:</code>和<code>removeDependency:</code>方法。默认情况，一个操作对象的依赖不认为是准备好的直到所有的依赖操作对象都完成执行。一旦最后一个依赖操作完成，这个依赖操作对象变成准备状态并且能够被执行。举个例子来说，有两个操作operation1和operation2，如果operation1依赖operation2,那么需要等operation2完成后，operation1才可以执行。</p>
+<p>eg: </p>
+<pre><code>  <span class="built_in">NSBlockOperation</span> *downOperation = [<span class="built_in">NSBlockOperation</span> blockOperationWithBlock:^{
+    <span class="comment">// 开始下载任务，例如下载一个一张图片</span>
+    <span class="built_in">NSLog</span>(<span class="string">@"下载图片"</span>);
+}];
+
+<span class="built_in">NSBlockOperation</span> *processOperation = [<span class="built_in">NSBlockOperation</span> blockOperationWithBlock:^{
+    <span class="comment">// 下载完成后，处理图片</span>
+    <span class="built_in">NSLog</span>(<span class="string">@"处理图片"</span>);
+}];
+
+[processOperation addDependency:downOperation];
+<span class="built_in">NSOperationQueue</span> *operationQueue = [[<span class="built_in">NSOperationQueue</span> alloc] init];
+[operationQueue addOperation:downOperation];
+[operationQueue addOperation:processOperation];
+TODO: 不要把操作设置依赖为自己本身，如果这样做会造成死循环，并且这个操作不会执行
+</code></pre><h3 id="参考">参考</h3><p><a href="https://developer.apple.com/library/prerelease/ios/documentation/Cocoa/Reference/NSOperation_class/index.html" target="_blank" rel="external">NSOperation</a><br><a href="https://developer.apple.com/library/prerelease/ios/documentation/Cocoa/Reference/NSInvocationOperation_Class/index.html" target="_blank" rel="external">NSInvocationOperation</a><br><a href="https://developer.apple.com/library/prerelease/ios/documentation/Cocoa/Reference/NSBlockOperation_class/index.html#//apple_ref/doc/uid/TP40008157-CH1-SW2" target="_blank" rel="external">NSBlockOperation</a></p>
 
     </div>
     <footer>
         
   
   <div class="categories">
-    <a href="/categories/iOS开发/">iOS开发</a>
+    <a href="/categories/iOS/">iOS</a>
   </div>
 
         
   
   <div class="tags">
-    <a href="/tags/Quart2D/">Quart2D</a>
+    <a href="/tags/iOS多线程/">iOS多线程</a>
   </div>
 
 		<div class="bdsharebuttonbox">
@@ -201,10 +225,8 @@ with(document)0[
 
  <nav id="pagination" >
     
-    <a href="/2015/09/16/thread-summary-nsthread/" class="alignleft prev" title="iOS多线程总结之NSThread">iOS多线程总结之NSThread</a>
     
-    
-    <a href="/2015/09/01/corelocation-basic-use/" class="alignright next" title="CoreLocation 基本使用">CoreLocation 基本使用</a>
+    <a href="/2015/09/16/thread-summary-nsthread/" class="alignright next" title="iOS多线程总结之NSThread">iOS多线程总结之NSThread</a>
     
     <div class="clearfix"></div>
 </nav>
@@ -214,7 +236,7 @@ with(document)0[
 	
 	<section id="comment">
 		<!-- 多说评论框 start -->
-		<div class="ds-thread" data-thread-key="2015/09/15/quart2d/" data-title="利用Quart2D给图片添加水印以及截取圆形图片" data-url="http://linfeng1009.gitcafe.io/2015/09/15/quart2d/"></div>
+		<div class="ds-thread" data-thread-key="2015/09/16/thread-summary-nsoperate/" data-title="iOS多线程总结之NSOperation 和 NSOperationQueue" data-url="http://linfeng1009.gitcafe.io/2015/09/16/thread-summary-nsoperate/"></div>
 		<!-- 多说评论框 end -->
 		<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 		<script type="text/javascript">
