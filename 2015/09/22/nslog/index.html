@@ -4,12 +4,12 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>利用Quart2D给图片添加水印以及截取圆形图片 | 大神的iOS开发博客</title>
+    <title>NSLog打印高效率调试信息 | 大神的iOS开发博客</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="大神">
     
-    <meta name="description" content="一、添加水印为了不让图片被别人滥用，造成侵权，一般都会给图片加上水印。在iOS里面添加水印可以通过[CoreGraphics]框架提供的方法来操作。一般思路：        1.开启一个跟原图大小一致的context        2.将水印文字设置添加在原图上的位置并绘制在当前的context  ">
+    <meta name="description" content="Listing 1  Example of logging the current method and line number. Paste it into your project, and see what it prints!NSMutableArray *someObject = [NSM">
     
     
     
@@ -69,15 +69,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/09/15/quart2d/" title="利用Quart2D给图片添加水印以及截取圆形图片" itemprop="url">利用Quart2D给图片添加水印以及截取圆形图片</a>
+      <a href="/2015/09/22/nslog/" title="NSLog打印高效率调试信息" itemprop="url">NSLog打印高效率调试信息</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://linfeng1009.gitcafe.io" title="大神">大神</a>
     </p>
   <p class="article-time">
-    <time datetime="2015-09-15T07:28:42.000Z" itemprop="datePublished">2015-09-15</time>
-    更新日期:<time datetime="2015-09-15T07:28:42.000Z" itemprop="dateModified">2015-09-15</time>
+    <time datetime="2015-09-22T05:44:24.000Z" itemprop="datePublished">2015-09-22</time>
+    更新日期:<time datetime="2015-09-22T05:44:24.000Z" itemprop="dateModified">2015-09-22</time>
     
   </p>
 </header>
@@ -89,57 +89,69 @@
 		
 		</div>
 		
-		<p>一、添加水印<br>为了不让图片被别人滥用，造成侵权，一般都会给图片加上水印。在iOS里面添加水印可以通过[CoreGraphics]框架提供的方法来操作。<br>一般思路：<br>        1.开启一个跟原图大小一致的context<br>        2.将水印文字设置添加在原图上的位置并绘制在当前的context<br>        3.从当前的context获取新的图片<br>        4.关闭当前的context<br>    代码实现：</p>
-<pre><code>+ (<span class="built_in">UIImage</span> *)imageNamed:(<span class="built_in">NSString</span> *)name waterMark:(<span class="built_in">NSString</span> *)mark
-{
-    <span class="built_in">CGFloat</span> textWidth = <span class="number">0</span>;
-    <span class="built_in">UIImage</span> *originImage = [<span class="keyword">self</span> imageNamed:name];
-    textWidth = [mark boundingRectWithSize:<span class="built_in">CGSizeMake</span>(MAXFLOAT, <span class="number">20.0</span>) options:<span class="built_in">NSStringDrawingUsesLineFragmentOrigin</span> attributes:@{<span class="built_in">NSFontAttributeName</span>:[<span class="built_in">UIFont</span> systemFontOfSize:<span class="number">15.0</span>]} context:<span class="literal">nil</span>]<span class="variable">.size</span><span class="variable">.width</span>;
-    <span class="built_in">UIGraphicsBeginImageContextWithOptions</span>(originImage<span class="variable">.size</span>, <span class="literal">NO</span>, <span class="number">0.0</span>);
-    [originImage drawAtPoint:<span class="built_in">CGPointZero</span>];
-    [mark drawAtPoint:<span class="built_in">CGPointMake</span>(<span class="number">10.0</span>,<span class="number">5.0</span>) withAttributes:@{<span class="built_in">NSFontAttributeName</span>:[<span class="built_in">UIFont</span> systemFontOfSize:<span class="number">22.0</span>],<span class="built_in">NSForegroundColorAttributeName</span>:[<span class="built_in">UIColor</span> redColor]}];
-    <span class="built_in">UIImage</span> *newImage = <span class="built_in">UIGraphicsGetImageFromCurrentImageContext</span>();
-    <span class="built_in">UIGraphicsEndImageContext</span>();
-
-    <span class="keyword">return</span> newImage;
-}
-</code></pre><p> 效果图片如下：<br><img src="http://7xkpsz.com1.z0.glb.clouddn.com/watermark.png" alt="水印"></p>
-<p>二、截取圆形图片<br>在平常项目开发中设计会有一些圆形的图片，例如用户头像。大多会去设置View的layer的cornerRadius和masksToBounds.<br>    self.imageView.layer.cornerRadius = 50.0;<br>    self.imageView.layer.masksToBounds = YES;<br>这样做虽然能够达到我们要的效果，每一次加载都要去将视图的图层去渲染，这样严重影响性能。在项目中不推荐这样使用，有更好的方法去达到这种效果—-截图图片<br>在原图的基础上去截取一个圆形的图片，关键点就是在原图上绘制一个正切圆。<br>    代码实现：</p>
-<pre><code>+ (<span class="built_in">UIImage</span> *)circleImageWithNamed:(<span class="built_in">NSString</span> *)name
-{
-    <span class="built_in">UIImage</span> *originImage = [<span class="keyword">self</span> imageNamed:name];
-    <span class="built_in">CGFloat</span> newImageW = originImage<span class="variable">.size</span><span class="variable">.width</span> &lt; originImage<span class="variable">.size</span><span class="variable">.height</span>? originImage<span class="variable">.size</span><span class="variable">.width</span> : originImage<span class="variable">.size</span><span class="variable">.height</span>;
-    <span class="built_in">UIGraphicsBeginImageContextWithOptions</span>(originImage<span class="variable">.size</span>, <span class="literal">NO</span>, <span class="number">0.0</span>);
-    <span class="built_in">UIBezierPath</span> *path = [<span class="built_in">UIBezierPath</span> bezierPathWithOvalInRect:<span class="built_in">CGRectMake</span>(<span class="number">0.0</span>, <span class="number">0.0</span>, newImageW, newImageW)];
-    [path addClip];
-    [originImage drawAtPoint:<span class="built_in">CGPointZero</span>];
-    <span class="built_in">UIImage</span> *newImage = <span class="built_in">UIGraphicsGetImageFromCurrentImageContext</span>();
-    <span class="built_in">UIGraphicsEndImageContext</span>();
-
-    <span class="keyword">return</span> newImage;
-}
-</code></pre><p> 效果图如下：<br> <img src="http://7xkpsz.com1.z0.glb.clouddn.com/circle.png" alt="截取圆图"></p>
-<p> 三、绘制纯色图片<br> 在开发过程会有遇到给Button设置背景色情况，直接设置Button的backgourndcolor就没有高亮的效果，所以直接根据颜色去绘制一张纯色的图片<br>     代码实现:</p>
-<pre><code> + (<span class="built_in">UIImage</span> *)imageWith<span class="built_in">UIColor</span>:(<span class="built_in">UIColor</span> *)color
-{
-    <span class="built_in">CGRect</span> rect = <span class="built_in">CGRectMake</span>(<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">10.0</span>, <span class="number">10.0</span>);
-    <span class="built_in">UIGraphicsBeginImageContextWithOptions</span>(rect<span class="variable">.size</span>, <span class="literal">NO</span>, <span class="number">0.0</span>);
-    <span class="built_in">CGContextRef</span> context = <span class="built_in">UIGraphicsGetCurrentContext</span>();
-    <span class="built_in">CGContextSetFillColorWithColor</span>(context, color<span class="variable">.CGColor</span>);
-    <span class="built_in">CGContextFillRect</span>(context, rect);
-    <span class="built_in">UIImage</span> *image = <span class="built_in">UIGraphicsGetImageFromCurrentImageContext</span>();
-    <span class="built_in">UIGraphicsEndImageContext</span>();
-
-    <span class="keyword">return</span> image;
-}
-</code></pre><p>GitHub: <a href="https://github.com/ludaye123/UIImage-Quartz2D" target="_blank" rel="external">https://github.com/ludaye123/UIImage-Quartz2D</a></p>
+		<p>Listing 1  Example of logging the current method and line number. Paste it into your project, and see what it prints!<br>NSMutableArray *someObject = [NSMutableArray array];<br>NSLog(@”%s:%d someObject=%@”, <strong>func</strong>, <strong>LINE</strong>, someObject);<br>[someObject addObject:@”foo”];<br>NSLog(@”%s:%d someObject=%@”, <strong>func</strong>, <strong>LINE</strong>, someObject);<br>The following tables list the most popular macros and expressions which might be useful in your logging statements.</p>
+<p>Table 1  Preprocessor macros and for logging in C/C++/Objective-C.</p>
+<table>
+<thead>
+<tr>
+<th>Macro</th>
+<th>Format Specifier</th>
+<th>Description </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>func</strong></td>
+<td>%s</td>
+<td>Current function signature. </td>
+</tr>
+<tr>
+<td><strong>LINE</strong></td>
+<td>%d</td>
+<td>Current line number in the source code file. </td>
+</tr>
+<tr>
+<td><strong>FILE</strong></td>
+<td>%s</td>
+<td>Full path to the source code file. </td>
+</tr>
+<tr>
+<td><strong>PRETTY_FUNCTION</strong></td>
+<td>%s</td>
+<td>Like <strong>func</strong>, but includes verbose type information in C++ code.</td>
+</tr>
+</tbody>
+</table>
+<p>Table 2  Expressions for logging in Objective-C.</p>
+<p>Expression                |    Format Specifie           |       Description<br>—————                    ———————-               |       —————-<br>NSStringFromSelector(<em>cmd)      |     %@                |           Name of the current selector.<br>NSStringFromClass([self class]) |          %@             |                 Name of the current object’s class.<br>[[NSString stringWithUTF8String:<em>_FILE</em></em>] lastPathComponent] |  %@  |  Name of the source code file.<br>[NSThread callStackSymbols]         |    %@                       |        NSArray of the current stack trace as programmer-readable strings. For debugging only, do not present it to end users or use to do any logic in your program.</p>
+<table>
+<thead>
+<tr>
+<th>First Header</th>
+<th>Second Header</th>
+<th>Third Header</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Content Cell</td>
+<td>Content Cell</td>
+<td>Content Cell</td>
+</tr>
+<tr>
+<td>Content Cell</td>
+<td>Content Cell</td>
+<td>Content Cell</td>
+</tr>
+</tbody>
+</table>
   
 	</div>
 		<footer class="article-footer clearfix">
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/Quart2D/">Quart2D</a>
+  <span></span> <a href="/tags/iOS/">iOS</a>
   </div>
 
 
@@ -152,7 +164,7 @@
 
 <div class="article-share" id="share">
 
-  <div data-url="http://linfeng1009.gitcafe.io/2015/09/15/quart2d/" data-title="利用Quart2D给图片添加水印以及截取圆形图片 | 大神的iOS开发博客" data-tsina="2502328960" class="share clearfix">
+  <div data-url="http://linfeng1009.gitcafe.io/2015/09/22/nslog/" data-title="NSLog打印高效率调试信息 | 大神的iOS开发博客" data-tsina="2502328960" class="share clearfix">
   </div>
 
 </div>
@@ -162,18 +174,18 @@
 <nav class="article-nav clearfix">
  
  <div class="prev" >
- <a href="/2015/09/16/thread-summary-nsthread/" title="iOS多线程总结之NSThread">
+ <a href="/2015/09/22/thread-summary-gcd/" title="iOS多线程总结之GCD">
   <strong>PREVIOUS:</strong><br/>
   <span>
-  iOS多线程总结之NSThread</span>
+  iOS多线程总结之GCD</span>
 </a>
 </div>
 
 
 <div class="next">
-<a href="/2015/09/01/corelocation-basic-use/"  title="CoreLocation 基本使用">
+<a href="/2015/09/22/thread-summary-nsoperate/"  title="iOS多线程总结之NSOperation 和 NSOperationQueue">
  <strong>NEXT:</strong><br/> 
- <span>CoreLocation 基本使用
+ <span>iOS多线程总结之NSOperation 和 NSOperationQueue
 </span>
 </a>
 </div>
