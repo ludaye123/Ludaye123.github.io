@@ -15,7 +15,7 @@
 	})();
 	</script>
   
-  <title>归档：2015/5 | 大神的iOS开发博客</title>
+  <title>Xcode升级插件失效修复方法 | 大神的iOS开发博客</title>
   <meta name="author" content="大神">
   
   <meta name="description" content="擅长Objective-C开发，喜欢在Mac上开发iOS应用，常混迹于各大iOS开发论坛。">
@@ -23,7 +23,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  
+  <meta property="og:title" content="Xcode升级插件失效修复方法"/>
   <meta property="og:site_name" content="大神的iOS开发博客"/>
 
   
@@ -66,23 +66,126 @@
 </div>
 </header>
   <div id="content" class="inner">
-    <div id="main-col" class="alignleft"><div id="wrapper">
-<h2 class="archive-title">2015/5</h2>
-
-<div class="archive">
-
-  <article class="post">
-	<div class="post-content">
-	  <header>
-		<time datetime="2015-05-19T01:08:50.000Z"><a href="/2015/05/19/xcode-update-plugin-problem/">2015-05-19</a></time>
-		
-		  <h1 class="title"><a href="/2015/05/19/xcode-update-plugin-problem/">Xcode升级插件失效修复方法</a></h1>
-		
-	  </header>
-	</div>
-  </article>
-
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
 </div>
+  
+  <div class="post-content">
+    <header class="article-info clearfix">
+  <h1 itemprop="name">
+	Xcode升级插件失效修复方法
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://linfeng1009.gitcafe.io" title="大神">大神</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2015-09-22T04:26:17.000Z" itemprop="datePublished">2015-09-22</time>
+    更新日期:<time datetime="2015-09-22T04:26:17.000Z" itemprop="dateModified">2015-09-22</time>
+    
+  </p>
+</header>
+    <div class="entry">
+		
+        <p>1.打开终端，输入以下代码获取到DVTPlugInCompatibilityUUID<br><code>defaults read /Applications/Xcode.app/Contents/Info DVTPlugInCompatibilityUUID</code><br>2.然后输入如下命令   【最后一项是获取到的DVTPlugInCompatibilityUUID】<br><code>find ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins -name Info.plist -maxdepth 3 | xargs -I{} defaults write {} DVTPlugInCompatibilityUUIDs -array-add 0420B86A-AA43-4792-9ED0-6FE0F2B16A13</code></p>
+
+    </div>
+    <footer>
+        
+  
+  <div class="categories">
+    <a href="/categories/iOS开发/">iOS开发</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Xcode/">Xcode</a>
+  </div>
+
+		<div class="bdsharebuttonbox">
+	<a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+	<a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a>
+	<a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a>
+	<a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="bds_more" data-cmd="more"></a>
+	<a href="#" class="bds_count" data-cmd="count"></a>
+</div>
+<script>
+window._bd_share_config=
+{
+	"common":{
+		"bdSnsKey":{},
+		"bdText":"",
+		"bdMini":"2",
+		"bdMiniList":false,
+		"bdPic":"",
+		"bdStyle":"0",
+		"bdSize":"24"
+	},
+	"share":{},
+	"image":{
+		"viewList":["qzone","tsina","tqq","renren","weixin","fbook","twi"],
+		"viewText":"分享到：",
+		"viewSize":"24"
+	},
+	"selectShare":{
+		"bdContainerClass":null,
+		"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin","fbook","twi"]
+	}
+};
+with(document)0[
+	(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)
+];
+</script>    
+        <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+ <nav id="pagination" >
+    
+    
+    <a href="/2015/09/22/thread-summary-gcd/" class="alignright next" title="iOS多线程总结之GCD">iOS多线程总结之GCD</a>
+    
+    <div class="clearfix"></div>
+</nav>
+
+
+
+	
+	<section id="comment">
+		<!-- 多说评论框 start -->
+		<div class="ds-thread" data-thread-key="2015/09/22/xcode-update-plugin-problem/" data-title="Xcode升级插件失效修复方法" data-url="http://linfeng1009.gitcafe.io/2015/09/22/xcode-update-plugin-problem/"></div>
+		<!-- 多说评论框 end -->
+		<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+		<script type="text/javascript">
+		var duoshuoQuery = {short_name:"dashen1009"};
+		(function() {
+			var ds = document.createElement('script');
+			ds.type = 'text/javascript';ds.async = true;
+			ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+			ds.charset = 'UTF-8';
+			(document.getElementsByTagName('head')[0] 
+			 || document.getElementsByTagName('body')[0]).appendChild(ds);
+		})();
+		</script>
+		<!-- 多说公共JS代码 end -->
+	</section>
+	
 </div></div>
     <aside id="sidebar" class="alignright">
   <div class="search">
