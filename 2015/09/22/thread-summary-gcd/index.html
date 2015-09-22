@@ -90,8 +90,8 @@
       <a href="http://linfeng1009.gitcafe.io" title="大神">大神</a>
     </p>
   <p class="article-time">
-    <time datetime="2015-09-18T08:57:25.000Z" itemprop="datePublished">2015-09-18</time>
-    更新日期:<time datetime="2015-09-18T08:57:25.000Z" itemprop="dateModified">2015-09-18</time>
+    <time datetime="2015-09-22T03:44:16.000Z" itemprop="datePublished">2015-09-22</time>
+    更新日期:<time datetime="2015-09-22T03:44:16.000Z" itemprop="dateModified">2015-09-22</time>
     
   </p>
 </header>
@@ -115,7 +115,13 @@
 <p>4.<code>void dispatch_after( dispatch_time_t when, dispatch_queue_t queue, dispatch_block_t block);</code><br>指定时间执行block,通常用来延时执行某个操作，而不用NSTimer</p>
 <p>5.<code>void dispatch_apply( size_t iterations, dispatch_queue_t queue, void (^block)( size_t));</code><br>多次执行block任务</p>
 <p>6.<code>void dispatch_once( dispatch_once_t *predicate, dispatch_block_t block);</code><br>在整个应用生命周期内仅仅执行一次block任务，通常实现单例模式</p>
-<h3 id="4-使用调度组">4.使用调度组</h3>
+<p>eg:</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</span><br><span class="line">       </span><br><span class="line"><span class="built_in">NSString</span> *url = <span class="string">@"http://tao.goulew.com/users/upfile/201504/201504081150270big.jpg"</span>;</span><br><span class="line">        <span class="built_in">NSData</span> *data = [[<span class="built_in">NSData</span> alloc] initWithContentsOfURL:[<span class="built_in">NSURL</span> URLWithString:url]];</span><br><span class="line">        <span class="built_in">UIImage</span> *image = [<span class="built_in">UIImage</span> imageWithData:data];</span><br><span class="line">        <span class="built_in">dispatch_async</span>(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">           </span><br><span class="line">            <span class="keyword">if</span>(image)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">self</span><span class="variable">.imageView</span><span class="variable">.image</span> = image;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="4-使用调度组">4.使用调度组</h3><p>调度组: 在应用中向调度队列中添加多个任务block，使用调度组可以追踪当所有的任务完成时，即便它们处于不同的队列中。<br>1.<code>void dispatch_group_async( dispatch_group_t group, dispatch_queue_t queue, dispatch_block_t block);</code><br>提交一个block到调度队列并且使这个block与指定的调度组相关联</p>
+<p>2.<code>dispatch_group_t dispatch_group_create( void);</code><br>创建一个调度组</p>
+<p>3.<code>void dispatch_group_notify( dispatch_group_t group, dispatch_queue_t queue, dispatch_block_t block);</code><br>调度一个block对象提交到队列中当之前提交的block对象已经完成时</p>
+<p>eg:<br><figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">dispatch_group_t group = dispatch_group_create<span class="list">()</span><span class="comment">;</span></span><br><span class="line">    dispatch_queue_t queue = dispatch_get_global_queue<span class="list">(<span class="keyword">DISPATCH_QUEUE_PRIORITY_DEFAULT</span>, <span class="number">0</span>)</span><span class="comment">;</span></span><br><span class="line">    </span><br><span class="line">dispatch_group_async<span class="list">(<span class="keyword">group</span>, queue, ^&#123;</span><br><span class="line">       </span><br><span class="line">    NSLog<span class="list">(@<span class="string">"%@任务1"</span>,[NSThread currentThread])</span><span class="comment">;</span></span><br><span class="line">&#125;)</span><span class="comment">;</span></span><br><span class="line">    </span><br><span class="line">    dispatch_group_async<span class="list">(<span class="keyword">group</span>, queue, ^&#123;</span><br><span class="line">           </span><br><span class="line">    NSLog<span class="list">(@<span class="string">"%@任务2"</span>,[NSThread currentThread])</span><span class="comment">;</span></span><br><span class="line">&#125;)</span><span class="comment">;</span></span><br><span class="line">    </span><br><span class="line">dispatch_group_async<span class="list">(<span class="keyword">group</span>, queue, ^&#123;</span><br><span class="line">       </span><br><span class="line">    NSLog<span class="list">(@<span class="string">"%@任务3"</span>,[NSThread currentThread])</span><span class="comment">;</span></span><br><span class="line">&#125;)</span><span class="comment">;</span></span><br><span class="line">    </span><br><span class="line">dispatch_group_notify<span class="list">(<span class="keyword">group</span>, queue, ^&#123;</span><br><span class="line">    </span><br><span class="line">    NSLog<span class="list">(@<span class="string">"所有的任务完成"</span>)</span><span class="comment">;</span></span><br><span class="line">&#125;)</span><span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
+
     </div>
     <footer>
         
@@ -186,7 +192,7 @@ with(document)0[
 	
 	<section id="comment">
 		<!-- 多说评论框 start -->
-		<div class="ds-thread" data-thread-key="2015/09/18/thread-summary-gcd/" data-title="iOS多线程总结之GCD" data-url="http://linfeng1009.gitcafe.io/2015/09/18/thread-summary-gcd/"></div>
+		<div class="ds-thread" data-thread-key="2015/09/22/thread-summary-gcd/" data-title="iOS多线程总结之GCD" data-url="http://linfeng1009.gitcafe.io/2015/09/22/thread-summary-gcd/"></div>
 		<!-- 多说评论框 end -->
 		<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 		<script type="text/javascript">
