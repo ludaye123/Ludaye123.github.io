@@ -4,12 +4,12 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>NSLog打印高效率调试信息 | 大神的iOS开发博客</title>
+    <title>NSLog高效打印调试信息 | 大神的iOS开发博客</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="大神">
     
-    <meta name="description" content="Listing 1  Example of logging the current method and line number. Paste it into your project, and see what it prints!NSMutableArray *someObject = [NSM">
+    <meta name="description" content="打印当前的方法以及行号NSMutableArray *someObject = [NSMutableArray array];NSLog(@”%s:%d someObject=%@”, func, LINE, someObject);[someObject addObject:@”foo”];NSL">
     
     
     
@@ -69,15 +69,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/09/22/nslog/" title="NSLog打印高效率调试信息" itemprop="url">NSLog打印高效率调试信息</a>
+      <a href="/2015/09/22/nslog/" title="NSLog高效打印调试信息" itemprop="url">NSLog高效打印调试信息</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://linfeng1009.gitcafe.io" title="大神">大神</a>
     </p>
   <p class="article-time">
-    <time datetime="2015-09-22T05:44:24.000Z" itemprop="datePublished">2015-09-22</time>
-    更新日期:<time datetime="2015-09-22T05:44:24.000Z" itemprop="dateModified">2015-09-22</time>
+    <time datetime="2015-09-22T07:54:56.000Z" itemprop="datePublished">2015-09-22</time>
+    更新日期:<time datetime="2015-09-22T07:54:56.000Z" itemprop="dateModified">2015-09-22</time>
     
   </p>
 </header>
@@ -89,62 +89,40 @@
 		
 		</div>
 		
-		<p>Listing 1  Example of logging the current method and line number. Paste it into your project, and see what it prints!<br>NSMutableArray *someObject = [NSMutableArray array];<br>NSLog(@”%s:%d someObject=%@”, <strong>func</strong>, <strong>LINE</strong>, someObject);<br>[someObject addObject:@”foo”];<br>NSLog(@”%s:%d someObject=%@”, <strong>func</strong>, <strong>LINE</strong>, someObject);<br>The following tables list the most popular macros and expressions which might be useful in your logging statements.</p>
-<p>Table 1  Preprocessor macros and for logging in C/C++/Objective-C.</p>
+		<p>打印当前的方法以及行号<br>NSMutableArray *someObject = [NSMutableArray array];<br>NSLog(@”%s:%d someObject=%@”, <strong>func</strong>, <strong>LINE</strong>, someObject);<br>[someObject addObject:@”foo”];<br>NSLog(@”%s:%d someObject=%@”, <strong>func</strong>, <strong>LINE</strong>, someObject);</p>
+<p>表1 预处理的宏</p>
 <table>
 <thead>
 <tr>
-<th>Macro</th>
-<th>Format Specifier</th>
-<th>Description </th>
+<th>宏</th>
+<th>格式说明符</th>
+<th>描述 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><strong>func</strong></td>
 <td>%s</td>
-<td>Current function signature. </td>
+<td>当前被调用的方法 </td>
 </tr>
 <tr>
 <td><strong>LINE</strong></td>
 <td>%d</td>
-<td>Current line number in the source code file. </td>
+<td>当前的行号在源代码文件中 </td>
 </tr>
 <tr>
 <td><strong>FILE</strong></td>
 <td>%s</td>
-<td>Full path to the source code file. </td>
+<td>源代码文件的路径</td>
 </tr>
 <tr>
 <td><strong>PRETTY_FUNCTION</strong></td>
 <td>%s</td>
-<td>Like <strong>func</strong>, but includes verbose type information in C++ code.</td>
+<td>类似 <strong>func</strong>, 但是包含详细信息在C++代码中</td>
 </tr>
 </tbody>
 </table>
-<p>Table 2  Expressions for logging in Objective-C.</p>
-<p>Expression                |    Format Specifie           |       Description<br>—————                    ———————-               |       —————-<br>NSStringFromSelector(<em>cmd)      |     %@                |           Name of the current selector.<br>NSStringFromClass([self class]) |          %@             |                 Name of the current object’s class.<br>[[NSString stringWithUTF8String:<em>_FILE</em></em>] lastPathComponent] |  %@  |  Name of the source code file.<br>[NSThread callStackSymbols]         |    %@                       |        NSArray of the current stack trace as programmer-readable strings. For debugging only, do not present it to end users or use to do any logic in your program.</p>
-<table>
-<thead>
-<tr>
-<th>First Header</th>
-<th>Second Header</th>
-<th>Third Header</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Content Cell</td>
-<td>Content Cell</td>
-<td>Content Cell</td>
-</tr>
-<tr>
-<td>Content Cell</td>
-<td>Content Cell</td>
-<td>Content Cell</td>
-</tr>
-</tbody>
-</table>
+<p>项目中调试一般会定义一个宏，调试打印当前的信息，特别是在比较复杂的项目中调试。<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="id">#ifdef</span> DEBUG</span><br><span class="line"><span class="hexcolor">#def</span>ine <span class="function"><span class="title">DSLog</span><span class="params">(...)</span></span> <span class="function"><span class="title">NSLog</span><span class="params">(@<span class="string">"%s %d \n %@ \n\n"</span>,__func__,__LINE__,[NSString stringWithFormat:__VA_ARGS__])</span></span></span><br><span class="line"><span class="id">#else</span></span><br><span class="line"><span class="hexcolor">#def</span>ine <span class="function"><span class="title">DSLog</span><span class="params">(...)</span></span></span><br><span class="line"><span class="id">#endif</span></span><br><span class="line">#endif</span><br></pre></td></tr></table></figure></p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -164,7 +142,7 @@
 
 <div class="article-share" id="share">
 
-  <div data-url="http://linfeng1009.gitcafe.io/2015/09/22/nslog/" data-title="NSLog打印高效率调试信息 | 大神的iOS开发博客" data-tsina="2502328960" class="share clearfix">
+  <div data-url="http://linfeng1009.gitcafe.io/2015/09/22/nslog/" data-title="NSLog高效打印调试信息 | 大神的iOS开发博客" data-tsina="2502328960" class="share clearfix">
   </div>
 
 </div>
@@ -173,19 +151,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2015/09/22/thread-summary-gcd/" title="iOS多线程总结之GCD">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  iOS多线程总结之GCD</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2015/09/22/thread-summary-nsoperate/"  title="iOS多线程总结之NSOperation 和 NSOperationQueue">
+<a href="/2015/09/22/thread-summary-gcd/"  title="iOS多线程总结之GCD">
  <strong>NEXT:</strong><br/> 
- <span>iOS多线程总结之NSOperation 和 NSOperationQueue
+ <span>iOS多线程总结之GCD
 </span>
 </a>
 </div>
