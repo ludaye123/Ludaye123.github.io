@@ -72,15 +72,15 @@ GCD对象和ARC当你构建你的应用使用OC语言编译时，所有的dispat
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/09/22/thread-summary-gcd/" title="iOS多线程总结之GCD" itemprop="url">iOS多线程总结之GCD</a>
+      <a href="/2015/09/29/thread-summary-gcd/" title="iOS多线程总结之GCD" itemprop="url">iOS多线程总结之GCD</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://linfeng1009.gitcafe.io" title="大神">大神</a>
     </p>
   <p class="article-time">
-    <time datetime="2015-09-22T06:19:23.000Z" itemprop="datePublished">2015-09-22</time>
-    更新日期:<time datetime="2015-09-22T06:19:23.000Z" itemprop="dateModified">2015-09-22</time>
+    <time datetime="2015-09-29T09:05:56.000Z" itemprop="datePublished">2015-09-29</time>
+    更新日期:<time datetime="2015-09-29T09:05:56.000Z" itemprop="dateModified">2015-09-29</time>
     
   </p>
 </header>
@@ -93,7 +93,7 @@ GCD对象和ARC当你构建你的应用使用OC语言编译时，所有的dispat
 		</div>
 		
 		<h2 id="Grand_Central_Dispatch_(GCD)">Grand Central Dispatch (GCD)</h2><h3 id="1-GCD概述">1.GCD概述</h3><p>GCD由语言特征、运行时库和系统提供的增强功能组成，综合提升多核硬件支持代码在iOS和OS X中并发执行。</p>
-<h4 id="GCD对象和ARC">GCD对象和ARC</h4><p>当你构建你的应用使用OC语言编译时，所有的<code>dispatch</code>对象也是OC对象。同样的，在ARC的环境中，<code>dispatch</code>对象和任何其他OC对象一样会自动的<code>retain</code> 和 <code>release</code>。在MRC环境中时，使用<code>dispatch_retain</code>和<code>dispatch_release</code>函数(和OC语义想和)来保留或者释放派发对象。你不能使用<code>Core Foundation</code>的保留和释放函数。</p>
+<h4 id="GCD对象和ARC">GCD对象和ARC</h4><p>当你构建你的应用使用OC语言编译时，所有的<code>dispatch</code>对象也是OC对象。同样的，在ARC的环境中，<code>dispatch</code>对象和任何其他OC对象一样会自动的<code>retain</code> 和 <code>release</code>。在MRC环境中时，使用<code>dispatch_retain</code>和<code>dispatch_release</code>函数(和OC语义相同)来保留或者释放派发对象。你不能使用<code>Core Foundation</code>的保留和释放函数。</p>
 <h3 id="2-创建和管理队列">2.创建和管理队列</h3><hr>
 <p>在GCD中，有两种队列，串行队列和并发队列，串行队列中根据FIFO的方式执行任务，但同时只能执行一个任务。并发队列也会根据FIFO的方式执行任务，但是同时可以执行多个任务。</p>
 <p>1.<code>dispatch_queue_t dispatch_get_main_queue(void);</code><br>返回一个主队列，主队列通过系统自动创建并且和你的应用的主线程相关联。</p>
@@ -144,7 +144,7 @@ dispatch_async_f(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <spa
 
 <div class="article-share" id="share">
 
-  <div data-url="http://linfeng1009.gitcafe.io/2015/09/22/thread-summary-gcd/" data-title="iOS多线程总结之GCD | 大神的iOS开发博客" data-tsina="2502328960" class="share clearfix">
+  <div data-url="http://linfeng1009.gitcafe.io/2015/09/29/thread-summary-gcd/" data-title="iOS多线程总结之GCD | 大神的iOS开发博客" data-tsina="2502328960" class="share clearfix">
   </div>
 
 </div>
@@ -153,19 +153,11 @@ dispatch_async_f(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <spa
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2015/09/22/nslog/" title="NSLog高效打印调试信息">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  NSLog高效打印调试信息</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2015/09/22/thread-summary-nsoperate/"  title="iOS多线程总结之NSOperation 和 NSOperationQueue">
+<a href="/2015/09/29/memory-arc/"  title="iOS内存管理ARC">
  <strong>NEXT:</strong><br/> 
- <span>iOS多线程总结之NSOperation 和 NSOperationQueue
+ <span>iOS内存管理ARC
 </span>
 </a>
 </div>
