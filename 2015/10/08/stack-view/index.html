@@ -1,0 +1,427 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>UIStackView Tutorial:介绍堆栈视图(译) | 大神的iOS开发博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="大神">
+    
+    <meta name="description" content="英文原文: UIStackView Tutorial: Introducing Stack Views
+我们都在那里，有个新的需求，你需要在运行时添加或者移除一个视图，并且也需要调整邻近的视图的位置。你采用什么方法？你要添加输出口约束在你的故事板上这样你就能激活或者禁止某个吗?或者你使用第三方库？或">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="大神的iOS开发博客" title="大神的iOS开发博客"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="大神的iOS开发博客">大神的iOS开发博客</a></h1>
+				<h2 class="blog-motto">知识来源于分解</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					
+						<li><a href="/">主页|Home</a></li>
+					
+						<li><a href="/archives">归档|Archives</a></li>
+					
+						<li><a href="/projects">项目|Projects</a></li>
+					
+						<li><a href="/about">关于|About</a></li>
+					
+						<li><a href="/resumes">简历|Resume</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:linfeng1009.gitcafe.io">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/10/08/stack-view/" title="UIStackView Tutorial:介绍堆栈视图(译)" itemprop="url">UIStackView Tutorial:介绍堆栈视图(译)</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://linfeng1009.gitcafe.io" title="大神">大神</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2015-10-08T08:55:25.000Z" itemprop="datePublished">2015-10-08</time>
+    更新日期:<time datetime="2015-10-08T08:55:25.000Z" itemprop="dateModified">2015-10-08</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#开始"><span class="toc-number">1.</span> <span class="toc-text">开始</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#你的第一个堆视图"><span class="toc-number">2.</span> <span class="toc-text">你的第一个堆视图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#转化部分"><span class="toc-number">3.</span> <span class="toc-text">转化部分</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#评级部分"><span class="toc-number">3.1.</span> <span class="toc-text">评级部分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#取消嵌入堆栈视图"><span class="toc-number">3.2.</span> <span class="toc-text">取消嵌入堆栈视图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#你的第一个垂直堆栈视图"><span class="toc-number">3.3.</span> <span class="toc-text">你的第一个垂直堆栈视图</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#对齐属性"><span class="toc-number">4.</span> <span class="toc-text">对齐属性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#转化WHAT_TO_SEE部分"><span class="toc-number">5.</span> <span class="toc-text">转化WHAT TO SEE部分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#转化WEATHER部分"><span class="toc-number">6.</span> <span class="toc-text">转化WEATHER部分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#顶层堆栈视图"><span class="toc-number">7.</span> <span class="toc-text">顶层堆栈视图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#重新定位视图"><span class="toc-number">8.</span> <span class="toc-text">重新定位视图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Size_Class基本配置"><span class="toc-number">9.</span> <span class="toc-text">Size Class基本配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#动画"><span class="toc-number">10.</span> <span class="toc-text">动画</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#从这里去哪里?"><span class="toc-number">11.</span> <span class="toc-text">从这里去哪里?</span></a></li></ol>
+		</div>
+		
+		<p>英文原文: <a href="http://www.raywenderlich.com/114552/uistackview-tutorial-introducing-stack-views" target="_blank" rel="external">UIStackView Tutorial: Introducing Stack Views</a></p>
+<p>我们都在那里，有个新的需求，你需要在运行时添加或者移除一个视图，并且也需要调整邻近的视图的位置。<br>你采用什么方法？你要添加输出口约束在你的故事板上这样你就能激活或者禁止某个吗?或者你使用第三方库？或根据复杂性也许你能在代码中做任何事情。<br>也许这次你的视图层次没有必要改变在运行时，但是你必须考虑怎样把一个新视图嵌入到你的故事板上。你有没有最终只是清除所有的约束，并从头开始重新添加它们，因为它不是执行艰苦的约束，操作更容易？<br>随着UIStackView的引入，上面的任务变得非常简单。堆栈视图提供一种方式水平或者垂直布局多个视图。通过配置一些简单的属性，例如: <code>alignment</code>,<code>distribution</code>和<code>spacing</code>.你能定义所包含的视图怎样去调整自己可用的空间。</p>
+<h2 id="开始">开始</h2><p>在UIStackView的引导中，你运行的APP叫做<code>Vacation Spots</code>.它是一个简单的APP,向你展示一个为了摆脱烦恼的地方的列表。<br>但是不要收拾包裹就走人，因为这里有一些问题你将通过使用堆栈视图来修复，比你单独使用自动布局更加简单的一种方式.<br>开始下载<a href="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/VacationSpots_Starter.zip" target="_blank" rel="external">初始工程</a>作为引导，运行它在iPhone6模拟器上，你将看到你可能去度假的地名列表.<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/01-table-view-is-now-correct_750x1334-281x500.png" alt=""><br>去London的信息界面通过点击London单元.<br>初略一看，这个视图好像没什么问题，但是它有一些问题.<br>1.看到视图底部的排列的按钮.它们当前的位置有一个固定的空间值在它们之间，所以它们没有适配屏幕的宽度。未来全面的看到问题，临时旋转模拟器屏幕到横屏方向通过按下Command和left按键(左方向箭头).<br><img src="http://cdn2.raywenderlich.com/wp-content/uploads/2015/09/02-issues-visible-in-landscape-view_1334x750-480x270.png" alt=""><br>2.点击靠近<code>WEATHER</code>的<code>Hide</code>按钮，成功隐藏文字，但是没有重新调整它下面部分的位置，留下一块空白空间。<br><img src="http://cdn4.raywenderlich.com/wp-content/uploads/2015/09/03-hide-weather-issue_750x1334-281x500.png" alt=""><br>3.部分的顺序能够改善。它将会有更多逻辑，如果<code>what to see</code>这部分位置放置到<code>why visit</code>这部分后面，在<code>weather</code>它们之间。<br>4.底部的按钮有点太靠近视图底部边缘在横屏模式下。最好是如果你可以减少不同部分之间的间距——但只有在横向模式。</p>
+<p>现在,你有一个想法你会做改善,是时候进入这个项目。<br>打开<code>Main.storyboard</code>并且检查<code>Spot Info View Controller</code>场景，有一些颜色在你的堆栈视图中。<br><img src="http://cdn4.raywenderlich.com/wp-content/uploads/2015/09/04-colorful-scene-in-storyboard_504x636-396x500.png" alt=""></p>
+<p>这些标签和按钮已经设置了各种背景颜色在运行时会被清除。在故事板中，它们简单的可视帮助显示怎样改变堆视图的各种属性从而影响内嵌视图的结构.<br>你现在不需要这样做,但是如果在任何时候你想看到背景颜色在运行应用程序时,可以暂时注释掉以下行在 SpotInfoViewController内的viewDidLoad方法。<br><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Clear background colors from labels and buttons</span></span><br><span class="line"><span class="keyword">for</span> <span class="keyword">view</span> <span class="keyword">in</span> backgroundColoredViews &#123;</span><br><span class="line">  <span class="keyword">view</span>.backgroundColor = UIColor.clearColor()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>当然，任意输出口连接的标签有占位符文本，那些设置的输出口变量的名称为了使它们连接。这使得更简单告诉标签将更新它们的文本在运行时。例如，标签随着文本<whyvisitlabel>被连接为：</whyvisitlabel></p>
+<pre><code><span class="preprocessor">@IBOutlet</span> <span class="keyword">weak</span> <span class="keyword">var</span> whyVisitLabel: <span class="type">UILabel</span>!
+</code></pre><p>需要注意的另一件事是，故事板的场景不是默认600x600的方块当使用size classes.<br>size classes一直可用，但初始导航控制器的大小设置为iPhone 4英寸以下模拟指标部分在属性检查器。这一点容易使用故事板;模拟指标属性在运行时没有任何影响——视图将为不同的设备调整。<br><img src="http://cdn4.raywenderlich.com/wp-content/uploads/2015/09/05-simulated-metrics-iphone-4-inch_639x173.png" alt=""></p>
+<h2 id="你的第一个堆视图">你的第一个堆视图</h2><hr>
+<p>第一件事你将通过使用堆视图修复底部排列按钮之间的空隙。堆栈视图可以分发其视图沿其轴以不同的方式,与等量的方法之一是每个视图之间的间距。<br>幸运地是，嵌入已存在的视图到新堆视图中并不是火箭科学。首先，选择所有的按钮底部的位置<code>Spot Info View Controller</code>场景通过点击一个,然后命令点击另外两个:<br><img src="http://cdn4.raywenderlich.com/wp-content/uploads/2015/09/06-select-bottom-row-of-buttons_420x80.png" alt=""><br>如果大纲视图不是已经打开,继续打开它通过显示文档大纲按钮左下角的画布:<br><img src="http://cdn4.raywenderlich.com/wp-content/uploads/2015/09/07-document-outline-button_120x40.png" alt=""><br>验证所有三个按钮选择通过检查他们的大纲视图:<br><img src="http://cdn1.raywenderlich.com/wp-content/uploads/2015/09/08-verify-button-selection_360x90.png" alt=""><br>他们并不都是选择,你也可以在大纲视图命令点击每个按钮来选择他们。一旦选中,单击新的堆栈按钮底部的工具栏自动布局正确的故事板的画布上:<br><img src="http://cdn4.raywenderlich.com/wp-content/uploads/2015/09/09-stack_button_outlined_148x52.png" alt=""><br>这些按钮将被嵌入新的堆栈视图中:<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/10-bottom-row-is-now-in-stack-view_640x100.png" alt=""><br>这些按钮现在整齐彼此连靠着-你很快就会解决。<br>虽然堆栈视图负责定位按钮,但是你还需要添加自动布局约束位置堆栈视图本身。<br>嵌入一个视图在堆栈视图时,约束其他视图删除。例如,嵌入在堆栈视图按钮之前,<code>Submit Rating</code>按钮的顶部有一个垂直间距约束连接它的底部<code>Rating</code>标签:<br><img src="http://cdn2.raywenderlich.com/wp-content/uploads/2015/09/11-prior-constraint_420x90.png" alt=""><br>点击<code>Submit Rating</code>按钮,它不再有任何约束附加到它:<br><img src="http://cdn1.raywenderlich.com/wp-content/uploads/2015/09/12-no-more-constraints_400x80.png" alt=""><br>验证约束消失的另一种方法是通过查看尺寸检查器(⌥⌘5):<br><img src="http://cdn4.raywenderlich.com/wp-content/uploads/2015/09/13-check-size-inspector_640x80.png" alt=""><br>为了约束添加到堆栈视图本身,您首先需要选择。在故事板中选择一个堆栈视图很棘手,如果其视图完全填满堆栈视图。一个简单的方法是在大纲视图选择堆栈视图:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/14-stack-view-document-outline-selection_660x80.png" alt=""><br>另一个技巧是按住Shift键和右键单击任何堆栈视图的视图,或者Control-Shift-click如果你使用触控板。你会得到一个上下文菜单,显示了视图层次结构在你点击的位置,和你只是选择堆栈视图菜单中点击它。现在,选择堆栈视图使用Shift-Right-click方法:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/15-select-stack-view-in-view-hierarchy-menu_400x280.png" alt=""><br>现在，点击Pin按钮在自动布局工具栏上给它添加约束:<br><img src="http://cdn4.raywenderlich.com/wp-content/uploads/2015/09/16-pin-button_142x57.png" alt=""><br>First add a check to Constrain to margins. Then add the following constraints to the edges of your stack view:<br>首先添加一个检查约束边缘。然后添加以下约束你的边缘堆栈视图:</p>
+<pre><code><span class="string">Top:</span> <span class="number">20</span>, <span class="string">Leading:</span> <span class="number">0</span>, <span class="string">Trailing:</span> <span class="number">0</span>, <span class="string">Bottom:</span> <span class="number">0</span>
+</code></pre><p>仔细检查上面的数字,上下左右的约束,确保焊接层选择。然后点击添加4约束:<br><img src="http://cdn4.raywenderlich.com/wp-content/uploads/2015/09/17-bottom-stack-view-constraints_264x364.png" alt=""><br>堆栈的视图是正确的大小,但它已经扩大了第一个按钮填写任何额外的空间:<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/18-first-button-is-stretched_400x80.png" alt=""><br>属性决定了一个堆栈视图列出了其观点沿轴分布性质。目前,它的设置来填补,这意味着所包含的视图将完全填补堆栈视图沿其轴。为此,堆栈视图只会扩大它的一个视图来填补这一额外的空间,具体地说,它扩展了视图内容紧凑优先级最低的水平,或者如果所有优先级相等,它扩展了第一个视图。<br>然而,你不是寻找按钮完全填满堆栈视图——你希望他们是等距的。确保堆栈视图仍然选择和属性检查器。改变填充等于间距的分布:<br><img src="http://cdn2.raywenderlich.com/wp-content/uploads/2015/09/19-change-distribution-to-equal-spacing_640x148.png" alt=""><br>现在构建和运行,点击任何单元,旋转模拟器(⌘→)。你会发现底部按钮现在空间本身同样!<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/20-now-buttons-are-equally-spaced_1334x750-480x270.png" alt=""><br>为了解决这个问题不使用堆栈视图,您将不得不使用间隔的视图,每一对之间的一个按钮。你必须添加等宽约束到所有的间隔的视图以及大量的额外约束。<br>它会看起来像下面这样。为了在截图中可见,间隔的视图有一个浅灰色背景:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/21-alternate-solution-1_346x76.png" alt=""><br>这不是太多的问题如果你只有这一次的故事板,但许多视图是动态的。这不是一个简单的任务来添加一个新按钮或隐藏或删除现有的按钮在运行时，由于相邻间隔视图和约束，为了隐藏一个视图在堆栈视图,所有你要做的就是设置包含视图的隐藏属性为true和堆栈视图处理其余的。这就是你会修理间隔在<code>WEATHER</code>下面标签当用户隐藏文本。您将在本教程稍后做一旦天气部分标签添加到一个堆栈视图。</p>
+<h2 id="转化部分">转化部分</h2><hr>
+<p>你会把所有的其他部分在SpotInfoViewController使用堆栈视图。这将使您可以轻松地完成剩下的任务。接下里你将转化评级部分。</p>
+<h3 id="评级部分">评级部分</h3><p>正如上面你刚刚创建堆栈视图，选择旁边的<code>Rating</code>标签和<code>Star</code>标签:<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/22-select-rating-label-and-stars-label_640x74.png" alt=""><br>然后单击栈上的按钮来将它们嵌入在堆栈视图:<br><img src="http://cdn1.raywenderlich.com/wp-content/uploads/2015/09/23-after-clicking-stack-button_640x74.png" alt=""><br>现在点击Pin按钮，勾选<code>Constrain to margins</code>并且添加下面三个约束:<br>Top: 20, Leading: 0, Bottom: 20<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/24-add-second-stack-view-constraints_264x171.png" alt=""><br>现在去属性检查器设置间隔为8:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/25-set-spacing-to-8_259x87.png" alt=""><br>有可能你会看到一个错误的观点警告,看到这样<code>stars</code>标签已经超出界限的视图:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/26-stars-label-weirdly-stretched_640x85.png" alt=""><br>有时Xcode可能暂时显示警告或堆栈视图位置不正确,但警告将会消失,你让其他更新。您通常可以忽略这些。然而,立即修复它,你能说服堆栈视图布局通过将其框架由一个点和背部或临时改变它的一个布局属性。为了说明这一点,改变从填补顶部对齐,然后回到填补。现在你会看到星星标签位置正确:<br><img src="http://cdn4.raywenderlich.com/wp-content/uploads/2015/09/27-change-alignment-to-top-and-back_640x85.png" alt=""><br>构建和运行验证一切看起来和之前一模一样。</p>
+<h3 id="取消嵌入堆栈视图">取消嵌入堆栈视图</h3><p>在你走得太远之前,最好有一些基本的“急救”培训。有时你可能会发现自己与你不再需要额外的堆栈视图,可能是因为实验、重构或只是偶然。幸运的是,有一个简单的方法来从堆栈视图unembed视图。首先,你要选择你想要删除的堆栈视图。然后按住Option键,点击栈上的按钮。在出现的上下文菜单中点击Unembed:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/28-how-to-unembed_186x71.png" alt=""><br>另一个方法是选择堆栈视图,然后从菜单中选择Editor\ Unembed。</p>
+<h3 id="你的第一个垂直堆栈视图">你的第一个垂直堆栈视图</h3><p>现在，你将创建你的第一个垂直堆栈视图，选择<code>WHY VISIT</code>标签和<code>&lt;whyVisitLabel&gt;</code>如下:<br><img src="http://cdn1.raywenderlich.com/wp-content/uploads/2015/09/29-select-why-visit-labels_640x90.png" alt=""><br>Xcode将正确推断,这应该是一个垂直堆栈视图基于标签的位置。单击堆栈按钮嵌入这两个堆栈视图:<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/30-embed-why-visit-labels_640x90.png" alt=""><br>较低的标签以前约束将视图的右边距,但约束时被嵌入在堆栈视图。目前,堆栈视图没有约束,所以采用的固有宽度最大的视图。<br>随着堆栈视图被选择，点击Pin按钮，勾选<code>Constrain to margins</code>,设置上，左和右的约束为0.<br>然后,单击下拉底部约束和选择<code>WEATHER</code>(当前距离=20)：<br><img src="http://cdn4.raywenderlich.com/wp-content/uploads/2015/09/31-dont-select-nearest-neighbor-constraint_463x417.png" alt=""><br>默认情况下,显示最近的邻居的约束,这为约束隐藏按钮底部的距离15。你真需要约束下面的<code>WEATHER</code>标签。最后,点击 Add 4 Constraints。您现在应该看到如下:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/32-why-visit-stack-view-stretched_640x90.png" alt=""><br>您现在有了一个扩展堆栈视图右边固定在右边距的视图。然而,底部标签还是一样的宽度。你会解决这个问题通过更新堆栈视图对齐属性。</p>
+<h2 id="对齐属性">对齐属性</h2><hr>
+<p>对齐属性决定了一个堆栈视图列出了其视图垂直于轴。垂直堆栈视图,可能的值<code>Fill</code>,<code>Leading</code>、<code>Center</code>和<code>Trailing</code>。可能水平堆栈视图对齐值略有不同:<br><img src="http://cdn2.raywenderlich.com/wp-content/uploads/2015/09/33-horizontal-and-vertical-alignment_594x171.png" alt=""><br><code>.Top</code>代替<code>.Leading</code>,<code>Bottom</code>代替<code>.Trailing</code>,也有两个属性,只在水平方向上是有效的。<code>.FirstBaseline</code>, <code>.LastBaseline</code>。<br>选择每个值,看看它如何影响标签的位置垂直堆栈视图:<br>Fill:<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/34-alignment-fill_640x64.png" alt=""><br>Leading:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/35-alignment-leading_640x64.png" alt=""><br>Center:<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/36-alignment-center_640x64.png" alt=""><br>Trailing:<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/37-alignment-trailing_640x64.png" alt=""><br>当你完成测试每个值,设置对齐来填充:<br><img src="http://cdn1.raywenderlich.com/wp-content/uploads/2015/09/38-now-select-alignment-fill_640x64.png" alt=""><br>然后构建和运行验证一切看起来不错,没有退化。</p>
+<p>指定<code>Fill</code>意味着你想要的所有视图完全填满堆栈视图垂直于它的轴。这导致<code>WHY VISIT</code>标签来扩大自己的右边缘。<br>但如果你只想要底部标签扩大自身优势?<br>现在,没关系因为标签在运行时将有一个透明的背景,但它将很重要当你转化<code>weather</code>部分时。<br>您将了解如何完成,使用一个额外的堆栈视图。</p>
+<h2 id="转化WHAT_TO_SEE部分">转化WHAT TO SEE部分</h2><hr>
+<p>这个部分非常类似于前面,所以这里的说明是短暂的。<br>1.首先，选择<code>WHAT TO SEE</code>标签和下面的<code>&lt;whatToSeeLabel&gt;</code><br>2.点击堆栈按钮<br>3.点击Pin按钮<br>4.勾选<code>Constrain to margin</code>,并且添加下面四个约束:<br>Top: 20, Leading: 0, Trailing: 0, Bottom: 20<br>5.设置堆栈视图的对齐方式为Fill<br>你的故事板现在看起来应该是这样的:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/39-after-what-to-see-section_640x308.png" alt=""><br>构建和运行验证一切看起来仍然一样。<br>这使得你只有<code>WEATHER</code>部分了。</p>
+<h2 id="转化WEATHER部分">转化WEATHER部分</h2><p>WEATHER部分比其他部分更加复杂，由于包含隐藏按钮。<br>一种方法你可以用将创建一个嵌套的堆栈视图通过将天气标签和隐藏按钮嵌入到一个水平堆栈视图,然后嵌入水平堆栈视图和<code>&lt;weatherInfoLabel&gt;</code>垂直堆栈视图。<br>看起来像这样的:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/40-weather-stack-in-stack_640x92.png" alt=""><br>注意<code>WEATHER</code>标签已经扩大到等于<code>Hide</code>按钮的高度。这并不是理想的方法,因为这将导致基线之间的有额外的空间<code>WEATHER</code>标签和它下面的文本。<br>记住,<code>alignment</code>指定定位垂直堆栈视图。所以,你可以设置<code>alignment</code>到<code>Bottom</code>:<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/41-weather-stack-in-stack-alignment-bottom_640x92.png" alt=""><br>但你真的不想<code>Hide</code>按钮的高度决定堆栈视图的高度。<br>您将实际的方法是有<code>Hide</code>按钮不会在天气的堆栈视图部分,或任何其他堆栈视图。<br>它仍将是一个顶层视图的子视图,您将添加一个约束<code>WEATHER</code>标签——这将会在堆栈视图。没错,你会从一个按钮添加一个约束之外的一个堆栈视图标签在一个堆栈视图!<br>选择<code>WEATHER</code>标签和它下面的<code>&lt;weatherInfoLabel&gt;</code>：<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/42-select-weather-and-info-label_640x92.png" alt=""><br>点击堆栈按钮:<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/43-weather-click-stack-button_640x92.png" alt=""><br>点击Pin按钮，勾选<code>Constrain to margins</code>，添加下面四个约束:<br>Top: 20, Leading: 0, Trailing: 0, Bottom: 20<br>设置堆栈视图的对齐方式为Fill:<br><img src="http://cdn2.raywenderlich.com/wp-content/uploads/2015/09/44-weather-alignment-fill_640x92.png" alt=""><br>你需要<code>Hide</code>按钮的左边缘和<code>WEATHER</code>标签的右边缘之间的约束,因此天气标签填补堆栈视图不能工作。<br>但是,你希望<code>&lt;weatherInfoLabel&gt;</code>填补堆栈底部视图<br>。你可以做到这一点通过嵌入<code>WEATHER</code>标签到垂直堆栈视图。记住,一个垂直堆栈视图的一致性可以设置<code>.Leading</code>,如果堆栈视图是超出其内在的宽度,其包含的视图仍将是其主要方面保持一致。<br>选择<code>WEATHER</code>标签使用文档大纲,或通过使用Control-Shift-click方法:<br><img src="http://cdn4.raywenderlich.com/wp-content/uploads/2015/09/45-select-just-the-weather-label_640x92.png" alt=""><br>然后点击堆栈按钮:<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/46-weather-in-horizontal-stack_640x92.png" alt=""><br>设置<code>Alignment</code>为<code>Leading</code>,确保<code>Axis</code>设置为<code>Vertical</code>：<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/47-vertical-and-leading_640x92.png" alt=""><br>很完美!你有外堆栈视图拉伸内部堆栈视图来填补宽度,但内部堆栈视图允许标签保持原来的宽度!<br>构建和运行。为什么是闲逛的<code>Hide</code>按钮在文本中间呢?<br><img src="http://cdn1.raywenderlich.com/wp-content/uploads/2015/09/48-hide-label-incorrect-position_750x573-419x320.png" alt=""><br>这是因为当你嵌入天气标签在堆栈视图,和它之间的任何约束,<code>Hide</code>按钮被移除。<br>添加新的约束从隐藏按钮<code>control - drag``WEATHER</code>标签:<br><img src="http://cdn1.raywenderlich.com/wp-content/uploads/2015/09/49-drag-to-weather-label_380x94.png" alt=""><br>然后按住Shift选择多个选项,并选择水平间距和基线。然后点击添加约束:<br><img src="http://cdn2.raywenderlich.com/wp-content/uploads/2015/09/50-add-multiple-constraints_380x224.png" alt=""><br>构建和运行。隐藏按钮现在应该正确定位,因为被设置为隐藏的标签是嵌入在一个堆栈视图,紧迫的隐藏隐藏标签,并调整它下面的视图-—一切无需手动调整任何约束。<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/51-hide-button-works_750x732-328x320.png" alt=""><br>现在所有的部分都是独特的堆栈视图,你将它们嵌入到外部堆栈视图,这将使最后的两个任务微不足道。</p>
+<h2 id="顶层堆栈视图">顶层堆栈视图</h2><hr>
+<p>命令点击选择所有五个顶级堆栈视图在大纲视图:<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/52-select-all-stack-views-in-outline_640x260.png" alt=""><br>然后点击堆栈按钮:<br><img src="http://cdn4.raywenderlich.com/wp-content/uploads/2015/09/53-stack-all-the-views_640x185.png" alt=""><br>点击Pin按钮，勾选<code>Constrain to margins</code>,添加所有边缘的约束为0。设置<code>Spacing</code>为20，<code>Alignment</code>为<code>Fill</code>,你的故事板场景看起来像这样:<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/54-set-the-spacing-to-20-and-alignment-to-fill_640x300.png" alt=""><br>编译运行:<br><img src="http://cdn1.raywenderlich.com/wp-content/uploads/2015/09/55-hide-button-lost-again_750x487-480x312.png" alt=""><br>哎呀!看起来<code>Hide</code>按钮再次失去了约束当<code>WEATHER</code>堆栈视图是嵌入在外层堆栈视图。没问题,再加上约束以同样的方式。<br>从<code>Hide</code>按钮<code>control - drag``WEATHER</code>标签,然后按住<code>Shift</code>,选择水平间距和基线。然后点击添加约束:<br><img src="http://cdn4.raywenderlich.com/wp-content/uploads/2015/09/56-add-constraints-to-button-again_380x223.png" alt=""><br>编译运行，<code>Hide</code>按钮现在的位置是正确的。</p>
+<h2 id="重新定位视图">重新定位视图</h2><hr>
+<p>现在,所有的部分都是在一个顶级堆栈视图中,您将修改<code>WHAT TO SEE</code>部分的位置到<code>WEATHER</code>部分上面。<br>从大纲视图选择中间堆栈视图,并将其拖动到第一和第二的视图之间。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">注意:保持堆栈的指针稍微往左视图之间你拖动它,这样它仍然是一个外堆栈视图的子视图。蓝色小圆应该定位在两个堆栈视图之间的左边缘,而不是在正确的边缘:</span><br></pre></td></tr></table></figure>
+<p><img src="http://cdn2.raywenderlich.com/wp-content/uploads/2015/09/57-drag-and-drop-to-reposition-section_639x130.png" alt=""><br>现在<code>WEATHER</code>部分是第三节从顶部起,但自从<code>Hide</code>按钮不是堆栈视图的一部分,它不会被移动,所以它的结构将会错位。<br>点击<code>Hide</code>按钮选择它:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/58-hide-button-not-moved_640x130.png" alt=""><br>然后单击解决自动布局问题中的三角形形状的按钮自动布局工具栏和下所选视图部分,点击update frame:<br><img src="http://cdn2.raywenderlich.com/wp-content/uploads/2015/09/59-resolve-auto-layout-issues_356x269.png" alt=""><br><code>Hide</code>按钮将会返回正确的位置:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/60-hide-button-back-to-correct-position_640x130.png" alt=""><br>很好，用自动布局重新定位视图和重新添加约束就不会是你做过的最困难的事。</p>
+<h2 id="Size_Class基本配置">Size Class基本配置</h2><hr>
+<p>最后,你就可以把注意力转移到一个剩余的任务列表。在横屏模式中,垂直空间是非常珍贵的,所以你想将堆栈视图的部分更紧密地联系在一起。要做到这一点,您将使用大小类顶级堆栈视图的间距设置为10,而不是20时,垂直类是紧凑的大小。<br>选择顶级堆栈视图,单击+按钮旁边的<code>Spacing</code>:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/61-select-plus-button_260x120.png" alt=""><br>选择<code>Any Width &gt; Compact Height</code>:<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/62-anywidth-compact-height_403x108.png" alt=""><br>设置<code>Spacing</code>为10在新的<code>wAny hC</code>区域:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/63-set-spacing-to-10_260x160.png" alt=""><br>编译和运行。竖屏模式的间距应该保持不变。旋转模拟器(⌘←)和注意,部分减少之间的间距和按钮现在有充裕的空间从底部的视图:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/64-spacing-in-iphone-landscape_1334x750-480x270.png" alt=""><br>如果你没有添加一个顶级堆栈视图中,您仍然可以使用大小类的垂直间距设置为10的四个约束条件,单独的五个部分,但它不是更好的设置在一个地方吗?<br>你和你的时间有更好的事情要做,喜欢动画!</p>
+<h2 id="动画">动画</h2><hr>
+<p>目前,有点突兀,隐藏和显示天气信息。您将添加一些动画平滑过渡。<br>堆栈视图与UIView动画引擎完全兼容。这意味着动画安排子视图的外观/消失,很简单,其切换动画块内部隐藏的属性。<br>是时候写些代码了，打开<code>SpotInfoViewController.swift</code>看到<code>updateWeatherInfoViews(hideWeatherInfo:animated:).</code><br>你看到这个方法的尾部这行</p>
+<pre><code>weatherInfoLabel<span class="class">.hidden</span> = shouldHideWeatherInfo
+</code></pre><p>用下面的方法代替它:</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> animated &#123;</span><br><span class="line">  UIView.animateWithDuration(<span class="number">0.3</span>) &#123;</span><br><span class="line">    self.weatherInfoLabel.<span class="variable">hidden =</span> shouldHideWeatherInfo</span><br><span class="line">  &#125;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  weatherInfoLabel.<span class="variable">hidden =</span> shouldHideWeatherInfo</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译和运行,点击隐藏或显示按钮。动画感觉不是更好?<br>除了动画隐藏的属性视图中包含堆栈视图中,您还可以动画属性堆栈视图本身,如<code>alignment</code>、<code>distribution</code>、<code>spacing</code>和<code>axis</code>。</p>
+<h2 id="从这里去哪里?">从这里去哪里?</h2><p>你可以下载完成的代码<a href="http://cdn1.raywenderlich.com/wp-content/uploads/2015/09/VacationSpots_Complete.zip" target="_blank" rel="external">在这里</a><br>在这UIStackView教程中,您学到了很多关于堆栈视图以及堆栈视图使用的各种属性定位它的子视图。堆栈视图是高度可配置的,而且可能有一个以上的方式实现相同的结果。<br>最好的方法是建立在你学过的东西自己尝试各种属性。而不是设置属性和移动,请参阅玩其他属性如何影响视图中的堆栈视图的布局。<br>本教程是一个缩写版的第六章,“UIStackView和自动布局变化”和第七章“中间UIStackView”从iOS 9教程。如果你想了解更多关于UIStackView和其他新特性在iOS 9请看看这本书!<br>与此同时,如果你有任何问题或评论本教程或堆栈视图,请加入以下论坛讨论!</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/iOS9/">iOS9</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/iOS翻译/">iOS翻译</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://linfeng1009.gitcafe.io/2015/10/08/stack-view/" data-title="UIStackView Tutorial:介绍堆栈视图(译) | 大神的iOS开发博客" data-tsina="2502328960" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2015/09/29/memory-arc/"  title="iOS内存管理ARC">
+ <strong>NEXT:</strong><br/> 
+ <span>iOS内存管理ARC
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#开始"><span class="toc-number">1.</span> <span class="toc-text">开始</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#你的第一个堆视图"><span class="toc-number">2.</span> <span class="toc-text">你的第一个堆视图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#转化部分"><span class="toc-number">3.</span> <span class="toc-text">转化部分</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#评级部分"><span class="toc-number">3.1.</span> <span class="toc-text">评级部分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#取消嵌入堆栈视图"><span class="toc-number">3.2.</span> <span class="toc-text">取消嵌入堆栈视图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#你的第一个垂直堆栈视图"><span class="toc-number">3.3.</span> <span class="toc-text">你的第一个垂直堆栈视图</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#对齐属性"><span class="toc-number">4.</span> <span class="toc-text">对齐属性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#转化WHAT_TO_SEE部分"><span class="toc-number">5.</span> <span class="toc-text">转化WHAT TO SEE部分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#转化WEATHER部分"><span class="toc-number">6.</span> <span class="toc-text">转化WEATHER部分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#顶层堆栈视图"><span class="toc-number">7.</span> <span class="toc-text">顶层堆栈视图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#重新定位视图"><span class="toc-number">8.</span> <span class="toc-text">重新定位视图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Size_Class基本配置"><span class="toc-number">9.</span> <span class="toc-text">Size Class基本配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#动画"><span class="toc-number">10.</span> <span class="toc-text">动画</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#从这里去哪里?"><span class="toc-number">11.</span> <span class="toc-text">从这里去哪里?</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+			<li><a href="/categories/iOS/" title="iOS">iOS<sup>6</sup></a></li>
+		
+			<li><a href="/categories/iOS开发/" title="iOS开发">iOS开发<sup>7</sup></a></li>
+		
+			<li><a href="/categories/iOS翻译/" title="iOS翻译">iOS翻译<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Cocoapods/" title="Cocoapods">Cocoapods<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Quart2D/" title="Quart2D">Quart2D<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Xcode/" title="Xcode">Xcode<sup>1</sup></a></li>
+		
+			<li><a href="/tags/iOS/" title="iOS">iOS<sup>5</sup></a></li>
+		
+			<li><a href="/tags/iOS9/" title="iOS9">iOS9<sup>1</sup></a></li>
+		
+			<li><a href="/tags/iOS多线程/" title="iOS多线程">iOS多线程<sup>3</sup></a></li>
+		
+			<li><a href="/tags/iOS定位/" title="iOS定位">iOS定位<sup>1</sup></a></li>
+		
+			<li><a href="/tags/内存管理/" title="内存管理">内存管理<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+  <div class="archiveslist">
+    <p class="asidetitle"><a href="/archives">归档</a></p>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">1</span></li></ul>
+  </div>
+
+
+  
+  <div class="tagcloudlist">
+    <p class="asidetitle">标签云</p>
+    <div class="tagcloudlist clearfix">
+       <a href="/tags/Cocoapods/" style="font-size: 10px;">Cocoapods</a><a href="/tags/Quart2D/" style="font-size: 10px;">Quart2D</a><a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a><a href="/tags/iOS/" style="font-size: 20px;">iOS</a><a href="/tags/iOS9/" style="font-size: 10px;">iOS9</a><a href="/tags/iOS多线程/" style="font-size: 15px;">iOS多线程</a><a href="/tags/iOS定位/" style="font-size: 10px;">iOS定位</a><a href="/tags/内存管理/" style="font-size: 10px;">内存管理</a>
+    </div>
+  </div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+      <li><a href="http://www.cocoachina.com" target="_blank" title="Hexo">CocoaChina</a></li>
+    </ul>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hi,I&#39;m DS. <br/>
+			.......</p>
+	</section>
+	 
+	<div class="social-font clearfix">
+		
+		<a href="http://weibo.com/2502328960" target="_blank" title="weibo"></a>
+		
+		
+		
+		<a href="https://github.com/ludaye123" target="_blank" title="github"></a>
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2015 
+		
+		<a href="http://linfeng1009.gitcafe.io" target="_blank" title="大神">大神</a>
+		
+		<br />
+		<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1255886342'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s4.cnzz.com/z_stat.php%3Fid%3D1255886342%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script>
+
+		<script>
+			var _hmt = _hmt || [];
+			(function() {
+			  var hm = document.createElement("script");
+			  hm.src = "//hm.baidu.com/hm.js?7c3a425add5fae9a1970c9b53a04242a";
+			  var s = document.getElementsByTagName("script")[0]; 
+			  s.parentNode.insertBefore(hm, s);
+			})();
+		</script>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"dashen1009"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+  </body>
+</html>
