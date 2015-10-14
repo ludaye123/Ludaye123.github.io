@@ -79,8 +79,8 @@
       <a href="http://linfeng1009.gitcafe.io" title="大神">大神</a>
     </p>
   <p class="article-time">
-    <time datetime="2015-10-14T00:22:42.000Z" itemprop="datePublished">2015-10-14</time>
-    更新日期:<time datetime="2015-10-14T00:22:42.000Z" itemprop="dateModified">2015-10-14</time>
+    <time datetime="2015-10-14T00:26:22.000Z" itemprop="datePublished">2015-10-14</time>
+    更新日期:<time datetime="2015-10-14T00:26:22.000Z" itemprop="dateModified">2015-10-14</time>
     
   </p>
 </header>
@@ -122,7 +122,7 @@
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">注意:保持堆栈的指针稍微往左视图之间你拖动它,这样它仍然是一个外堆栈视图的子视图。蓝色小圆应该定位在两个堆栈视图之间的左边缘,而不是在正确的边缘:</span><br></pre></td></tr></table></figure>
 <p><img src="http://cdn2.raywenderlich.com/wp-content/uploads/2015/09/57-drag-and-drop-to-reposition-section_639x130.png" alt=""><br>现在<code>WEATHER</code>部分是第三节从顶部起,但自从<code>Hide</code>按钮不是堆栈视图的一部分,它不会被移动,所以它的结构将会错位。<br>点击<code>Hide</code>按钮选择它:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/58-hide-button-not-moved_640x130.png" alt=""><br>然后单击解决自动布局问题中的三角形形状的按钮自动布局工具栏和下所选视图部分,点击update frame:<br><img src="http://cdn2.raywenderlich.com/wp-content/uploads/2015/09/59-resolve-auto-layout-issues_356x269.png" alt=""><br><code>Hide</code>按钮将会返回正确的位置:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/60-hide-button-back-to-correct-position_640x130.png" alt=""><br>很好，用自动布局重新定位视图和重新添加约束就不会是你做过的最困难的事。</p>
 <h2 id="Size_Class基本配置">Size Class基本配置</h2><hr>
-<p>最后,你就可以把注意力转移到一个剩余的任务列表。在横屏模式中,垂直空间是非常珍贵的,所以你想将堆栈视图的部分更紧密地联系在一起。要做到这一点,您将使用大小类顶级堆栈视图的间距设置为10,而不是20时,垂直类是紧凑的大小。<br>选择顶级堆栈视图,单击+按钮旁边的<code>Spacing</code>:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/61-select-plus-button_260x120.png" alt=""><br>选择<code>Any Width &gt; Compact Height</code>:<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/62-anywidth-compact-height_403x108.png" alt=""><br>设置<code>Spacing</code>为10在新的<code>wAny hC</code>区域:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/63-set-spacing-to-10_260x160.png" alt=""><br>编译和运行。竖屏模式的间距应该保持不变。旋转模拟器(⌘←)和注意,部分减少之间的间距和按钮现在有充裕的空间从底部的视图:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/64-spacing-in-iphone-landscape_1334x750-480x270.png" alt=""><br>如果你没有添加一个顶级堆栈视图中,您仍然可以使用大小类的垂直间距设置为10的四个约束条件,单独的五个部分,但它不是更好的设置在一个地方吗?<br>你和你的时间有更好的事情要做,喜欢动画!</p>
+<p>最后,你就可以把注意力转移到一个剩余的任务列表。在横屏模式中,垂直空间是非常珍贵的,所以你想将堆栈视图的部分更紧密地联系在一起。要做到这一点,您将使用大小类顶级堆栈视图的间距设置为10,而不是20时,垂直类是紧凑的大小。<br>选择顶级堆栈视图,单击+按钮旁边的<code>Spacing</code>:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/61-select-plus-button_260x120.png" alt=""><br>选择<code>Any Width &gt; Compact Height</code>:<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/62-anywidth-compact-height_403x108.png" alt=""><br>设置<code>Spacing</code>为10在新的<code>wAny hC</code>区域:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/63-set-spacing-to-10_260x160.png" alt=""><br>编译和运行。竖屏模式的间距应该保持不变。旋转模拟器(⌘←)和注意,部分减少之间的间距和按钮现在有充裕的空间从底部的视图:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/64-spacing-in-iphone-landscape_1334x750-480x270.png" alt=""><br>如果你没有添加一个顶级堆栈视图中,您仍然可以使用大小类的垂直间距设置为10的四个约束条件,单独的五个部分,但它不是更好的设置在一个地方吗?<br>你和你的时间有更好的事情要做,例如动画!</p>
 <h2 id="动画">动画</h2><hr>
 <p>目前,有点突兀,隐藏和显示天气信息。您将添加一些动画平滑过渡。<br>堆栈视图与UIView动画引擎完全兼容。这意味着动画安排子视图的外观/消失,很简单,其切换动画块内部隐藏的属性。<br>是时候写些代码了，打开<code>SpotInfoViewController.swift</code>看到<code>updateWeatherInfoViews(hideWeatherInfo:animated:).</code><br>你看到这个方法的尾部这行</p>
 <pre><code>weatherInfoLabel<span class="class">.hidden</span> = shouldHideWeatherInfo
