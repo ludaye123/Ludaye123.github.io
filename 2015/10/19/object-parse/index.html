@@ -4,14 +4,14 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>iOS开发常用正则表达式 | 大神的iOS开发博客</title>
+    <title>Objective-C 对象解析 | 大神的iOS开发博客</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="大神">
     
-    <meta name="description" content="在之前项目开发中，遇到过一些输入内容的判断，判断手机号码是否合法等等。记录下iOS开发中常用的正则表达式。
-手机号码
-1)移动：134[0-8],135,136,137,138,139,150,151,157,158,159,182,187,1882)联通：130,131,132,152,155,1">
+    <meta name="description" content="Apple开源库: 点击这里，当前版本为最新版本:objc4-647.tar.gz
+
+Object在Objective-C中，除了一些基本类型外，基本上都可以称之为对象。首先从类的实例进行分析：打开刚刚下载源码的工程：找到objc_private.h这个文件，在文件的上面部分可以看到Class和id">
     
     
     
@@ -73,15 +73,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/07/13/modified-by-helensong/" title="iOS开发常用正则表达式" itemprop="url">iOS开发常用正则表达式</a>
+      <a href="/2015/10/19/object-parse/" title="Objective-C 对象解析" itemprop="url">Objective-C 对象解析</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://linfeng1009.gitcafe.io" title="大神">大神</a>
     </p>
   <p class="article-time">
-    <time datetime="2015-07-13T02:08:12.000Z" itemprop="datePublished">2015-07-13</time>
-    更新日期:<time datetime="2015-08-13T09:02:08.000Z" itemprop="dateModified">2015-08-13</time>
+    <time datetime="2015-10-19T08:27:58.000Z" itemprop="datePublished">2015-10-19</time>
+    更新日期:<time datetime="2015-10-19T08:27:58.000Z" itemprop="dateModified">2015-10-19</time>
     
   </p>
 </header>
@@ -90,40 +90,20 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Object"><span class="toc-number">1.</span> <span class="toc-text">Object</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Class"><span class="toc-number">2.</span> <span class="toc-text">Class</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Meta_Class"><span class="toc-number">3.</span> <span class="toc-text">Meta Class</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
 		</div>
 		
-		<p>在之前项目开发中，遇到过一些输入内容的判断，判断手机号码是否合法等等。<br>记录下iOS开发中常用的正则表达式。</p>
-<p>手机号码</p>
-<p>1)移动：134[0-8],135,136,137,138,139,150,151,157,158,159,182,187,188<br>2)联通：130,131,132,152,155,156,185,186<br>3)电信：133,1349,153,180,189<br>NSString * MOBILE = @”^1(3[0-9]|5[0-35-9]|8[025-9])\d{8}$”;</p>
-<p>中国移动：China Mobile<br>134[0-8],135,136,137,138,139,150,151,157,158,159,182,187,188<br>NSString * CM = @”^1(34[0-8]|(3[5-9]|5[017-9]|8[278])\d)\d{7}$”;</p>
-<p>中国联通：China Unicom<br>130,131,132,152,155,156,185,186<br>NSString * CU = @”^1(3[0-2]|5[256]|8[56])\d{8}$”;</p>
-<p>中国电信：China Telecom<br>133,1349,153,180,189<br>NSString * CT = @”^1((33|53|8[09])[0-9]|349)\d{7}$”;</p>
-<p>大陆地区固话及小灵通<br>区号：010,020,021,022,023,024,025,027,028,029<br>号码：七位或八位<br>NSString * PHS = @”^0(10|2[0-5789]|\d{3})\d{7,8}$”;</p>
-<pre><code>以上集合一起，并兼容<span class="number">14</span>开头的
-+ (<span class="built_in">BOOL</span>)isMobileNumber:(<span class="built_in">NSString</span> *)mobileNum
-{
-    <span class="built_in">NSString</span> * phoneRegex = <span class="string">@"^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$"</span>;
-    <span class="built_in">BOOL</span> isMatch = [mobileNum isMatchedByRegex:phoneRegex];
-    <span class="keyword">return</span> isMatch;
-}
-</code></pre><hr>
-<p>邮箱验证<br>       NSString *emailRegex = @”[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}”; </p>
-<p>匹配中文字符的正则表达式： [\u4e00-\u9fa5]<br>评注：匹配中文还真是个头疼的事，有了这个表达式就好办了 </p>
-<p>匹配双字节字符(包括汉字在内)：[^\x00-\xff]<br>评注：可以用来计算字符串的长度（一个双字节字符长度计2，ASCII字符计1） </p>
-<p>匹配空白行的正则表达式：\n\s*\r<br>评注：可以用来删除空白行 </p>
-<p>匹配HTML标记的正则表达式：&lt;(\S<em>?)[^&gt;]</em>&gt;.<em>?&lt;/\1&gt;|&lt;.</em>? /&gt;<br>评注：网上流传的版本太糟糕，上面这个也仅仅能匹配部分，对于复杂的嵌套标记依旧没有能力为力 </p>
-<p>匹配首尾空白字符的正则表达式：^\s<em>|\s</em>$<br>评注：可以用来删除行首行尾的空白字符(包括空格、制表符、换页符等等)，非常有用的表达式 </p>
-<p>匹配Email地址的正则表达式：\w+([-+.]\w+)<em>@\w+([-.]\w+)</em>.\w+([-.]\w+)*<br>评注：表单验证时很实用 </p>
-<p>匹配网址URL的正则表达式：[a-zA-z]+://[^\s]*<br>评注：网上流传的版本功能很有限，上面这个基本可以满足需求 </p>
-<p>匹配帐号是否合法(字母开头，允许5-16字节，允许字母数字下划线)：^[a-zA-Z][a-zA-Z0-9_]{4,15}$<br>评注：表单验证时很实用 </p>
-<p>匹配国内电话号码：\d{3}-\d{8}|\d{4}-\d{7}<br>评注：匹配形式如 0511-4405222 或 021-87888822 </p>
-<p>匹配腾讯QQ号：[1-9][0-9]{4,}<br>评注：腾讯QQ号从10000开始 </p>
-<p>匹配中国邮政编码：[1-9]\d{5}(?!\d)<br>评注：中国邮政编码为6位数字 </p>
-<p>匹配身份证：\d{15}|\d{18}<br>评注：中国的身份证为15位或18位 </p>
-<p>匹配ip地址：\d+.\d+.\d+.\d+<br>评注：提取ip地址时有用 </p>
-<p>匹配特定数字：<br>^[1-9]\d<em>$　 　 //匹配正整数<br>^-[1-9]\d</em>$ 　 //匹配负整数<br>^-?[1-9]\d<em>$　　 //匹配整数<br>^[1-9]\d</em>|0$　 //匹配非负整数（正整数 + 0）<br>^-[1-9]\d<em>|0$　　 //匹配非正整数（负整数 + 0）<br>^[1-9]\d</em>.\d<em>|0.\d</em>[1-9]\d<em>$　　 //匹配正浮点数<br>^-([1-9]\d</em>.\d<em>|0.\d</em>[1-9]\d<em>)$　 //匹配负浮点数<br>^-?([1-9]\d</em>.\d<em>|0.\d</em>[1-9]\d<em>|0?.0+|0)$　 //匹配浮点数<br>^[1-9]\d</em>.\d<em>|0.\d</em>[1-9]\d<em>|0?.0+|0$　　 //匹配非负浮点数（正浮点数 + 0）<br>^(-([1-9]\d</em>.\d<em>|0.\d</em>[1-9]\d*))|0?.0+|0$　　//匹配非正浮点数（负浮点数 + 0）<br>评注：处理大量数据时有用，具体应用时注意修正 </p>
-<p>匹配特定字符串：<br>^[A-Za-z]+$　　//匹配由26个英文字母组成的字符串<br>^[A-Z]+$　　//匹配由26个英文字母的大写组成的字符串<br>^[a-z]+$　　//匹配由26个英文字母的小写组成的字符串<br>^[A-Za-z0-9]+$　　//匹配由数字和26个英文字母组成的字符串<br>^\w+$　　//匹配由数字、26个英文字母或者下划线组成的字符串 </p>
+		<p>Apple开源库: <a href="http://opensource.apple.com/tarballs/objc4/" target="_blank" rel="external">点击这里</a>，当前版本为最新版本:objc4-647.tar.gz</p>
+<p><img src="http://blog.leichunfeng.com/images/object_model.png" alt=""></p>
+<h2 id="Object">Object</h2><p>在Objective-C中，除了一些基本类型外，基本上都可以称之为对象。首先从类的实例进行分析：<br>打开刚刚下载源码的工程：<br>找到objc_private.h这个文件，在文件的上面部分可以看到Class和id的定义</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> objc_class *Class;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> objc_object *<span class="keyword">id</span>;</span><br></pre></td></tr></table></figure>
+<p>可以看到Class和id分为objc_class和objc_object类型的指针，Command+左键查看下objc_object的定义。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> objc_object &#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    isa_t isa;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ISA() assumes this is NOT a tagged pointer object</span></span><br><span class="line">    <span class="function">Class <span class="title">ISA</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// getIsa() allows this to be a tagged pointer object</span></span><br><span class="line">    <span class="function">Class <span class="title">getIsa</span><span class="params">()</span></span>;</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>由此可以得知，其实oc对象实质上就是一个objc_object结构体的对象，仅包含一个isa的成员变量，isa所对应的内容就是对象所属的类对象。id在运行时通过isa可以指向任意的oc对象。</p>
+<h2 id="Class">Class</h2><p>对象发送一个消息时，所需的数据和方法都是由其所属类提供的，类描述了对象占用空间大小，成员变量的类型以及描述对象的行为。实质就是对象发送消息以及所需的数据是通过isa找到其所属的类，类来提供其对象所需的一切。<br>类的定义如下:<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> objc_class : objc_object &#123;</span><br><span class="line">    Class superclass;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *name;</span><br><span class="line">    <span class="keyword">uint32_t</span> version;</span><br><span class="line">    <span class="keyword">uint32_t</span> info;</span><br><span class="line">    <span class="keyword">uint32_t</span> instance_size;</span><br><span class="line">    <span class="keyword">struct</span> old_ivar_list *ivars;</span><br><span class="line">    <span class="keyword">struct</span> old_method_list **methodLists;</span><br><span class="line">    Cache cache;</span><br><span class="line">    <span class="keyword">struct</span> old_protocol_list *protocols;</span><br><span class="line">    <span class="comment">// CLS_EXT only</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">uint8_t</span> *ivar_layout;</span><br><span class="line">    <span class="keyword">struct</span> old_class_ext *ext;</span><br><span class="line"></span><br><span class="line">   <span class="comment">//  more</span></span><br><span class="line">    	...</span><br><span class="line">   <span class="comment">// more</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>在类的定义中，可以得出类实质上也是对象，它也包含isa成员变量，成员变量列表，方法列表以及协议列表。<br>那么类对象的isa对应的值又是什么呢？ 带着个这个问题继续。</p>
+<h2 id="Meta_Class">Meta Class</h2><p>通过上面类的定义得知类其实也是对象，既然是对象那就有对应的所属类，这个类称之为元类(Meta Class)，元类保存了静态方法列表。<br>我们在创建一个对象时，经常会使用某个类调用alloc或者new方法，例如[UIView new],给类对象发送一个new消息，和对象发送消息一样，类对象也要通过其isa找到对应的所属类，去查找响应的方法。<br>那么问题来了？元类是不是也是对象呢？ 没错，元类也是对象，叫做元类对象，那么它的isa对应的所属类又是什么？元类对象对应的所属类叫做根元类(Root Meta Class)。那么根元类理所当然也是一个对象，isa对应的值就是其本身。至于元类，在开发中并不能显示的调用而且也没用必要。</p>
+<h2 id="总结">总结</h2><p>1.类的对象发送消息时，根据isa找到其所属类，然后从类提供的方法去查找，如果当前类找不到，再从其父类中查找，直到找到，否则异常(不能识别方法)。<br>2.类对象发送消失时，根据isa找到元类，然后从元类提供的方法去查找，如果当前类找不到，在从其父类中查找，直到找到，否则异常。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -136,14 +116,14 @@
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/iOS开发/">iOS开发</a>
+  <a class="article-category-link" href="/categories/iOS/">iOS</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="http://linfeng1009.gitcafe.io/2015/07/13/modified-by-helensong/" data-title="iOS开发常用正则表达式 | 大神的iOS开发博客" data-tsina="2502328960" class="share clearfix">
+  <div data-url="http://linfeng1009.gitcafe.io/2015/10/19/object-parse/" data-title="Objective-C 对象解析 | 大神的iOS开发博客" data-tsina="2502328960" class="share clearfix">
   </div>
 
 </div>
@@ -152,19 +132,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2015/08/20/create-pods/" title="制作pod库并提交到Cocoapods">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  制作pod库并提交到Cocoapods</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2015/07/09/deepcopy-vs-shallowcopy/"  title="深复制VS浅复制">
+<a href="/2015/10/14/modified-by-helensong/"  title="iOS开发常用正则表达式">
  <strong>NEXT:</strong><br/> 
- <span>深复制VS浅复制
+ <span>iOS开发常用正则表达式
 </span>
 </a>
 </div>
@@ -181,7 +153,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Object"><span class="toc-number">1.</span> <span class="toc-text">Object</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Class"><span class="toc-number">2.</span> <span class="toc-text">Class</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Meta_Class"><span class="toc-number">3.</span> <span class="toc-text">Meta Class</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
   </div>
 
 <div id="asidepart">
@@ -195,7 +167,7 @@
 		
 			<li><a href="/categories/Git/" title="Git">Git<sup>1</sup></a></li>
 		
-			<li><a href="/categories/iOS/" title="iOS">iOS<sup>6</sup></a></li>
+			<li><a href="/categories/iOS/" title="iOS">iOS<sup>7</sup></a></li>
 		
 			<li><a href="/categories/iOS开发/" title="iOS开发">iOS开发<sup>7</sup></a></li>
 		
@@ -218,7 +190,7 @@
 		
 			<li><a href="/tags/Xcode/" title="Xcode">Xcode<sup>1</sup></a></li>
 		
-			<li><a href="/tags/iOS/" title="iOS">iOS<sup>5</sup></a></li>
+			<li><a href="/tags/iOS/" title="iOS">iOS<sup>6</sup></a></li>
 		
 			<li><a href="/tags/iOS9/" title="iOS9">iOS9<sup>1</sup></a></li>
 		
@@ -235,7 +207,7 @@
   
   <div class="archiveslist">
     <p class="asidetitle"><a href="/archives">归档</a></p>
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">1</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">1</span></li></ul>
   </div>
 
 

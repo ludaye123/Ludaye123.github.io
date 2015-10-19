@@ -4,12 +4,14 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>利用Quart2D给图片添加水印以及截取圆形图片 | 大神的iOS开发博客</title>
+    <title>iOS开发常用正则表达式 | 大神的iOS开发博客</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="大神">
     
-    <meta name="description" content="一、添加水印为了不让图片被别人滥用，造成侵权，一般都会给图片加上水印。在iOS里面添加水印可以通过[CoreGraphics]框架提供的方法来操作。一般思路：        1.开启一个跟原图大小一致的context        2.将水印文字设置添加在原图上的位置并绘制在当前的context  ">
+    <meta name="description" content="在之前项目开发中，遇到过一些输入内容的判断，判断手机号码是否合法等等。记录下iOS开发中常用的正则表达式。
+手机号码
+1)移动：134[0-8],135,136,137,138,139,150,151,157,158,159,182,187,1882)联通：130,131,132,152,155,1">
     
     
     
@@ -71,15 +73,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/09/15/quart2d/" title="利用Quart2D给图片添加水印以及截取圆形图片" itemprop="url">利用Quart2D给图片添加水印以及截取圆形图片</a>
+      <a href="/2015/10/14/modified-by-helensong/" title="iOS开发常用正则表达式" itemprop="url">iOS开发常用正则表达式</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://linfeng1009.gitcafe.io" title="大神">大神</a>
     </p>
   <p class="article-time">
-    <time datetime="2015-09-15T07:28:42.000Z" itemprop="datePublished">2015-09-15</time>
-    更新日期:<time datetime="2015-09-15T07:28:42.000Z" itemprop="dateModified">2015-09-15</time>
+    <time datetime="2015-10-14T08:54:00.000Z" itemprop="datePublished">2015-10-14</time>
+    更新日期:<time datetime="2015-10-14T08:54:00.000Z" itemprop="dateModified">2015-10-14</time>
     
   </p>
 </header>
@@ -91,57 +93,44 @@
 		
 		</div>
 		
-		<p>一、添加水印<br>为了不让图片被别人滥用，造成侵权，一般都会给图片加上水印。在iOS里面添加水印可以通过[CoreGraphics]框架提供的方法来操作。<br>一般思路：<br>        1.开启一个跟原图大小一致的context<br>        2.将水印文字设置添加在原图上的位置并绘制在当前的context<br>        3.从当前的context获取新的图片<br>        4.关闭当前的context<br>    代码实现：</p>
-<pre><code>+ (<span class="built_in">UIImage</span> *)imageNamed:(<span class="built_in">NSString</span> *)name waterMark:(<span class="built_in">NSString</span> *)mark
+		<p>在之前项目开发中，遇到过一些输入内容的判断，判断手机号码是否合法等等。<br>记录下iOS开发中常用的正则表达式。</p>
+<p>手机号码</p>
+<p>1)移动：134[0-8],135,136,137,138,139,150,151,157,158,159,182,187,188<br>2)联通：130,131,132,152,155,156,185,186<br>3)电信：133,1349,153,180,189<br>NSString * MOBILE = @”^1(3[0-9]|5[0-35-9]|8[025-9])\d{8}$”;</p>
+<p>中国移动：China Mobile<br>134[0-8],135,136,137,138,139,150,151,157,158,159,182,187,188<br>NSString * CM = @”^1(34[0-8]|(3[5-9]|5[017-9]|8[278])\d)\d{7}$”;</p>
+<p>中国联通：China Unicom<br>130,131,132,152,155,156,185,186<br>NSString * CU = @”^1(3[0-2]|5[256]|8[56])\d{8}$”;</p>
+<p>中国电信：China Telecom<br>133,1349,153,180,189<br>NSString * CT = @”^1((33|53|8[09])[0-9]|349)\d{7}$”;</p>
+<p>大陆地区固话及小灵通<br>区号：010,020,021,022,023,024,025,027,028,029<br>号码：七位或八位<br>NSString * PHS = @”^0(10|2[0-5789]|\d{3})\d{7,8}$”;</p>
+<pre><code>以上集合一起，并兼容<span class="number">14</span>开头的
++ (<span class="built_in">BOOL</span>)isMobileNumber:(<span class="built_in">NSString</span> *)mobileNum
 {
-    <span class="built_in">CGFloat</span> textWidth = <span class="number">0</span>;
-    <span class="built_in">UIImage</span> *originImage = [<span class="keyword">self</span> imageNamed:name];
-    textWidth = [mark boundingRectWithSize:<span class="built_in">CGSizeMake</span>(MAXFLOAT, <span class="number">20.0</span>) options:<span class="built_in">NSStringDrawingUsesLineFragmentOrigin</span> attributes:@{<span class="built_in">NSFontAttributeName</span>:[<span class="built_in">UIFont</span> systemFontOfSize:<span class="number">15.0</span>]} context:<span class="literal">nil</span>]<span class="variable">.size</span><span class="variable">.width</span>;
-    <span class="built_in">UIGraphicsBeginImageContextWithOptions</span>(originImage<span class="variable">.size</span>, <span class="literal">NO</span>, <span class="number">0.0</span>);
-    [originImage drawAtPoint:<span class="built_in">CGPointZero</span>];
-    [mark drawAtPoint:<span class="built_in">CGPointMake</span>(<span class="number">10.0</span>,<span class="number">5.0</span>) withAttributes:@{<span class="built_in">NSFontAttributeName</span>:[<span class="built_in">UIFont</span> systemFontOfSize:<span class="number">22.0</span>],<span class="built_in">NSForegroundColorAttributeName</span>:[<span class="built_in">UIColor</span> redColor]}];
-    <span class="built_in">UIImage</span> *newImage = <span class="built_in">UIGraphicsGetImageFromCurrentImageContext</span>();
-    <span class="built_in">UIGraphicsEndImageContext</span>();
-
-    <span class="keyword">return</span> newImage;
+    <span class="built_in">NSString</span> * phoneRegex = <span class="string">@"^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$"</span>;
+    <span class="built_in">BOOL</span> isMatch = [mobileNum isMatchedByRegex:phoneRegex];
+    <span class="keyword">return</span> isMatch;
 }
-</code></pre><p> 效果图片如下：<br><img src="http://7xkpsz.com1.z0.glb.clouddn.com/watermark.png" alt="水印"></p>
-<p>二、截取圆形图片<br>在平常项目开发中设计会有一些圆形的图片，例如用户头像。大多会去设置View的layer的cornerRadius和masksToBounds.<br>    self.imageView.layer.cornerRadius = 50.0;<br>    self.imageView.layer.masksToBounds = YES;<br>这样做虽然能够达到我们要的效果，每一次加载都要去将视图的图层去渲染，这样严重影响性能。在项目中不推荐这样使用，有更好的方法去达到这种效果—-截图图片<br>在原图的基础上去截取一个圆形的图片，关键点就是在原图上绘制一个正切圆。<br>    代码实现：</p>
-<pre><code>+ (<span class="built_in">UIImage</span> *)circleImageWithNamed:(<span class="built_in">NSString</span> *)name
-{
-    <span class="built_in">UIImage</span> *originImage = [<span class="keyword">self</span> imageNamed:name];
-    <span class="built_in">CGFloat</span> newImageW = originImage<span class="variable">.size</span><span class="variable">.width</span> &lt; originImage<span class="variable">.size</span><span class="variable">.height</span>? originImage<span class="variable">.size</span><span class="variable">.width</span> : originImage<span class="variable">.size</span><span class="variable">.height</span>;
-    <span class="built_in">UIGraphicsBeginImageContextWithOptions</span>(originImage<span class="variable">.size</span>, <span class="literal">NO</span>, <span class="number">0.0</span>);
-    <span class="built_in">UIBezierPath</span> *path = [<span class="built_in">UIBezierPath</span> bezierPathWithOvalInRect:<span class="built_in">CGRectMake</span>(<span class="number">0.0</span>, <span class="number">0.0</span>, newImageW, newImageW)];
-    [path addClip];
-    [originImage drawAtPoint:<span class="built_in">CGPointZero</span>];
-    <span class="built_in">UIImage</span> *newImage = <span class="built_in">UIGraphicsGetImageFromCurrentImageContext</span>();
-    <span class="built_in">UIGraphicsEndImageContext</span>();
-
-    <span class="keyword">return</span> newImage;
-}
-</code></pre><p> 效果图如下：<br> <img src="http://7xkpsz.com1.z0.glb.clouddn.com/circle.png" alt="截取圆图"></p>
-<p> 三、绘制纯色图片<br> 在开发过程会有遇到给Button设置背景色情况，直接设置Button的backgourndcolor就没有高亮的效果，所以直接根据颜色去绘制一张纯色的图片<br>     代码实现:</p>
-<pre><code> + (<span class="built_in">UIImage</span> *)imageWith<span class="built_in">UIColor</span>:(<span class="built_in">UIColor</span> *)color
-{
-    <span class="built_in">CGRect</span> rect = <span class="built_in">CGRectMake</span>(<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">10.0</span>, <span class="number">10.0</span>);
-    <span class="built_in">UIGraphicsBeginImageContextWithOptions</span>(rect<span class="variable">.size</span>, <span class="literal">NO</span>, <span class="number">0.0</span>);
-    <span class="built_in">CGContextRef</span> context = <span class="built_in">UIGraphicsGetCurrentContext</span>();
-    <span class="built_in">CGContextSetFillColorWithColor</span>(context, color<span class="variable">.CGColor</span>);
-    <span class="built_in">CGContextFillRect</span>(context, rect);
-    <span class="built_in">UIImage</span> *image = <span class="built_in">UIGraphicsGetImageFromCurrentImageContext</span>();
-    <span class="built_in">UIGraphicsEndImageContext</span>();
-
-    <span class="keyword">return</span> image;
-}
-</code></pre><p>GitHub: <a href="https://github.com/ludaye123/UIImage-Quartz2D" target="_blank" rel="external">https://github.com/ludaye123/UIImage-Quartz2D</a></p>
+</code></pre><hr>
+<p>邮箱验证<br>       NSString *emailRegex = @”[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}”; </p>
+<p>匹配中文字符的正则表达式： [\u4e00-\u9fa5]<br>评注：匹配中文还真是个头疼的事，有了这个表达式就好办了 </p>
+<p>匹配双字节字符(包括汉字在内)：[^\x00-\xff]<br>评注：可以用来计算字符串的长度（一个双字节字符长度计2，ASCII字符计1） </p>
+<p>匹配空白行的正则表达式：\n\s*\r<br>评注：可以用来删除空白行 </p>
+<p>匹配HTML标记的正则表达式：&lt;(\S<em>?)[^&gt;]</em>&gt;.<em>?&lt;/\1&gt;|&lt;.</em>? /&gt;<br>评注：网上流传的版本太糟糕，上面这个也仅仅能匹配部分，对于复杂的嵌套标记依旧没有能力为力 </p>
+<p>匹配首尾空白字符的正则表达式：^\s<em>|\s</em>$<br>评注：可以用来删除行首行尾的空白字符(包括空格、制表符、换页符等等)，非常有用的表达式 </p>
+<p>匹配Email地址的正则表达式：\w+([-+.]\w+)<em>@\w+([-.]\w+)</em>.\w+([-.]\w+)*<br>评注：表单验证时很实用 </p>
+<p>匹配网址URL的正则表达式：[a-zA-z]+://[^\s]*<br>评注：网上流传的版本功能很有限，上面这个基本可以满足需求 </p>
+<p>匹配帐号是否合法(字母开头，允许5-16字节，允许字母数字下划线)：^[a-zA-Z][a-zA-Z0-9_]{4,15}$<br>评注：表单验证时很实用 </p>
+<p>匹配国内电话号码：\d{3}-\d{8}|\d{4}-\d{7}<br>评注：匹配形式如 0511-4405222 或 021-87888822 </p>
+<p>匹配腾讯QQ号：[1-9][0-9]{4,}<br>评注：腾讯QQ号从10000开始 </p>
+<p>匹配中国邮政编码：[1-9]\d{5}(?!\d)<br>评注：中国邮政编码为6位数字 </p>
+<p>匹配身份证：\d{15}|\d{18}<br>评注：中国的身份证为15位或18位 </p>
+<p>匹配ip地址：\d+.\d+.\d+.\d+<br>评注：提取ip地址时有用 </p>
+<p>匹配特定数字：<br>^[1-9]\d<em>$　 　 //匹配正整数<br>^-[1-9]\d</em>$ 　 //匹配负整数<br>^-?[1-9]\d<em>$　　 //匹配整数<br>^[1-9]\d</em>|0$　 //匹配非负整数（正整数 + 0）<br>^-[1-9]\d<em>|0$　　 //匹配非正整数（负整数 + 0）<br>^[1-9]\d</em>.\d<em>|0.\d</em>[1-9]\d<em>$　　 //匹配正浮点数<br>^-([1-9]\d</em>.\d<em>|0.\d</em>[1-9]\d<em>)$　 //匹配负浮点数<br>^-?([1-9]\d</em>.\d<em>|0.\d</em>[1-9]\d<em>|0?.0+|0)$　 //匹配浮点数<br>^[1-9]\d</em>.\d<em>|0.\d</em>[1-9]\d<em>|0?.0+|0$　　 //匹配非负浮点数（正浮点数 + 0）<br>^(-([1-9]\d</em>.\d<em>|0.\d</em>[1-9]\d*))|0?.0+|0$　　//匹配非正浮点数（负浮点数 + 0）<br>评注：处理大量数据时有用，具体应用时注意修正 </p>
+<p>匹配特定字符串：<br>^[A-Za-z]+$　　//匹配由26个英文字母组成的字符串<br>^[A-Z]+$　　//匹配由26个英文字母的大写组成的字符串<br>^[a-z]+$　　//匹配由26个英文字母的小写组成的字符串<br>^[A-Za-z0-9]+$　　//匹配由数字和26个英文字母组成的字符串<br>^\w+$　　//匹配由数字、26个英文字母或者下划线组成的字符串 </p>
   
 	</div>
 		<footer class="article-footer clearfix">
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/Quart2D/">Quart2D</a>
+  <span></span> <a href="/tags/iOS/">iOS</a>
   </div>
 
 
@@ -154,7 +143,7 @@
 
 <div class="article-share" id="share">
 
-  <div data-url="http://linfeng1009.gitcafe.io/2015/09/15/quart2d/" data-title="利用Quart2D给图片添加水印以及截取圆形图片 | 大神的iOS开发博客" data-tsina="2502328960" class="share clearfix">
+  <div data-url="http://linfeng1009.gitcafe.io/2015/10/14/modified-by-helensong/" data-title="iOS开发常用正则表达式 | 大神的iOS开发博客" data-tsina="2502328960" class="share clearfix">
   </div>
 
 </div>
@@ -164,18 +153,18 @@
 <nav class="article-nav clearfix">
  
  <div class="prev" >
- <a href="/2015/09/16/thread-summary-nsthread/" title="iOS多线程总结之NSThread">
+ <a href="/2015/10/19/object-parse/" title="Objective-C 对象解析">
   <strong>PREVIOUS:</strong><br/>
   <span>
-  iOS多线程总结之NSThread</span>
+  Objective-C 对象解析</span>
 </a>
 </div>
 
 
 <div class="next">
-<a href="/2015/09/01/corelocation-basic-use/"  title="CoreLocation 基本使用">
+<a href="/2015/10/14/stack-view/"  title="UIStackView Tutorial:介绍堆栈视图(译)">
  <strong>NEXT:</strong><br/> 
- <span>CoreLocation 基本使用
+ <span>UIStackView Tutorial:介绍堆栈视图(译)
 </span>
 </a>
 </div>
