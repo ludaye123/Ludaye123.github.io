@@ -4,15 +4,14 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>Objective-C 对象解析 | 大神的iOS开发博客</title>
+    <title>3D Touch实践——Quick Action | 大神的iOS开发博客</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="大神">
     
-    <meta name="description" content="Apple开源库: 点击这里，当前版本为最新版本:objc4-647.tar.gz
-
-Object
-在Objective-C中，除了一些基本类型外，基本上都可以称之为对象。首先从类的实例进行分析：打开刚刚下载源码的工程：找到objc_private.h这个文件，在文件的上面部分可以看到Class和i">
+    <meta name="description" content="3D Touch简介随着iOS9以及iPhone 6s和iPhone 6s plus的发布，苹果添加一种立体的用户界面:用户在主屏幕上不需要打开APP，按压图标就可以快速访问APP提供的一些功能。在APP内，用户按压界面就可以预览更多地内容，获得加速访问的特征。
+主屏幕Quick Action
+快速">
     
     
     
@@ -76,15 +75,15 @@ Object
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/10/19/object-parse/" title="Objective-C 对象解析" itemprop="url">Objective-C 对象解析</a>
+      <a href="/2015/10/20/3D-Touch实践/" title="3D Touch实践——Quick Action" itemprop="url">3D Touch实践——Quick Action</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://linfeng1009.gitcafe.io" title="大神">大神</a>
     </p>
   <p class="article-time">
-    <time datetime="2015-10-19T08:31:02.000Z" itemprop="datePublished">2015-10-19</time>
-    更新日期:<time datetime="2015-10-19T08:31:02.000Z" itemprop="dateModified">2015-10-19</time>
+    <time datetime="2015-10-20T07:17:25.000Z" itemprop="datePublished">2015-10-20</time>
+    更新日期:<time datetime="2015-10-20T09:31:40.000Z" itemprop="dateModified">2015-10-20</time>
     
   </p>
 </header>
@@ -93,24 +92,23 @@ Object
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Object"><span class="toc-number">1.</span> <span class="toc-text">Object</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Class"><span class="toc-number">2.</span> <span class="toc-text">Class</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Meta_Class"><span class="toc-number">3.</span> <span class="toc-text">Meta Class</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#3D_Touch简介"><span class="toc-number">1.</span> <span class="toc-text">3D Touch简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#主屏幕Quick_Action"><span class="toc-number">2.</span> <span class="toc-text">主屏幕Quick Action</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#静态快速行为"><span class="toc-number">2.1.</span> <span class="toc-text">静态快速行为</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#动态快速行为"><span class="toc-number">2.2.</span> <span class="toc-text">动态快速行为</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#动态_VS_静态快速行为"><span class="toc-number">2.3.</span> <span class="toc-text">动态 VS 静态快速行为</span></a></li></ol></li></ol>
 		</div>
 		
-		<p>Apple开源库: <a href="http://opensource.apple.com/tarballs/objc4/" target="_blank" rel="external">点击这里</a>，当前版本为最新版本:objc4-647.tar.gz</p>
-<p><img src="http://blog.leichunfeng.com/images/object_model.png" alt=""></p>
-<h2 id="Object">Object</h2><hr>
-<p>在Objective-C中，除了一些基本类型外，基本上都可以称之为对象。首先从类的实例进行分析：<br>打开刚刚下载源码的工程：<br>找到objc_private.h这个文件，在文件的上面部分可以看到Class和id的定义</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> objc_class *Class;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> objc_object *<span class="keyword">id</span>;</span><br></pre></td></tr></table></figure>
-<p>可以看到Class和id分为objc_class和objc_object类型的指针，Command+左键查看下objc_object的定义。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> objc_object &#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    isa_t isa;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ISA() assumes this is NOT a tagged pointer object</span></span><br><span class="line">    <span class="function">Class <span class="title">ISA</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// getIsa() allows this to be a tagged pointer object</span></span><br><span class="line">    <span class="function">Class <span class="title">getIsa</span><span class="params">()</span></span>;</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>由此可以得知，其实oc对象实质上就是一个objc_object结构体的对象，仅包含一个isa的成员变量，isa所对应的内容就是对象所属的类。id在运行时通过isa可以指向任意的oc对象。</p>
-<h2 id="Class">Class</h2><hr>
-<p>对象发送一个消息时，所需的数据和方法都是由其所属类提供的，类描述了对象占用空间大小，成员变量的类型以及描述对象的行为。实质就是对象发送消息以及所需的数据是通过isa找到其所属的类，类来提供其对象所需的一切。<br>类的定义如下:<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> objc_class : objc_object &#123;</span><br><span class="line">    Class superclass;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *name;</span><br><span class="line">    <span class="keyword">uint32_t</span> version;</span><br><span class="line">    <span class="keyword">uint32_t</span> info;</span><br><span class="line">    <span class="keyword">uint32_t</span> instance_size;</span><br><span class="line">    <span class="keyword">struct</span> old_ivar_list *ivars;</span><br><span class="line">    <span class="keyword">struct</span> old_method_list **methodLists;</span><br><span class="line">    Cache cache;</span><br><span class="line">    <span class="keyword">struct</span> old_protocol_list *protocols;</span><br><span class="line">    <span class="comment">// CLS_EXT only</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">uint8_t</span> *ivar_layout;</span><br><span class="line">    <span class="keyword">struct</span> old_class_ext *ext;</span><br><span class="line"></span><br><span class="line">   <span class="comment">//  more</span></span><br><span class="line">    	...</span><br><span class="line">   <span class="comment">// more</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p>在类的定义中，可以得出类实质上也是对象，它也包含isa成员变量，成员变量列表，方法列表以及协议列表。<br>那么类对象的isa对应的值又是什么呢？ 带着个这个问题继续。</p>
-<h2 id="Meta_Class">Meta Class</h2><hr>
-<p>通过上面类的定义得知类其实也是对象，既然是对象那就有对应的所属类，这个类称之为元类(Meta Class)，元类保存了静态方法列表。<br>我们在创建一个对象时，经常会使用某个类调用alloc或者new方法，例如[UIView new],给类对象发送一个new消息，和对象发送消息一样，类对象也要通过其isa找到对应的所属类，去查找响应的方法。<br>那么问题来了？元类是不是也是对象呢？ 没错，元类也是对象，叫做元类对象，那么它的isa对应的所属类又是什么？元类对象对应的所属类叫做根元类(Root Meta Class)。那么根元类理所当然也是一个对象，isa对应的值就是其本身。至于元类，在开发中并不能显示的调用而且也没用必要。</p>
-<h2 id="总结">总结</h2><hr>
-<p>1.类的对象发送消息时，根据isa找到其所属类，然后从类提供的方法去查找，如果当前类找不到，再从其父类中查找，直到找到，否则异常(不能识别方法)。<br>2.类对象发送消失时，根据isa找到元类，然后从元类提供的方法去查找，如果当前类找不到，在从其父类中查找，直到找到，否则异常。</p>
+		<h2 id="3D_Touch简介">3D Touch简介</h2><p>随着iOS9以及iPhone 6s和iPhone 6s plus的发布，苹果添加一种立体的用户界面:<br>用户在主屏幕上不需要打开APP，按压图标就可以快速访问APP提供的一些功能。<br>在APP内，用户按压界面就可以预览更多地内容，获得加速访问的特征。</p>
+<h2 id="主屏幕Quick_Action">主屏幕Quick Action</h2><p><img src="https://developer.apple.com/library/prerelease/ios/documentation/UserExperience/Conceptual/Adopting3DTouchOniPhone/Art/maps_directions_home_2x.png" alt=""></p>
+<p>快速行为(Quick Action)可以让用户预见并加速与APP交互，iOS9SDK提供的官方API可以使你定义静态或者动态的快速行为，以及检测当前设备快速行为的可用性。</p>
+<p>1.定义静态快速行为在APP工程的<code>Info.plist</code>文件中添加<code>UIApplicationShortcutItems</code>数组。<br>2.定义动态快速行为使用<code>UIApplicationShortcutItem</code>和相关的API，然后给应用程序的共享对象<code>UIApplication</code>使用<code>shortcutItems</code>这个属性添加动态的快速行为。</p>
+<h3 id="静态快速行为">静态快速行为</h3><p><code>UIApplicationShortcutItems</code>(iOS数组)给APP指定静态主屏幕的快速行为，这个键包含了一个字典数组，每个字典包含关于一个快速行为的详细信息。<br>你可以指定静态快速行为给你的APP用一个字典数组。当用户在支持3D Touch的设备上按压主屏幕图标时，在主屏幕上显示快速行为的数量是由系统决定的(只能显示4个)。<br>静态快速行为你在<code>Info.plist</code>文件中定义显示在主屏幕上以同样地顺序出现在文件中。下面是一个Demo:<br><img src="http://7xkpsz.com1.z0.glb.clouddn.com/3dtouchInfoplist.png" alt=""></p>
+<p>然后的AppDelegate.m文件中添加<code>application:performActionForShortcutItem:completionHandler:</code>代理方法，根据<code>UIApplicationShortcutItem</code>的type属性和之前在info.plist设置<code>UIApplicationShortcutItemType</code>对应的在值来判断，用户点击的是哪个快速行为。这个方法当用户通过选择一条接近激活应用时就会调用，除了<code>-application:willFinishLaunchingWithOptions: or -application:didFinishLaunchingWithOptions returns NO.</code>这种情况。在<code>-application:didFinishLaunchingWithOptions</code>中可以通过<code>UIApplicationLaunchOptionsShortcutItemKey</code>键来获取当前接收快速行为的<code>UIApplicationShortcutItem</code>对象，来处理用户的意图。<br>demo运行结果:<br><img src="http://7xkpsz.com1.z0.glb.clouddn.com/3dtouchquickaction.gif" alt=""></p>
+<p><img src="http://7xkpsz.com1.z0.glb.clouddn.com/D1CAC8C1-A43C-4E11-B382-96D1270FD133.png" alt=""></p>
+<p>静态定义快速行为常用的key:<br>UIApplicationShortcutItemType (必须使用) 用来区分与其他快速行为的分类<br>UIApplicationShortcutItemTitle (必须使用) 快速行为显示的标题<br>UIApplicationShortcutItemSubtitle  快速行为显示的子标题<br>UIApplicationShortcutItemIconType  图片类型由系统提供<br>UIApplicationShortcutItemIconFile  自定义的图标<br>UIApplicationShortcutItemUserInfo  附加信息</p>
+<p>Demo地址: <a href="https://github.com/ludaye123/3DTouch-Static-QuickActions.git" target="_blank" rel="external">GitHub</a></p>
+<h3 id="动态快速行为">动态快速行为</h3><p>定义动态快速行为使用<code>UIApplicationShortcutItem</code>和相关的API，然后给应用程序的共享对象<code>UIApplication</code>使用<code>shortcutItems</code>这个属性添加动态的快速行为。示例代码如下:</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)setupApplicationShortcutItems</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">UIApplicationShortcutIcon</span> *homeIcon = [<span class="built_in">UIApplicationShortcutIcon</span> iconWithType:<span class="built_in">UIApplicationShortcutIconTypeCompose</span>];</span><br><span class="line">    <span class="built_in">UIApplicationShortcutIcon</span> *messageIcon = [<span class="built_in">UIApplicationShortcutIcon</span> iconWithTemplateImageName:<span class="string">@"message"</span>];</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">NSDictionary</span> *userInfo1 = @&#123;<span class="string">@"key"</span>:<span class="string">@"home"</span>&#125;;</span><br><span class="line">    <span class="built_in">NSDictionary</span> *userInfo2 = @&#123;<span class="string">@"key"</span>:<span class="string">@"message"</span>&#125;;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    <span class="built_in">UIMutableApplicationShortcutItem</span> *homeShortcutItem = [[<span class="built_in">UIMutableApplicationShortcutItem</span> alloc] initWithType:<span class="string">@"io.gitcafe.linfeng1009.main"</span> localizedTitle:<span class="string">@"主页"</span> localizedSubtitle:<span class="string">@"跳转主页"</span> icon:homeIcon userInfo:userInfo1];</span><br><span class="line">    <span class="built_in">UIMutableApplicationShortcutItem</span> *messageShortcutItem = [[<span class="built_in">UIMutableApplicationShortcutItem</span> alloc] initWithType:<span class="string">@"io.gitcafe.linfeng1009.message"</span> localizedTitle:<span class="string">@"消息"</span> localizedSubtitle:<span class="string">@"跳转消息"</span> icon:messageIcon userInfo:userInfo2];</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">NSArray</span> *items = @[homeShortcutItem,messageShortcutItem];</span><br><span class="line">    <span class="built_in">NSArray</span> *exsitItems = [<span class="built_in">UIApplication</span> sharedApplication]<span class="variable">.shortcutItems</span>;</span><br><span class="line">    <span class="built_in">NSArray</span> *updateItems = [exsitItems arrayByAddingObjectsFromArray:items];</span><br><span class="line">    </span><br><span class="line">    [<span class="built_in">UIApplication</span> sharedApplication]<span class="variable">.shortcutItems</span> = updateItems;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行效果:</p>
+<p><img src="http://7xkpsz.com1.z0.glb.clouddn.com/2C7B34D8-D1B0-4AEA-98D9-D4DF3C812743.png" alt=""></p>
+<h3 id="动态_VS_静态快速行为">动态 VS 静态快速行为</h3><p>定义主屏幕动态快速行为使用这个类(UIApplicationShortcutItem),代码创建快速行为，并且注册它们给应用程序对象，在运行时。<br>定义主屏幕静态快速行为用<code>UIApplicationShortcutItems</code>数组在Xcode工程的<code>info.plist</code>文件中，当你的应用被安装时系统注册静态快速行为。<br>系统限制了快速行为显示的数量，当用户按压主屏幕上的图标，在限制显示的快速行为的标题内，静态快速行为具有优先显示(demo中可以看出)，开始显示在列表的顶部位置。如果你的静态快速行为没有超过限定显示的数量，并且也动态定义了快速行为，那么动态创建的快速行为会显示。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -130,7 +128,7 @@ Object
 
 <div class="article-share" id="share">
 
-  <div data-url="http://linfeng1009.gitcafe.io/2015/10/19/object-parse/" data-title="Objective-C 对象解析 | 大神的iOS开发博客" data-tsina="2502328960" class="share clearfix">
+  <div data-url="http://linfeng1009.gitcafe.io/2015/10/20/3D-Touch实践/" data-title="3D Touch实践——Quick Action | 大神的iOS开发博客" data-tsina="2502328960" class="share clearfix">
   </div>
 
 </div>
@@ -139,19 +137,11 @@ Object
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2015/10/20/3D-Touch实践/" title="3D Touch实践——Quick Action">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  3D Touch实践——Quick Action</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2015/10/13/git-commad/"  title="Git常用命令">
+<a href="/2015/10/19/object-parse/"  title="Objective-C 对象解析">
  <strong>NEXT:</strong><br/> 
- <span>Git常用命令
+ <span>Objective-C 对象解析
 </span>
 </a>
 </div>
@@ -168,7 +158,7 @@ Object
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Object"><span class="toc-number">1.</span> <span class="toc-text">Object</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Class"><span class="toc-number">2.</span> <span class="toc-text">Class</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Meta_Class"><span class="toc-number">3.</span> <span class="toc-text">Meta Class</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#3D_Touch简介"><span class="toc-number">1.</span> <span class="toc-text">3D Touch简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#主屏幕Quick_Action"><span class="toc-number">2.</span> <span class="toc-text">主屏幕Quick Action</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#静态快速行为"><span class="toc-number">2.1.</span> <span class="toc-text">静态快速行为</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#动态快速行为"><span class="toc-number">2.2.</span> <span class="toc-text">动态快速行为</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#动态_VS_静态快速行为"><span class="toc-number">2.3.</span> <span class="toc-text">动态 VS 静态快速行为</span></a></li></ol></li></ol>
   </div>
 
 <div id="asidepart">
