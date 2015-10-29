@@ -4,15 +4,12 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>Objective-C 对象解析 | 大神的iOS开发博客</title>
+    <title>Cocoa Framework 生成脚本 | 大神的iOS开发博客</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="大神">
     
-    <meta name="description" content="Apple开源库: 点击这里，当前版本为最新版本:objc4-647.tar.gz
-
-Object
-在Objective-C中，除了一些基本类型外，基本上都可以称之为对象。首先从类的实例进行分析：打开刚刚下载源码的工程：找到objc_private.h这个文件，在文件的上面部分可以看到Class和i">
+    <meta name="description" content="1234567891011121314151617181920212223242526272829303132# Sets the target folders and the final framework product.FMK_NAME=$&amp;#123;PROJECT_NAME&amp;#125;# I">
     
     
     
@@ -76,15 +73,15 @@ Object
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/10/19/object-parse/" title="Objective-C 对象解析" itemprop="url">Objective-C 对象解析</a>
+      <a href="/2015/10/29/Cocoa-Framework-生成脚本/" title="Cocoa Framework 生成脚本" itemprop="url">Cocoa Framework 生成脚本</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://linfeng1009.gitcafe.io" title="大神">大神</a>
     </p>
   <p class="article-time">
-    <time datetime="2015-10-19T08:31:02.000Z" itemprop="datePublished">2015-10-19</time>
-    更新日期:<time datetime="2015-10-19T08:31:02.000Z" itemprop="dateModified">2015-10-19</time>
+    <time datetime="2015-10-29T06:53:23.000Z" itemprop="datePublished">2015-10-29</time>
+    更新日期:<time datetime="2015-10-29T06:55:47.000Z" itemprop="dateModified">2015-10-29</time>
     
   </p>
 </header>
@@ -93,25 +90,10 @@ Object
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Object"><span class="toc-number">1.</span> <span class="toc-text">Object</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Class"><span class="toc-number">2.</span> <span class="toc-text">Class</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Meta_Class"><span class="toc-number">3.</span> <span class="toc-text">Meta Class</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
+		
 		</div>
 		
-		<p>Apple开源库: <a href="http://opensource.apple.com/tarballs/objc4/" target="_blank" rel="external">点击这里</a>，当前版本为最新版本:objc4-647.tar.gz</p>
-<p><img src="http://blog.leichunfeng.com/images/object_model.png" alt=""></p>
-<h2 id="Object">Object</h2><hr>
-<p>在Objective-C中，除了一些基本类型外，基本上都可以称之为对象。首先从类的实例进行分析：<br>打开刚刚下载源码的工程：<br>找到objc_private.h这个文件，在文件的上面部分可以看到Class和id的定义</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> objc_class *Class;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> objc_object *<span class="keyword">id</span>;</span><br></pre></td></tr></table></figure>
-<p>可以看到Class和id分为objc_class和objc_object类型的指针，Command+左键查看下objc_object的定义。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> objc_object &#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    isa_t isa;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ISA() assumes this is NOT a tagged pointer object</span></span><br><span class="line">    <span class="function">Class <span class="title">ISA</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// getIsa() allows this to be a tagged pointer object</span></span><br><span class="line">    <span class="function">Class <span class="title">getIsa</span><span class="params">()</span></span>;</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>由此可以得知，其实oc对象实质上就是一个objc_object结构体的对象，仅包含一个isa的成员变量，isa所对应的内容就是对象所属的类。id在运行时通过isa可以指向任意的oc对象。</p>
-<h2 id="Class">Class</h2><hr>
-<p>对象发送一个消息时，所需的数据和方法都是由其所属类提供的，类描述了对象占用空间大小，成员变量的类型以及描述对象的行为。实质就是对象发送消息以及所需的数据是通过isa找到其所属的类，类来提供其对象所需的一切。<br>类的定义如下:<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> objc_class : objc_object &#123;</span><br><span class="line">    Class superclass;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *name;</span><br><span class="line">    <span class="keyword">uint32_t</span> version;</span><br><span class="line">    <span class="keyword">uint32_t</span> info;</span><br><span class="line">    <span class="keyword">uint32_t</span> instance_size;</span><br><span class="line">    <span class="keyword">struct</span> old_ivar_list *ivars;</span><br><span class="line">    <span class="keyword">struct</span> old_method_list **methodLists;</span><br><span class="line">    Cache cache;</span><br><span class="line">    <span class="keyword">struct</span> old_protocol_list *protocols;</span><br><span class="line">    <span class="comment">// CLS_EXT only</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">uint8_t</span> *ivar_layout;</span><br><span class="line">    <span class="keyword">struct</span> old_class_ext *ext;</span><br><span class="line"></span><br><span class="line">   <span class="comment">//  more</span></span><br><span class="line">    	...</span><br><span class="line">   <span class="comment">// more</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p>在类的定义中，可以得出类实质上也是对象，它也包含isa成员变量，成员变量列表，方法列表以及协议列表。<br>那么类对象的isa对应的值又是什么呢？ 带着个这个问题继续。</p>
-<h2 id="Meta_Class">Meta Class</h2><hr>
-<p>通过上面类的定义得知类其实也是对象，既然是对象那就有对应的所属类，这个类称之为元类(Meta Class)，元类保存了静态方法列表。<br>我们在创建一个对象时，经常会使用某个类调用alloc或者new方法，例如[UIView new],给类对象发送一个new消息，和对象发送消息一样，类对象也要通过其isa找到对应的所属类，去查找响应的方法。<br>那么问题来了？元类是不是也是对象呢？ 没错，元类也是对象，叫做元类对象，那么它的isa对应的所属类又是什么？元类对象对应的所属类叫做根元类(Root Meta Class)。那么根元类理所当然也是一个对象，isa对应的值就是其本身。至于元类，在开发中并不能显示的调用而且也没用必要。</p>
-<h2 id="总结">总结</h2><hr>
-<p>1.类的对象发送消息时，根据isa找到其所属类，然后从类提供的方法去查找，如果当前类找不到，再从其父类中查找，直到找到，否则异常(不能识别方法)。<br>2.类对象发送消失时，根据isa找到元类，然后从元类提供的方法去查找，如果当前类找不到，在从其父类中查找，直到找到，否则异常。</p>
-  
+		<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Sets the target folders and the final framework product.</span></span><br><span class="line">FMK_NAME=<span class="variable">$&#123;PROJECT_NAME&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Install dir will be the final output to the framework.</span></span><br><span class="line"><span class="comment"># The following line create it in the root folder of the current project.</span></span><br><span class="line">INSTALL_DIR=<span class="variable">$&#123;SRCROOT&#125;</span>/Products/<span class="variable">$&#123;FMK_NAME&#125;</span>.framework</span><br><span class="line"></span><br><span class="line"><span class="comment"># Working dir will be deleted after the framework creation.</span></span><br><span class="line">WRK_DIR=build</span><br><span class="line">DEVICE_DIR=<span class="variable">$&#123;WRK_DIR&#125;</span>/Release-iphoneos/<span class="variable">$&#123;FMK_NAME&#125;</span>.framework</span><br><span class="line">SIMULATOR_DIR=<span class="variable">$&#123;WRK_DIR&#125;</span>/Release-iphonesimulator/<span class="variable">$&#123;FMK_NAME&#125;</span>.framework</span><br><span class="line"></span><br><span class="line"><span class="comment"># -configuration $&#123;CONFIGURATION&#125;</span></span><br><span class="line"><span class="comment"># Clean and Building both architectures.</span></span><br><span class="line"><span class="comment"># 分别编译生成真机和模拟器使用的framework</span></span><br><span class="line">xcodebuild -configuration <span class="string">"Release"</span> -target <span class="string">"<span class="variable">$&#123;FMK_NAME&#125;</span>"</span> -sdk iphoneos clean build</span><br><span class="line">xcodebuild -configuration <span class="string">"Release"</span> -target <span class="string">"<span class="variable">$&#123;FMK_NAME&#125;</span>"</span> -sdk iphonesimulator clean build</span><br><span class="line"></span><br><span class="line"><span class="comment"># Cleaning the oldest.</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="operator">-d</span> <span class="string">"<span class="variable">$&#123;INSTALL_DIR&#125;</span>"</span> ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">rm -rf <span class="string">"<span class="variable">$&#123;INSTALL_DIR&#125;</span>"</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line">mkdir -p <span class="string">"<span class="variable">$&#123;INSTALL_DIR&#125;</span>"</span></span><br><span class="line"></span><br><span class="line">cp -R <span class="string">"<span class="variable">$&#123;DEVICE_DIR&#125;</span>/"</span> <span class="string">"<span class="variable">$&#123;INSTALL_DIR&#125;</span>/"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Uses the Lipo Tool to merge both binary files (i386 + armv6/armv7) into one Universal final product.</span></span><br><span class="line">lipo -create <span class="string">"<span class="variable">$&#123;DEVICE_DIR&#125;</span>/<span class="variable">$&#123;FMK_NAME&#125;</span>"</span> <span class="string">"<span class="variable">$&#123;SIMULATOR_DIR&#125;</span>/<span class="variable">$&#123;FMK_NAME&#125;</span>"</span> -output <span class="string">"<span class="variable">$&#123;INSTALL_DIR&#125;</span>/<span class="variable">$&#123;FMK_NAME&#125;</span>"</span></span><br><span class="line"></span><br><span class="line">rm -r <span class="string">"<span class="variable">$&#123;WRK_DIR&#125;</span>"</span></span><br></pre></td></tr></table></figure>  
 	</div>
 		<footer class="article-footer clearfix">
 
@@ -121,16 +103,11 @@ Object
   </div>
 
 
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/iOS/">iOS</a>
-</div>
-
 
 
 <div class="article-share" id="share">
 
-  <div data-url="http://linfeng1009.gitcafe.io/2015/10/19/object-parse/" data-title="Objective-C 对象解析 | 大神的iOS开发博客" data-tsina="2502328960" class="share clearfix">
+  <div data-url="http://linfeng1009.gitcafe.io/2015/10/29/Cocoa-Framework-生成脚本/" data-title="Cocoa Framework 生成脚本 | 大神的iOS开发博客" data-tsina="2502328960" class="share clearfix">
   </div>
 
 </div>
@@ -139,19 +116,11 @@ Object
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2015/10/20/3D-Touch实践/" title="3D Touch实践——Quick Action">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  3D Touch实践——Quick Action</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2015/10/13/git-commad/"  title="Git常用命令">
+<a href="/2015/10/20/3D-Touch实践/"  title="3D Touch实践——Quick Action">
  <strong>NEXT:</strong><br/> 
- <span>Git常用命令
+ <span>3D Touch实践——Quick Action
 </span>
 </a>
 </div>
@@ -168,7 +137,7 @@ Object
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Object"><span class="toc-number">1.</span> <span class="toc-text">Object</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Class"><span class="toc-number">2.</span> <span class="toc-text">Class</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Meta_Class"><span class="toc-number">3.</span> <span class="toc-text">Meta Class</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
+  
   </div>
 
 <div id="asidepart">
