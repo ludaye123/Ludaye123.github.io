@@ -4,7 +4,7 @@
   <subtitle><![CDATA[知识来源于分解]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://linfeng1009.gitcafe.io/"/>
-  <updated>2015-11-10T08:32:20.000Z</updated>
+  <updated>2015-11-10T08:33:42.000Z</updated>
   <id>http://linfeng1009.gitcafe.io/</id>
   
   <author>
@@ -18,8 +18,8 @@
     <title><![CDATA[iOS内存管理ARC]]></title>
     <link href="http://linfeng1009.gitcafe.io/2015/11/10/memory-arc/"/>
     <id>http://linfeng1009.gitcafe.io/2015/11/10/memory-arc/</id>
-    <published>2015-11-10T08:32:20.000Z</published>
-    <updated>2015-11-10T08:32:20.000Z</updated>
+    <published>2015-11-10T08:32:36.000Z</published>
+    <updated>2015-11-10T08:33:42.000Z</updated>
     <content type="html"><![CDATA[<p>ARC是一个编译器的特征，提供自动内存管理对Objective-C对象。而不是必须思索<code>retain</code>和<code>release</code>操作，ARC容许你集中精力在令人有趣的代码上，这个对象图表示对象之间的关系在你的应用中。<br><img src="https://developer.apple.com/library/prerelease/ios/releasenotes/ObjectiveC/RN-TransitioningToARC/Art/ARC_Illustration.jpg" alt=""></p>
 <h2 id="ARC概述">ARC概述</h2><hr>
 <p>ARC可以让你没必要记住什么时候使用<code>retain</code>,<code>release</code>和<code>autorelease</code>,ARC预估对象的必要生命周期并且自动插入合适的内存管理调用方法在编译时，也会生成合适的dealloc方法。<br>一个完整正确的实现的Person类可能是这样的：</p>
