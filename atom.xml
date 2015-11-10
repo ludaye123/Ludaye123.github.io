@@ -4,7 +4,7 @@
   <subtitle><![CDATA[知识来源于分解]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://linfeng1009.gitcafe.io/"/>
-  <updated>2015-11-10T08:29:26.000Z</updated>
+  <updated>2015-11-10T08:32:20.000Z</updated>
   <id>http://linfeng1009.gitcafe.io/</id>
   
   <author>
@@ -18,8 +18,8 @@
     <title><![CDATA[iOS内存管理ARC]]></title>
     <link href="http://linfeng1009.gitcafe.io/2015/11/10/memory-arc/"/>
     <id>http://linfeng1009.gitcafe.io/2015/11/10/memory-arc/</id>
-    <published>2015-11-10T08:29:26.000Z</published>
-    <updated>2015-11-10T08:29:26.000Z</updated>
+    <published>2015-11-10T08:32:20.000Z</published>
+    <updated>2015-11-10T08:32:20.000Z</updated>
     <content type="html"><![CDATA[<p>ARC是一个编译器的特征，提供自动内存管理对Objective-C对象。而不是必须思索<code>retain</code>和<code>release</code>操作，ARC容许你集中精力在令人有趣的代码上，这个对象图表示对象之间的关系在你的应用中。<br><img src="https://developer.apple.com/library/prerelease/ios/releasenotes/ObjectiveC/RN-TransitioningToARC/Art/ARC_Illustration.jpg" alt=""></p>
 <h2 id="ARC概述">ARC概述</h2><hr>
 <p>ARC可以让你没必要记住什么时候使用<code>retain</code>,<code>release</code>和<code>autorelease</code>,ARC预估对象的必要生命周期并且自动插入合适的内存管理调用方法在编译时，也会生成合适的dealloc方法。<br>一个完整正确的实现的Person类可能是这样的：</p>
@@ -91,7 +91,7 @@ NSLog(@<span class="string">"string: %@"</span>, <span class="built_in">string</
      <span class="comment">// Code, such as a loop that creates a large number of temporary objects.</span>
 }
 </code></pre><p>这个简单的结构允许编译器推断引用技术的状态。在入口点，一个自动释放池被推入，正常退出(brek,return,goto,fall-through等等)自动释放池被推出。为了兼容现在的代码，如果退出是由于异常，那么自动释放池不会推出。</p>
-<h3 id="AutoReleasePoll用例">AutoReleasePoll用例</h3><p>在ARC的实际应用中，之前遇到过一种情况，就是对于大量数据处理的时候，如果不进行手动销毁释放池，那将会出现一个非常非常严重的内存问题和性能问题。下面示例说明:</p>
+<h3 id="AutoReleasePool实际应用">AutoReleasePool实际应用</h3><p>在ARC的实际应用中，之前遇到过一种情况，就是对于大量数据处理的时候，如果不进行手动销毁释放池，那将会出现一个非常非常严重的内存问题和性能问题。下面示例说明:</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSString</span> *imagePath = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:<span class="string">@"IMG_5401"</span> ofType:<span class="string">@"JPG"</span>];</span><br><span class="line">   <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">50</span>; i++)</span><br><span class="line">   &#123;</span><br><span class="line">       <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">100</span>; j++)</span><br><span class="line">       &#123;</span><br><span class="line">           <span class="built_in">UIImage</span> *image = [<span class="built_in">UIImage</span> imageWithContentsOfFile:imagePath];</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
 <p>在没有手动销毁外循环内的自动释放池的情况下:<br><img src="http://7xkpsz.com1.z0.glb.clouddn.com/demo1.png" alt=""><br>手动销毁的情况:<br><img src="http://7xkpsz.com1.z0.glb.clouddn.com/8F9A8A26-1067-4CF3-B21E-2CB1479560C1.png" alt=""></p>
 <h3 id="栈变量初始化为nil">栈变量初始化为nil</h3><p>使用ARC,strong,weak和autoreleasing栈变量会隐式的初始化为nil。</p>
