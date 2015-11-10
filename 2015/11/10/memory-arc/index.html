@@ -75,15 +75,15 @@ ARC可以让你没必要记住什么时候使用retain,release和autorelea">
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/09/29/memory-arc/" title="iOS内存管理ARC" itemprop="url">iOS内存管理ARC</a>
+      <a href="/2015/11/10/memory-arc/" title="iOS内存管理ARC" itemprop="url">iOS内存管理ARC</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://linfeng1009.gitcafe.io" title="大神">大神</a>
     </p>
   <p class="article-time">
-    <time datetime="2015-09-29T09:08:20.000Z" itemprop="datePublished">2015-09-29</time>
-    更新日期:<time datetime="2015-09-29T09:08:20.000Z" itemprop="dateModified">2015-09-29</time>
+    <time datetime="2015-11-10T08:29:26.000Z" itemprop="datePublished">2015-11-10</time>
+    更新日期:<time datetime="2015-11-10T08:29:26.000Z" itemprop="dateModified">2015-11-10</time>
     
   </p>
 </header>
@@ -92,7 +92,7 @@ ARC可以让你没必要记住什么时候使用retain,release和autorelea">
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ARC概述"><span class="toc-number">1.</span> <span class="toc-text">ARC概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ARC强制执行新规则"><span class="toc-number">2.</span> <span class="toc-text">ARC强制执行新规则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ARC生命周期修饰符"><span class="toc-number">3.</span> <span class="toc-text">ARC生命周期修饰符</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Property修饰"><span class="toc-number">3.1.</span> <span class="toc-text">Property修饰</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#变量修饰符"><span class="toc-number">3.2.</span> <span class="toc-text">变量修饰符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用生命周期修饰符来避免强应用循环"><span class="toc-number">3.3.</span> <span class="toc-text">使用生命周期修饰符来避免强应用循环</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ARC管理AutoReleasePool"><span class="toc-number">3.4.</span> <span class="toc-text">ARC管理AutoReleasePool</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#栈变量初始化为nil"><span class="toc-number">3.5.</span> <span class="toc-text">栈变量初始化为nil</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用编译标志启用或禁用ARC"><span class="toc-number">3.6.</span> <span class="toc-text">使用编译标志启用或禁用ARC</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Toll-Free_Bridging(无缝桥接)"><span class="toc-number">4.</span> <span class="toc-text">Toll-Free Bridging(无缝桥接)</span></a></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ARC概述"><span class="toc-number">1.</span> <span class="toc-text">ARC概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ARC强制执行新规则"><span class="toc-number">2.</span> <span class="toc-text">ARC强制执行新规则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ARC生命周期修饰符"><span class="toc-number">3.</span> <span class="toc-text">ARC生命周期修饰符</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Property修饰"><span class="toc-number">3.1.</span> <span class="toc-text">Property修饰</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#变量修饰符"><span class="toc-number">3.2.</span> <span class="toc-text">变量修饰符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用生命周期修饰符来避免强应用循环"><span class="toc-number">3.3.</span> <span class="toc-text">使用生命周期修饰符来避免强应用循环</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ARC管理AutoReleasePool"><span class="toc-number">3.4.</span> <span class="toc-text">ARC管理AutoReleasePool</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AutoReleasePoll用例"><span class="toc-number">3.5.</span> <span class="toc-text">AutoReleasePoll用例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#栈变量初始化为nil"><span class="toc-number">3.6.</span> <span class="toc-text">栈变量初始化为nil</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用编译标志启用或禁用ARC"><span class="toc-number">3.7.</span> <span class="toc-text">使用编译标志启用或禁用ARC</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Toll-Free_Bridging(无缝桥接)"><span class="toc-number">4.</span> <span class="toc-text">Toll-Free Bridging(无缝桥接)</span></a></li></ol>
 		</div>
 		
 		<p>ARC是一个编译器的特征，提供自动内存管理对Objective-C对象。而不是必须思索<code>retain</code>和<code>release</code>操作，ARC容许你集中精力在令人有趣的代码上，这个对象图表示对象之间的关系在你的应用中。<br><img src="https://developer.apple.com/library/prerelease/ios/releasenotes/ObjectiveC/RN-TransitioningToARC/Art/ARC_Illustration.jpg" alt=""></p>
@@ -166,6 +166,9 @@ NSLog(@<span class="string">"string: %@"</span>, <span class="built_in">string</
      <span class="comment">// Code, such as a loop that creates a large number of temporary objects.</span>
 }
 </code></pre><p>这个简单的结构允许编译器推断引用技术的状态。在入口点，一个自动释放池被推入，正常退出(brek,return,goto,fall-through等等)自动释放池被推出。为了兼容现在的代码，如果退出是由于异常，那么自动释放池不会推出。</p>
+<h3 id="AutoReleasePoll用例">AutoReleasePoll用例</h3><p>在ARC的实际应用中，之前遇到过一种情况，就是对于大量数据处理的时候，如果不进行手动销毁释放池，那将会出现一个非常非常严重的内存问题和性能问题。下面示例说明:</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSString</span> *imagePath = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:<span class="string">@"IMG_5401"</span> ofType:<span class="string">@"JPG"</span>];</span><br><span class="line">   <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">50</span>; i++)</span><br><span class="line">   &#123;</span><br><span class="line">       <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">100</span>; j++)</span><br><span class="line">       &#123;</span><br><span class="line">           <span class="built_in">UIImage</span> *image = [<span class="built_in">UIImage</span> imageWithContentsOfFile:imagePath];</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>在没有手动销毁外循环内的自动释放池的情况下:<br><img src="http://7xkpsz.com1.z0.glb.clouddn.com/demo1.png" alt=""><br>手动销毁的情况:<br><img src="http://7xkpsz.com1.z0.glb.clouddn.com/8F9A8A26-1067-4CF3-B21E-2CB1479560C1.png" alt=""></p>
 <h3 id="栈变量初始化为nil">栈变量初始化为nil</h3><p>使用ARC,strong,weak和autoreleasing栈变量会隐式的初始化为nil。</p>
 <pre><code>- (<span class="keyword">void</span>)myMethod {
     <span class="built_in">NSString</span> *name;
@@ -202,7 +205,7 @@ NSLog(@<span class="string">"string: %@"</span>, <span class="built_in">string</
 
 <div class="article-share" id="share">
 
-  <div data-url="http://linfeng1009.gitcafe.io/2015/09/29/memory-arc/" data-title="iOS内存管理ARC | 大神的iOS开发博客" data-tsina="2502328960" class="share clearfix">
+  <div data-url="http://linfeng1009.gitcafe.io/2015/11/10/memory-arc/" data-title="iOS内存管理ARC | 大神的iOS开发博客" data-tsina="2502328960" class="share clearfix">
   </div>
 
 </div>
@@ -211,19 +214,11 @@ NSLog(@<span class="string">"string: %@"</span>, <span class="built_in">string</
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2015/10/08/stack-view/" title="UIStackView Tutorial:介绍堆栈视图(译)">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  UIStackView Tutorial:介绍堆栈视图(译)</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2015/09/29/thread-summary-gcd/"  title="iOS多线程总结之GCD">
+<a href="/2015/10/29/Cocoa-Framework-生成脚本/"  title="Cocoa Framework 生成脚本">
  <strong>NEXT:</strong><br/> 
- <span>iOS多线程总结之GCD
+ <span>Cocoa Framework 生成脚本
 </span>
 </a>
 </div>
@@ -240,7 +235,7 @@ NSLog(@<span class="string">"string: %@"</span>, <span class="built_in">string</
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ARC概述"><span class="toc-number">1.</span> <span class="toc-text">ARC概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ARC强制执行新规则"><span class="toc-number">2.</span> <span class="toc-text">ARC强制执行新规则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ARC生命周期修饰符"><span class="toc-number">3.</span> <span class="toc-text">ARC生命周期修饰符</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Property修饰"><span class="toc-number">3.1.</span> <span class="toc-text">Property修饰</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#变量修饰符"><span class="toc-number">3.2.</span> <span class="toc-text">变量修饰符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用生命周期修饰符来避免强应用循环"><span class="toc-number">3.3.</span> <span class="toc-text">使用生命周期修饰符来避免强应用循环</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ARC管理AutoReleasePool"><span class="toc-number">3.4.</span> <span class="toc-text">ARC管理AutoReleasePool</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#栈变量初始化为nil"><span class="toc-number">3.5.</span> <span class="toc-text">栈变量初始化为nil</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用编译标志启用或禁用ARC"><span class="toc-number">3.6.</span> <span class="toc-text">使用编译标志启用或禁用ARC</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Toll-Free_Bridging(无缝桥接)"><span class="toc-number">4.</span> <span class="toc-text">Toll-Free Bridging(无缝桥接)</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ARC概述"><span class="toc-number">1.</span> <span class="toc-text">ARC概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ARC强制执行新规则"><span class="toc-number">2.</span> <span class="toc-text">ARC强制执行新规则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ARC生命周期修饰符"><span class="toc-number">3.</span> <span class="toc-text">ARC生命周期修饰符</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Property修饰"><span class="toc-number">3.1.</span> <span class="toc-text">Property修饰</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#变量修饰符"><span class="toc-number">3.2.</span> <span class="toc-text">变量修饰符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用生命周期修饰符来避免强应用循环"><span class="toc-number">3.3.</span> <span class="toc-text">使用生命周期修饰符来避免强应用循环</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ARC管理AutoReleasePool"><span class="toc-number">3.4.</span> <span class="toc-text">ARC管理AutoReleasePool</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AutoReleasePoll用例"><span class="toc-number">3.5.</span> <span class="toc-text">AutoReleasePoll用例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#栈变量初始化为nil"><span class="toc-number">3.6.</span> <span class="toc-text">栈变量初始化为nil</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用编译标志启用或禁用ARC"><span class="toc-number">3.7.</span> <span class="toc-text">使用编译标志启用或禁用ARC</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Toll-Free_Bridging(无缝桥接)"><span class="toc-number">4.</span> <span class="toc-text">Toll-Free Bridging(无缝桥接)</span></a></li></ol>
   </div>
 
 <div id="asidepart">
@@ -294,7 +289,7 @@ NSLog(@<span class="string">"string: %@"</span>, <span class="built_in">string</
   
   <div class="archiveslist">
     <p class="asidetitle"><a href="/archives">归档</a></p>
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">1</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">1</span></li></ul>
   </div>
 
 
