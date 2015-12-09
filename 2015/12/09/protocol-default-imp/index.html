@@ -9,7 +9,7 @@
     
     <meta name="author" content="大神">
     
-    <meta name="description" content="用OC定义的协议方法无法默认实现，这样造成的影响就会出现许多冗余的代码。如下情况(本例如Swift实现代替)
+    <meta name="description" content="用OC定义的协议方法无法默认实现，这样造成的影响就会出现许多冗余的代码。如下情况(本例用Swift实现代替)
 1protocol TeamRecord &amp;#123;  var wins: Int &amp;#123; get &amp;#125;  var losses: Int &amp;#123; get &amp;#12">
     
     
@@ -82,7 +82,7 @@
     </p>
   <p class="article-time">
     <time datetime="2015-12-09T08:33:53.000Z" itemprop="datePublished">2015-12-09</time>
-    更新日期:<time datetime="2015-12-09T08:45:06.000Z" itemprop="dateModified">2015-12-09</time>
+    更新日期:<time datetime="2015-12-09T08:46:21.000Z" itemprop="dateModified">2015-12-09</time>
     
   </p>
 </header>
@@ -94,7 +94,7 @@
 		
 		</div>
 		
-		<p>用OC定义的协议方法无法默认实现，这样造成的影响就会出现许多冗余的代码。如下情况(本例如Swift实现代替)</p>
+		<p>用OC定义的协议方法无法默认实现，这样造成的影响就会出现许多冗余的代码。如下情况(本例用Swift实现代替)</p>
 <figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">protocol TeamRecord &#123;  <span class="variable"><span class="keyword">var</span> wins</span>: <span class="typename">Int</span> &#123; <span class="keyword">get</span> &#125;  <span class="variable"><span class="keyword">var</span> losses</span>: <span class="typename">Int</span> &#123; <span class="keyword">get</span> &#125;  func winningPercentage() -&gt; <span class="typename">Double</span>&#125;struct BaseballRecord: TeamRecord &#123;  <span class="variable"><span class="keyword">var</span> wins</span>: <span class="typename">Int</span>  <span class="variable"><span class="keyword">var</span> losses</span>: <span class="typename">Int</span>  let seasonLength = <span class="number">162</span>  func winningPercentage() -&gt; <span class="typename">Double</span> &#123;    <span class="keyword">return</span> <span class="typename">Double</span>(wins) / (<span class="typename">Double</span>(wins) + <span class="typename">Double</span>(losses))  &#125;&#125;struct BasketballRecord: TeamRecord &#123;  <span class="variable"><span class="keyword">var</span> wins</span>: <span class="typename">Int</span>  <span class="variable"><span class="keyword">var</span> losses</span>: <span class="typename">Int</span>  let seasonLength = <span class="number">82</span>  func winningPercentage() -&gt; <span class="typename">Double</span> &#123;    <span class="keyword">return</span> <span class="typename">Double</span>(wins) / (<span class="typename">Double</span>(wins) + <span class="typename">Double</span>(losses))  &#125;&#125;</span><br></pre></td></tr></table></figure>
 <p>其中BaseballRecord类和BasketballRecord类都遵循了TeamRecord协议，但是实现winningPercentage的方法，其实现的内容是一致的，出现过多冗余的代码会给后期的维护增加难度，但好在是在Swift中提供了一中可以默认实现协议方法,扩展当前的协议，然后实现想要默认实现的方法。</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">protocol</span> <span class="title">TeamRecord</span> </span>&#123;  <span class="keyword">var</span> wins: <span class="type">Int</span> &#123; <span class="keyword">get</span> &#125;  <span class="keyword">var</span> losses: <span class="type">Int</span> &#123; <span class="keyword">get</span> &#125;  <span class="func"><span class="keyword">func</span> <span class="title">winningPercentage</span><span class="params">()</span></span> -&gt; <span class="type">Double</span>&#125;<span class="class"><span class="keyword">extension</span> <span class="title">TeamRecord</span> </span>&#123;  <span class="func"><span class="keyword">func</span> <span class="title">winningPercentage</span><span class="params">()</span></span> -&gt; <span class="type">Double</span> &#123;    <span class="keyword">return</span> <span class="type">Double</span>(wins) / (<span class="type">Double</span>(wins) + <span class="type">Double</span>(losses))  &#125;&#125;</span><br></pre></td></tr></table></figure>
