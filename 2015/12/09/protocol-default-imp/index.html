@@ -4,12 +4,13 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>深复制VS浅复制 | 大神的iOS开发博客</title>
+    <title>默认实现Swift协议方法 | 大神的iOS开发博客</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="大神">
     
-    <meta name="description" content="苹果官方内存管理原则：1.谁创建谁负责release：如果使用 alloc、new、copy、mutablecopy来创建对象，那么必须要调用release或者autorelease来释放对象。2.谁retain谁负责release：只要你对对象使用了retain方法，那么必须要调用release或">
+    <meta name="description" content="用OC定义的协议方法无法默认实现，这样造成的影响就会出现许多冗余的代码。如下情况(本例如Swift实现代替)
+1protocol TeamRecord &amp;#123;  var wins: Int &amp;#123; get &amp;#125;  var losses: Int &amp;#123; get &amp;#12">
     
     
     
@@ -68,20 +69,20 @@
 
     </header>
     <div id="container">
-      <div id="main" class="post" itemscope itemprop="blogPost">
+      <div id="main" class="protocol" itemscope itemprop="blogPost">
 	<article itemprop="articleBody"> 
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/07/09/deepcopy-vs-shallowcopy/" title="深复制VS浅复制" itemprop="url">深复制VS浅复制</a>
+      <a href="/2015/12/09/protocol-default-imp/" title="默认实现Swift协议方法" itemprop="url">默认实现Swift协议方法</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://linfeng1009.gitcafe.io" title="大神">大神</a>
     </p>
   <p class="article-time">
-    <time datetime="2015-07-09T06:26:48.000Z" itemprop="datePublished">2015-07-09</time>
-    更新日期:<time datetime="2015-07-13T02:04:14.000Z" itemprop="dateModified">2015-07-13</time>
+    <time datetime="2015-12-09T08:33:53.000Z" itemprop="datePublished">2015-12-09</time>
+    更新日期:<time datetime="2015-12-09T08:43:40.000Z" itemprop="dateModified">2015-12-09</time>
     
   </p>
 </header>
@@ -93,71 +94,41 @@
 		
 		</div>
 		
-		<p>苹果官方内存管理原则：<br>1.谁创建谁负责release：如果使用 alloc、new、copy、mutablecopy来创建对象，那么必须要调用release或者autorelease来释放对象。<br>2.谁retain谁负责release：只要你对对象使用了retain方法，那么必须要调用release或者autorelease来释放对象。</p>
-<p>深复制 VS 浅复制 (deep copy VS shallow copy)</p>
-<p>深复制：通过复制操作后，返回一个新的副本对象，对此副本对象的任何操作不会影响到原对象，当然原对象的任何操作也不会影响到副本对象。在OC中的深复制本质上是产生了一个新的对象，<br>也就是常说的内容复制(内容拷贝)；</p>
-<p>浅复制：通过复制操作后，得到一个副本对象，在OC中本质上是对于原对象的指针复制，没有产生新的对象。</p>
-<p>copy VS mutablecopy</p>
-<p>shallow copy eg:</p>
-<pre><code><span class="built_in">NSString</span> *scrStr  = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"deep copy vs shallow copy"</span>];
-<span class="built_in">NSString</span> *copyStr = [scrStr <span class="keyword">copy</span>];
-
-<span class="built_in">NSLog</span>(<span class="string">@"scrStr = %p,copyStr = %p \n"</span>,scrStr,copyStr); <span class="comment">// 内存地址: scrStr = 0x100211d90,copyStr = 0x100211d90  一致</span>
-<span class="built_in">NSLog</span>(<span class="string">@"scrStr = %@,copyStr = %@ \n"</span>,scrStr,copyStr); <span class="comment">// 打印内容: scrStr = deep copy vs shallow copy,copyStr = deep copy vs shallow copy </span>
-</code></pre><p>deep copy eg:</p>
-<pre><code><span class="built_in">NSString</span> *scrStr  = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"deep copy vs shallow copy"</span>];
-<span class="built_in">NSMutableString</span> *copyStr = [scrStr mutableCopy];
-
-<span class="built_in">NSLog</span>(<span class="string">@"scrStr = %p,copyStr = %p \n"</span>,scrStr,copyStr); <span class="comment">//内存地址: scrStr = 0x100208490,copyStr = 0x100208490 内存地址不一致，说明生产了新的对象</span>
-<span class="built_in">NSLog</span>(<span class="string">@"scrStr = %@,copyStr = %@ \n"</span>,scrStr,copyStr); <span class="comment">//打印内容: scrStr = deep copy vs shallow copy,copyStr = deep copy vs shallow copy </span>
-</code></pre><p>deep copy eg:</p>
-<pre><code><span class="built_in">NSMutableString</span> *scrStr  = [<span class="built_in">NSMutableString</span> stringWithFormat:<span class="string">@"deep copy vs shallow copy"</span>];
-<span class="built_in">NSString</span> *copyStr = [scrStr mutableCopy];
-
-<span class="built_in">NSLog</span>(<span class="string">@"scrStr = %p,copyStr = %p \n"</span>,scrStr,copyStr); <span class="comment">//内存地址: scrStr = 0x100111f10,copyStr = 0x100111fe0 内存地址不一致，说明生产了新的对象</span>
-<span class="built_in">NSLog</span>(<span class="string">@"scrStr = %@,copyStr = %@ \n"</span>,scrStr,copyStr); <span class="comment">//打印内容: scrStr = deep copy vs shallow copy,copyStr = deep copy vs shallow copy </span>
-</code></pre><p>deep copy eg:</p>
-<pre><code><span class="built_in">NSMutableString</span> *scrStr  = [<span class="built_in">NSMutableString</span> stringWithFormat:<span class="string">@"deep copy vs shallow copy"</span>];
-<span class="built_in">NSMutableString</span> *copyStr = [scrStr mutableCopy];
-
-<span class="built_in">NSLog</span>(<span class="string">@"scrStr = %p,copyStr = %p \n"</span>,scrStr,copyStr); <span class="comment">//内存地址: scrStr = 0x100111f10,copyStr = 0x100111fe0 内存地址不一致，说明生产了新的对象</span>
-<span class="built_in">NSLog</span>(<span class="string">@"scrStr = %@,copyStr = %@ \n"</span>,scrStr,copyStr); <span class="comment">//打印内容: scrStr = deep copy vs shallow copy,copyStr = deep copy vs shallow copy </span>
-</code></pre><p>通过以上几个示例，当使用copy方法时，返回的是一个不可变副本，也就是相当于指针拷贝，使用mutablecopy方法时，会返回一个可变副本，相当于内容拷贝，会生成新的对象。</p>
-<p>Copy 内存管理</p>
-<p>浅复制内存管理 eg:</p>
-<pre><code><span class="built_in">NSString</span> *scrStr  = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"deep copy vs shallow copy"</span>];
-<span class="built_in">NSString</span> *copyStr = [scrStr <span class="keyword">copy</span>];
-<span class="built_in">NSLog</span>(<span class="string">@"srcStr = %zd,copyStr = %zd"</span>,[scrStr retainCount],[copyStr retainCount]); <span class="comment">//引用计数: srcStr = 2,copyStr = 2</span>
-[copyStr release];
-</code></pre><p>深复制内存管理 eg:</p>
-<pre><code><span class="built_in">NSMutableString</span> *scrStr  = [<span class="built_in">NSMutableString</span> stringWithFormat:<span class="string">@"deep copy vs shallow copy"</span>];
-<span class="built_in">NSString</span> *copyStr = [scrStr <span class="keyword">copy</span>];        
-<span class="built_in">NSLog</span>(<span class="string">@"srcStr = %zd,copyStr = %zd"</span>,[scrStr retainCount],[copyStr retainCount]); <span class="comment">//引用计数: srcStr = 1,copyStr = 1</span>
-[copyStr release];
-</code></pre><p>浅复制：没有产生新对象，但是原对象(副本对象)的引用计数会加1，上例中srcStr对象非自己生成，无需再调用release，但copyStr是srcStr对象的副本，所以需要调用release释放内存<br>深复制：产生新对象，原对象的引用计数不变，副本对象的引用计数为1，上例中srcStr对象非自己生成，无需再调用release,但copyStr是srcStr深复制而来，所以需要调用release释放内存</p>
-<p>总结：</p>
-<p>深复制：<br>        1.原对象和副本对象不是指向同一个对象<br>        2.原对象的引用计数不变，副本对象的引用计数为1<br>    3.深复制的实质是生成新的对象</p>
-<p>浅复制：<br>    1.原对象和副本对象指向同一个对象<br>    2.原对象(副本对象)的引用计数加1，相当于做了一次retain操作<br>    3.浅复制的实质没有产生新对象，仅是指针拷贝</p>
-  
+		<p>用OC定义的协议方法无法默认实现，这样造成的影响就会出现许多冗余的代码。如下情况(本例如Swift实现代替)</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">protocol TeamRecord &#123;  <span class="variable"><span class="keyword">var</span> wins</span>: <span class="typename">Int</span> &#123; <span class="keyword">get</span> &#125;  <span class="variable"><span class="keyword">var</span> losses</span>: <span class="typename">Int</span> &#123; <span class="keyword">get</span> &#125;  func winningPercentage() -&gt; <span class="typename">Double</span>&#125;struct BaseballRecord: TeamRecord &#123;  <span class="variable"><span class="keyword">var</span> wins</span>: <span class="typename">Int</span>  <span class="variable"><span class="keyword">var</span> losses</span>: <span class="typename">Int</span>  let seasonLength = <span class="number">162</span>  func winningPercentage() -&gt; <span class="typename">Double</span> &#123;    <span class="keyword">return</span> <span class="typename">Double</span>(wins) / (<span class="typename">Double</span>(wins) + <span class="typename">Double</span>(losses))  &#125;&#125;struct BasketballRecord: TeamRecord &#123;  <span class="variable"><span class="keyword">var</span> wins</span>: <span class="typename">Int</span>  <span class="variable"><span class="keyword">var</span> losses</span>: <span class="typename">Int</span>  let seasonLength = <span class="number">82</span>  func winningPercentage() -&gt; <span class="typename">Double</span> &#123;    <span class="keyword">return</span> <span class="typename">Double</span>(wins) / (<span class="typename">Double</span>(wins) + <span class="typename">Double</span>(losses))  &#125;&#125;</span><br></pre></td></tr></table></figure>
+<p>其中BaseballRecord类和BasketballRecord类都遵循了TeamRecord协议，但是实现winningPercentage的方法，其实现的内容是一致的，出现过多冗余的代码会给后期的维护增加难度，但好在是在Swift中提供了一中可以默认实现协议方法,扩展当前的协议，然后实现想要默认实现的方法。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">protocol</span> <span class="title">TeamRecord</span> </span>&#123;  <span class="keyword">var</span> wins: <span class="type">Int</span> &#123; <span class="keyword">get</span> &#125;  <span class="keyword">var</span> losses: <span class="type">Int</span> &#123; <span class="keyword">get</span> &#125;  <span class="func"><span class="keyword">func</span> <span class="title">winningPercentage</span><span class="params">()</span></span> -&gt; <span class="type">Double</span>&#125;<span class="class"><span class="keyword">extension</span> <span class="title">TeamRecord</span> </span>&#123;  <span class="func"><span class="keyword">func</span> <span class="title">winningPercentage</span><span class="params">()</span></span> -&gt; <span class="type">Double</span> &#123;    <span class="keyword">return</span> <span class="type">Double</span>(wins) / (<span class="type">Double</span>(wins) + <span class="type">Double</span>(losses))  &#125;&#125;</span><br></pre></td></tr></table></figure>
+<p>经过上述修改后，代码如下,在遵循协议的类中，省去了冗余协议方法的实现，代码简洁了不少，有木有！！！！<br>哈哈！！！</p>
+<pre><code>struct BaseballRecord: TeamRecord {
+  <span class="variable"><span class="keyword">var</span> wins</span>: <span class="typename">Int</span>
+  <span class="variable"><span class="keyword">var</span> losses</span>: <span class="typename">Int</span>
+  let seasonLength = <span class="number">162</span>
+}
+struct BasketballRecord: TeamRecord {
+  <span class="variable"><span class="keyword">var</span> wins</span>: <span class="typename">Int</span>
+  <span class="variable"><span class="keyword">var</span> losses</span>: <span class="typename">Int</span>
+  let seasonLength = <span class="number">82</span>
+}
+</code></pre>  
 	</div>
 		<footer class="article-footer clearfix">
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/iOS/">iOS</a>
+  <span></span> <a href="/tags/iOS-Swift/">iOS,Swift</a>
   </div>
 
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/iOS开发/">iOS开发</a>
+  <a class="article-category-link" href="/categories/Swift/">Swift</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="http://linfeng1009.gitcafe.io/2015/07/09/deepcopy-vs-shallowcopy/" data-title="深复制VS浅复制 | 大神的iOS开发博客" data-tsina="2502328960" class="share clearfix">
+  <div data-url="http://linfeng1009.gitcafe.io/2015/12/09/protocol-default-imp/" data-title="默认实现Swift协议方法 | 大神的iOS开发博客" data-tsina="2502328960" class="share clearfix">
   </div>
 
 </div>
@@ -166,19 +137,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2015/08/18/modified-by-helensong/" title="iOS开发常用正则表达式">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  iOS开发常用正则表达式</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2015/07/07/xcode-update-plugin-problem/"  title="Xcode升级插件失效修复方法">
+<a href="/2015/11/10/memory-arc/"  title="iOS内存管理ARC">
  <strong>NEXT:</strong><br/> 
- <span>Xcode升级插件失效修复方法
+ <span>iOS内存管理ARC
 </span>
 </a>
 </div>
@@ -192,11 +155,6 @@
 
 </div>  
       <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
-
-  <div id="toc" class="toc-aside">
-  <strong class="toc-title">文章目录</strong>
-  
-  </div>
 
 <div id="asidepart">
 <div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
@@ -408,50 +366,10 @@ $(document).ready(function(){
 </script>
 
 
-<script type="text/javascript">
-$(document).ready(function(){ 
-  var $this = $('.share'),
-      url = $this.attr('data-url'),
-      encodedUrl = encodeURIComponent(url),
-      title = $this.attr('data-title'),
-      tsina = $this.attr('data-tsina');
-  var html = [
-  '<a href="#" class="overlay" id="qrcode"></a>',
-  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
-  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
-  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
-  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
-  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
-  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
-  '<span title="Share to"></span>'
-  ].join('');
-  $this.append(html);
-  $('.article-share-qrcode').click(function(){
-    var imgSrc = $('#qrcode-pic').attr('data-src');
-    $('#qrcode-pic').attr('src', imgSrc);
-    $('#qrcode-pic').load(function(){
-        $('.qrcode strong').text(' ');
-    });
-  });
-});     
-</script>
-
-
-<script type="text/javascript">
-  var duoshuoQuery = {short_name:"dashen1009"};
-  (function() {
-    var ds = document.createElement('script');
-    ds.type = 'text/javascript';ds.async = true;
-    ds.src = '//static.duoshuo.com/embed.js';
-    ds.charset = 'UTF-8';
-    (document.getElementsByTagName('head')[0] 
-    || document.getElementsByTagName('body')[0]).appendChild(ds);
-  })();
-</script> 
 
 
 
 
 
   </body>
-</html>
+ </html>
