@@ -82,7 +82,7 @@
     </p>
   <p class="article-time">
     <time datetime="2015-12-09T08:33:53.000Z" itemprop="datePublished">2015-12-09</time>
-    更新日期:<time datetime="2015-12-10T02:17:37.000Z" itemprop="dateModified">2015-12-10</time>
+    更新日期:<time datetime="2015-12-10T02:18:36.000Z" itemprop="dateModified">2015-12-10</time>
     
   </p>
 </header>
@@ -103,7 +103,7 @@
 <p>protocol MyProtocol{<br>    func test()<br>}<br>extension MyProtocol{<br>    func test(){<br>        print(“Hello World”)<br>    }<br>}<br>class MyType: MyProtocol {<br>    func test() {<br>        print(“Hello Sunday”)<br>    }<br>}<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">实例化MyType，然后调用<span class="built_in">test</span>方法</span><br></pre></td></tr></table></figure></p>
 <p>var type: MyType = MyType()<br>type.test()   // 打印的结果是 Hello Sunday<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">当然我们也可以实例化MyType给MyProtocol类型变量</span><br></pre></td></tr></table></figure></p>
 <p>var type1: MyProtocol = MyType()<br>type1.test() // 打印的结果是 Hello Sunday<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">这两种情况的结果是一样的，没什么区别，但是如果修改一下Myprotocol方法的定义，让其方法在扩展中实现</span><br></pre></td></tr></table></figure></p>
-<p>protocol MyProtocol{<br>  //  func test()<br>}<br>extension MyProtocol{<br>    func test(){<br>        print(“Hello World”)<br>    }<br>}<br>class MyType: MyProtocol {<br>    func test() {<br>        print(“Hello Sunday”)<br>    }<br>}<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">再打印结果</span><br></pre></td></tr></table></figure></p>
+<p>protocol MyProtocol{<br>  //  func test()<br>}<br>extension MyProtocol{<br>    func test(){<br>        print(“Hello World”)<br>    }<br>}<br>class MyType: MyProtocol {<br>    func test() {<br>        print(“Hello Sunday”)<br>    }<br>}<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">再打印结果</span><br></pre></td></tr></table></figure></p>
 <p>var type: MyType = MyType()<br>type.test()   // 打印的结果是 Hello Sunday<br>var type1: MyProtocol = MyType()<br>type1.test() // 打印的结果是 Hello World<br>```<br>从其结果可以知道，如果协议中的方法未在该协议中定义，而是在其扩展中定义实现，当实例化遵循改协议的类给该协议变量时，调用协议的方法不是在该类中实现的，而是实现默认的方法.</p>
   
 	</div>
