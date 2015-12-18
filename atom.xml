@@ -167,7 +167,7 @@ NSLog(@<span class="string">"string: %@"</span>, <span class="built_in">string</
     <link href="http://linfeng1009.gitcafe.io/2015/10/20/3D-Touch%E5%AE%9E%E8%B7%B5/"/>
     <id>http://linfeng1009.gitcafe.io/2015/10/20/3D-Touch实践/</id>
     <published>2015-10-20T07:17:25.000Z</published>
-    <updated>2015-10-28T08:02:09.000Z</updated>
+    <updated>2015-12-18T08:09:59.000Z</updated>
     <content type="html"><![CDATA[<h2 id="3D_Touch简介">3D Touch简介</h2><p>随着iOS9以及iPhone 6s和iPhone 6s plus的发布，苹果添加一种立体的用户界面:<br>用户在主屏幕上不需要打开APP，按压图标就可以快速访问APP提供的一些功能。<br>在APP内，用户按压界面就可以预览更多地内容，获得加速访问的特征。</p>
 <h2 id="主屏幕Quick_Action">主屏幕Quick Action</h2><p><img src="https://developer.apple.com/library/prerelease/ios/documentation/UserExperience/Conceptual/Adopting3DTouchOniPhone/Art/maps_directions_home_2x.png" alt=""></p>
 <p>快速选项(Quick Action)可以让用户预见并加速与APP交互，iOS9SDK提供的官方API可以使你定义静态或者动态的快速选项，以及检测当前设备快速选项的可用性。</p>
