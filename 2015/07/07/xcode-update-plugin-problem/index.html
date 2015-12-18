@@ -9,7 +9,8 @@
     
     <meta name="author" content="大神">
     
-    <meta name="description" content="1.打开终端，输入以下代码获取到DVTPlugInCompatibilityUUIDdefaults read /Applications/Xcode.app/Contents/Info DVTPlugInCompatibilityUUID2.然后输入如下命令   【最后一项是获取到的DVTPlug">
+    <meta name="description" content="1.打开终端，输入以下代码获取到DVTPlugInCompatibilityUUID1`defaults read /Applications/Xcode.app/Contents/Info DVTPlugInCompatibilityUUID`
+2.然后输入如下命令   【最后一项是获取到的DVT">
     
     
     
@@ -81,7 +82,7 @@
     </p>
   <p class="article-time">
     <time datetime="2015-07-07T09:50:23.000Z" itemprop="datePublished">2015-07-07</time>
-    更新日期:<time datetime="2015-10-19T09:04:26.000Z" itemprop="dateModified">2015-10-19</time>
+    更新日期:<time datetime="2015-12-18T08:07:44.000Z" itemprop="dateModified">2015-12-18</time>
     
   </p>
 </header>
@@ -93,8 +94,9 @@
 		
 		</div>
 		
-		<p>1.打开终端，输入以下代码获取到DVTPlugInCompatibilityUUID<br><code>defaults read /Applications/Xcode.app/Contents/Info DVTPlugInCompatibilityUUID</code><br>2.然后输入如下命令   【最后一项是获取到的DVTPlugInCompatibilityUUID】<br><code>find ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins -name Info.plist -maxdepth 3 | xargs -I{} defaults write {} DVTPlugInCompatibilityUUIDs -array-add 0420B86A-AA43-4792-9ED0-6FE0F2B16A13</code></p>
-  
+		<p>1.打开终端，输入以下代码获取到DVTPlugInCompatibilityUUID<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">`defaults <span class="keyword">read</span> <span class="regexp">/Applications/</span>Xcode.app<span class="regexp">/Contents/I</span>nfo DVTPlugInCompatibilityUUID`</span><br></pre></td></tr></table></figure></p>
+<p>2.然后输入如下命令   【最后一项是获取到的DVTPlugInCompatibilityUUID】</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">find</span> ~<span class="regexp">/Library/</span>Application\ Support<span class="regexp">/Developer/</span>Shared<span class="regexp">/Xcode/</span>Plug-ins -name Info.plist -maxdepth <span class="number">3</span> | xargs -I&#123;&#125; defaults <span class="keyword">write</span> &#123;&#125; DVTPlugInCompatibilityUUIDs -array-add <span class="number">0420</span>B86A-AA43-<span class="number">4792</span>-<span class="number">9</span>ED0-<span class="number">6</span>FE0F2B16A13</span><br></pre></td></tr></table></figure>  
 	</div>
 		<footer class="article-footer clearfix">
 
