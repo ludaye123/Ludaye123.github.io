@@ -4,14 +4,14 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>iOS内存管理ARC | 大神的iOS开发博客</title>
+    <title>iOS开发-ARC | 大神的iOS开发博客</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="大神">
     
-    <meta name="description" content="ARC是一个编译器的特征，提供自动内存管理对Objective-C对象。而不是必须思索retain和release操作，ARC容许你集中精力在令人有趣的代码上，这个对象图表示对象之间的关系在你的应用中。
+    <meta name="description" content="ARC是一个编译器的特征,提供自动管理对Objective-C对象的分配内存,而不是总是思索什么时候retain和什么时候release操作，ARC会让你把更多地精力集中在编码上。
 ARC概述
-ARC可以让你没必要记住什么时候使用retain,release和autorelea">
+ARC可以让你没必要记住什么时候使用retain,release和autorelease,ARC预估对象的">
     
     
     
@@ -75,7 +75,7 @@ ARC可以让你没必要记住什么时候使用retain,release和autorelea">
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/11/10/memory-arc/" title="iOS内存管理ARC" itemprop="url">iOS内存管理ARC</a>
+      <a href="/2015/11/10/memory-arc/" title="iOS开发-ARC" itemprop="url">iOS开发-ARC</a>
   </h1>
   <p class="article-author">By
     
@@ -83,7 +83,7 @@ ARC可以让你没必要记住什么时候使用retain,release和autorelea">
     </p>
   <p class="article-time">
     <time datetime="2015-11-10T08:32:36.000Z" itemprop="datePublished">2015-11-10</time>
-    更新日期:<time datetime="2015-11-10T08:33:42.000Z" itemprop="dateModified">2015-11-10</time>
+    更新日期:<time datetime="2015-12-18T08:01:18.000Z" itemprop="dateModified">2015-12-18</time>
     
   </p>
 </header>
@@ -95,53 +95,43 @@ ARC可以让你没必要记住什么时候使用retain,release和autorelea">
 		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ARC概述"><span class="toc-number">1.</span> <span class="toc-text">ARC概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ARC强制执行新规则"><span class="toc-number">2.</span> <span class="toc-text">ARC强制执行新规则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ARC生命周期修饰符"><span class="toc-number">3.</span> <span class="toc-text">ARC生命周期修饰符</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Property修饰"><span class="toc-number">3.1.</span> <span class="toc-text">Property修饰</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#变量修饰符"><span class="toc-number">3.2.</span> <span class="toc-text">变量修饰符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用生命周期修饰符来避免强应用循环"><span class="toc-number">3.3.</span> <span class="toc-text">使用生命周期修饰符来避免强应用循环</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ARC管理AutoReleasePool"><span class="toc-number">3.4.</span> <span class="toc-text">ARC管理AutoReleasePool</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AutoReleasePool实际应用"><span class="toc-number">3.5.</span> <span class="toc-text">AutoReleasePool实际应用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#栈变量初始化为nil"><span class="toc-number">3.6.</span> <span class="toc-text">栈变量初始化为nil</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用编译标志启用或禁用ARC"><span class="toc-number">3.7.</span> <span class="toc-text">使用编译标志启用或禁用ARC</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Toll-Free_Bridging(无缝桥接)"><span class="toc-number">4.</span> <span class="toc-text">Toll-Free Bridging(无缝桥接)</span></a></li></ol>
 		</div>
 		
-		<p>ARC是一个编译器的特征，提供自动内存管理对Objective-C对象。而不是必须思索<code>retain</code>和<code>release</code>操作，ARC容许你集中精力在令人有趣的代码上，这个对象图表示对象之间的关系在你的应用中。<br><img src="https://developer.apple.com/library/prerelease/ios/releasenotes/ObjectiveC/RN-TransitioningToARC/Art/ARC_Illustration.jpg" alt=""></p>
+		<p>ARC是一个编译器的特征,提供自动管理对Objective-C对象的分配内存,而不是总是思索什么时候<code>retain</code>和什么时候<code>release</code>操作，ARC会让你把更多地精力集中在编码上。<br><img src="https://developer.apple.com/library/prerelease/ios/releasenotes/ObjectiveC/RN-TransitioningToARC/Art/ARC_Illustration.jpg" alt=""></p>
 <h2 id="ARC概述">ARC概述</h2><hr>
-<p>ARC可以让你没必要记住什么时候使用<code>retain</code>,<code>release</code>和<code>autorelease</code>,ARC预估对象的必要生命周期并且自动插入合适的内存管理调用方法在编译时，也会生成合适的dealloc方法。<br>一个完整正确的实现的Person类可能是这样的：</p>
+<p>ARC可以让你没必要记住什么时候使用<code>retain</code>,<code>release</code>和<code>autorelease</code>,ARC预估对象的必要生命周期并且在编译时自动插入合适的内存管理调用方法，也会生成合适的dealloc方法。<br>一个完整正确实现的Person类可能是这样的：</p>
 <figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">@interface</span> <span class="attribute">Person </span>: NSObject</span><br><span class="line"><span class="variable">@property</span> NSString *firstName;</span><br><span class="line"><span class="variable">@property</span> NSString *lastName;</span><br><span class="line"><span class="variable">@property</span> NSNumber *yearOfBirth;</span><br><span class="line"><span class="variable">@property</span> Person *spouse;</span><br><span class="line"><span class="variable">@end</span></span><br><span class="line"> </span><br><span class="line"><span class="variable">@implementation</span> Person</span><br><span class="line"><span class="variable">@end</span></span><br><span class="line"><span class="attribute">TODO</span>: 属性默认是Strong引用</span><br></pre></td></tr></table></figure>
 <p>使用ARC，实现contrived方法</p>
 <figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="atom">void</span>)<span class="atom">contrived</span> </span><br><span class="line">&#123;</span><br><span class="line">    <span class="name">Person</span> *<span class="atom">aPerson</span> = [[<span class="name">Person</span> <span class="atom">alloc</span>] <span class="atom">init</span>];</span><br><span class="line">    [<span class="atom">aPerson</span> <span class="atom">setFirstName</span>:@<span class="string">"William"</span>];</span><br><span class="line">    [<span class="atom">aPerson</span> <span class="atom">setLastName</span>:@<span class="string">"Dudney"</span>];</span><br><span class="line">    [<span class="atom">aPerson</span> <span class="atom">setYearOfBirth</span>:[[<span class="name">NSNumber</span> <span class="atom">alloc</span>] <span class="atom">initWithInteger</span>:<span class="number">2011</span>]];</span><br><span class="line">    <span class="name">NSLog</span>(@<span class="string">"aPerson: %@"</span>, <span class="atom">aPerson</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>ARC注意内存管理，所以Person和NSNumber对象都不会泄露<br>你也能够安全的实现Person类的takeLastNameFrom:方法</p>
+<p>ARC会负责内存管理，所以Person和NSNumber对象都不会有内存泄露<br>你也可以安全的实现Person类的takeLastNameFrom:方法</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)takeLastNameFrom:(Person *)person </span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">NSString</span> *oldLastname = [<span class="keyword">self</span> lastName];</span><br><span class="line">    [<span class="keyword">self</span> setLastName:[person lastName]];</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"Lastname changed from %@ to %@"</span>, oldLastname, [<span class="keyword">self</span> lastName]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>ARC确保oldLastname在NSLog语句前不会释放</p>
+<p>ARC确保oldLastname在NSLog语句前不会释放。</p>
 <h2 id="ARC强制执行新规则">ARC强制执行新规则</h2><hr>
-<p>1.你不能明确地调用<code>dealloc</code>,实现或调用<code>retain</code>,<code>release</code>,<code>retainCount</code>或<code>autorelease</code>方法，禁止扩充使用<code>@selector(retain), @selector(release)</code>等等。</p>
-<p>2.你可以实现<code>dealloc</code>方法，如果你需要管理资源而不是释放实例变量，你没有必要(实际上你业不能)释放实例变量，但是你也许需要调用<code>[systemClassInstance setDelegate:nil]</code>在系统类，其实的代码使用ARC不能编译</p>
-<p>3.自定义<code>dealloc</code>方法在ARC上是没有必要调用<code>[super dealloc]</code>(其实会编译错误)。父链会自动执行通过编译器。</p>
-<p>4.你能一直使用<code>CFRetain</code>,<code>CFRelease</code>，和其他与CoreFoundation风格对象关联的方法。</p>
-<p>5.你不能使用<code>NSAllocateObject</code>或<code>NSDeallocateObject</code>,创建对象使用<code>alloc</code>，<code>runtime</code>会关注释放对象。</p>
-<p>6.你不能使用对象指针在C结构体中，你可以创建一个一个Objective-C类来管理数据</p>
-<p>7.<code>id</code>和<code>void *</code>之间没有临时的角色，你必须使用指定的角色，告诉编译器关于对象的生命周期。</p>
-<p>8.你不能使用<code>NSAutoreleasePool</code>对象，ARC提供<code>@autoreleasepool</code>block来代替。这种方式比<code>NSAutoreleasePool</code>效率更高。</p>
-<p>9.你不能使用内存区域，再也没有必要使用<code>NSZone</code>，它们被现在的Objective-C运行时忽略</p>
-<p>10.为了兼容手动<code>retain-release</code>代码，ARC强加了约束对于方法命名:<br>你不能给一个访问器的命名以<code>new</code>开头。如果声明一个属性它的命名以<code>new</code>开头，除非你指定一个不同的getter方法，否则不能正常运行。</p>
+<p>1.不能明确地调用<code>dealloc</code>,实现或调用<code>retain</code>,<code>release</code>,<code>retainCount</code>或<code>autorelease</code>方法，禁止扩充使用<code>@selector(retain), @selector(release)</code>等等。<br>2.可以实现<code>dealloc</code>方法，如果需要管理资源而不是释放实例变量，没有必要(实际上你也不能)释放实例变量，你可能需要在系统类和其他代码中调用<code>[systemClassInstance setDelegate:nil]</code>，但在ARC中不能编译。<br>3.自定义<code>dealloc</code>方法在ARC中是没有必要调用<code>[super dealloc]</code>(其实会编译错误)。<br>4.你能一直使用<code>CFRetain</code>,<code>CFRelease</code>，和其他与CoreFoundation风格对象关联的方法。(CF对象需要手动管理内存)<br>5.你不能使用<code>NSAllocateObject</code>或<code>NSDeallocateObject</code>,创建对象使用<code>alloc</code>运行时会负责释放对象。<br>6.你不能结构体中使用对象指针，你可以创建一个Objective-C类来替代管理数据。<br>7.<code>id</code>和<code>void *</code>之间没有临时的角色，你必须使用指定的角色，告诉编译器关于对象的生命周期。<br>8.你不能使用<code>NSAutoreleasePool</code>对象，ARC提供<code>@autoreleasepool</code>block来代替。这种方式比<code>NSAutoreleasePool</code>效率更高。<br>9.你不能使用内存区域，再也没有必要使用<code>NSZone</code>，它们被现在的Objective-C运行时忽略。<br>10.为了兼容手动<code>retain-release</code>代码，ARC强加了约束对于方法命名:<br>你不能给一个访问器的命名以<code>new</code>开头。如果声明一个属性它的命名以<code>new</code>开头，除非你指定一个不同的getter方法，否则不能正常运行。</p>
 <pre><code><span class="comment">// Won't work:</span>
 <span class="variable">@property</span> NSString *newTitle;
 
 <span class="comment">// Works:</span>
 <span class="variable">@property</span> (getter=theNewTitle) NSString *newTitle;
 </code></pre><h2 id="ARC生命周期修饰符">ARC生命周期修饰符</h2><hr>
-<p>ARC介绍几个新的生命周期修饰符给对象，一个弱引用(weak)不会延伸它所指向对象的声明周期，当没有强引用这个对象时，它会自动变为nil,合理的使用weak将帮助你确保不会创建循环引用。</p>
-<h3 id="Property修饰">Property修饰</h3><p>The keywords weak and strong are introduced as new declared property attributes, as shown in the following examples.</p>
-<p><code>weak</code>和<code>strong</code>关键字被引用修饰新声明的属性,如下例子所示:</p>
+<p>ARC给对象提供几个生命周期修饰符，一个弱引用(weak)不会延伸它所指向对象的生命周期，当没有强引用这个对象时，它会自动变为nil,合理的使用weak将帮助你确保不会创建循环引用。</p>
+<h3 id="Property修饰">Property修饰</h3><p><code>weak</code>和<code>strong</code>关键字被引用修饰新声明的属性,如下所示:</p>
 <figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 下面的声明与 @property(retain) MyClass *myObject;同义</span></span><br><span class="line"><span class="comment">// ARC环境下，对象默认的修饰是strong</span></span><br><span class="line"><span class="variable">@property</span>(strong) MyClass *myObject;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 下面的声明与 "@property(assign) MyClass *myObject;"类似</span></span><br><span class="line"><span class="comment">// 除了MyClass 实例被释放，这个属性的值被设置为nil代替保留一个悬挂指针</span></span><br><span class="line"><span class="variable">@property</span>(weak) MyClass *myObject;</span><br></pre></td></tr></table></figure>
 <h3 id="变量修饰符">变量修饰符</h3><p>你可以用下面几个生命周期修饰符修饰变量:</p>
 <pre><code>__<span class="keyword">strong</span>
 __<span class="keyword">weak</span>
 __unsafe_unretained
 __autoreleasing
-</code></pre><p><strong>strong是默认的，对象的一直存执，直到没有一个strong指向它。
-</strong>weak指定一个引用，不会保持引用对象的生命，当没有一个strong引用所指的对象，它所引用的会被设置为nil<br><strong>unsafe_unretained 指定一个引用，不会保持引用对象的生命，当没有一个strong引用所指的对象，它所引用不会设置为nil。如果它所引用的对象被释放了，会指向一个悬挂指针(野指针)
+</code></pre><p><strong>strong是默认的，对象的一直存在，直到没有其他的strong对象引用。
+</strong>weak不会保持引用对象的生命，当指向的变量没有被其他strong对象引用，所指向的队形被设置为nil。<br><strong>unsafe_unretained 指定一个引用，不会保持引用对象的生命，当没有其他strong变量引用所指的对象，它所引用不会设置为nil。如果它所引用的对象被释放了，会指向一个悬挂指针(野指针)。
 </strong>autoreleasing 通常用来暗示参数，传递引用在返回时自动释放。</p>
 <p>你应该正确修饰变量，格式如下:<br><code>ClassName * qualifier variableName;</code></p>
 <p>eg:</p>
 <pre><code>MyClass <span class="keyword">*</span> __weak myWeakReference;    
 MyClass <span class="keyword">*</span> __unsafe_unretained myUnsafeReference;
-</code></pre><p>Take care when using <strong>weak variables on the stack. Consider the following example:<br>注意当使用</strong>weak变量在栈上是，思考下面的示例:</p>
+</code></pre><p>注意当使用__weak变量在栈上时，思考下面的示例:</p>
 <pre><code>NSString * __weak <span class="built_in">string</span> = <span class="string">[[NSString alloc] initWithFormat:@"First Name: %@", [self firstName]]</span>;
 NSLog(@<span class="string">"string: %@"</span>, <span class="built_in">string</span>);
-</code></pre><p>虽然string被赋值了一个字符串对象，但是由于字符串对象没有其他强引用，因此会立刻释放，打印语句显示的内容为null</p>
-<p>你也需要对象传递通过引用，下面代码能正常运行</p>
+</code></pre><p>虽然string被赋值了一个字符串对象，但是由于字符串对象没有其他强引用对象引用，因此生成后会立刻释放，打印语句显示的内容为null</p>
+<p>你也需要通过引用传递对象，下面代码能正常运行</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSError</span> *error;</span><br><span class="line"><span class="built_in">BOOL</span> OK = [myObject performOperationWithError:&amp;error];</span><br><span class="line"><span class="keyword">if</span> (!OK) &#123;</span><br><span class="line">    <span class="comment">// Report the error.</span></span><br><span class="line">    <span class="comment">// ...</span></span><br></pre></td></tr></table></figure>
 <p>然而，error的隐式声明为:</p>
 <pre><code><span class="title">NSError</span> * __strong <span class="built_in">error</span>;
@@ -149,23 +139,23 @@ NSLog(@<span class="string">"string: %@"</span>, <span class="built_in">string</
 <pre><code><span class="tag">-</span>(<span class="tag">BOOL</span>)<span class="rule"><span class="attribute">performOperationWithError</span>:<span class="value">(NSError * __autoreleasing *)error</span></span>;
 </code></pre><p>编译器因此会重写代码:</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSError</span> * __<span class="keyword">strong</span> error;</span><br><span class="line"><span class="built_in">NSError</span> * __autoreleasing tmp = error;</span><br><span class="line"><span class="built_in">BOOL</span> OK = [myObject performOperationWithError:&amp;tmp];</span><br><span class="line">error = tmp;</span><br><span class="line"><span class="keyword">if</span> (!OK) &#123;</span><br><span class="line">    <span class="comment">// Report the error.</span></span><br><span class="line">    <span class="comment">// ...</span></span><br></pre></td></tr></table></figure>
-<p>局部变量的声明(<strong>strong)与参数(_</strong>autoreleasing)之间不匹配造成编译器创建临时变量。你能获取原始指针通过修改声明参数(id <strong>strong *)当你获取</strong>strong变量地址事，或者是你直接声明变量为__autoreleasing</p>
-<h3 id="使用生命周期修饰符来避免强应用循环">使用生命周期修饰符来避免强应用循环</h3><p>你可以使用生命周期修饰符来避免强引用循环,例如，如果你有一个图形对象安排在父子层级，并且父对象需要指向子对象，反之亦然。你让父对象与子对象强关联，子对象与父对象弱关联。其他情况可能更微妙,特别是当他们涉及block对象。</p>
-<p>在MRC环境中，<strong>block id x;x的影响没有保留。在ARC环境中，</strong>block id x;默认是保留x.为了在ARC下获得MRC的行为，你可以使用<strong>unsafe_unretained </strong>block id x;正如名字<strong>unsafe_unretained </strong>block id x;所示。然而，没有保留的变量是很危险的因此不推荐，两个更好的选择是用<strong>weak或者是设置</strong>block 的值为nil打破循环引用。</p>
-<p>下面的代码片段说明了这个问题使用的模式有时被用于手动引用计数。</p>
+<p>局部变量的声明(<strong>strong)与参数(_</strong>autoreleasing)之间不匹配造成编译器创建临时变量。像这样传递参数，可以直接手动声明变量为__autoreleasing,没有必要让编译器再生成中间变量。</p>
+<h3 id="使用生命周期修饰符来避免强应用循环">使用生命周期修饰符来避免强应用循环</h3><p>你可以使用生命周期修饰符来避免强引用循环,例如，如果一个视图对象安排在父子层级，并且父对象需要指向子对象，反之亦然。你让父对象与子对象强关联，子对象与父对象弱关联。其他情况可能更微妙,特别是涉及block对象。</p>
+<p>在MRC环境中，<strong>block id x;x没有保留。在ARC环境中，</strong>block id x;默认是保留x。为了在ARC下获得MRC的行为，你可以使用<strong>unsafe_unretained </strong>block id x;正如名字<strong>unsafe_unretained </strong>block id x;所示。然而，没有保留的变量是很危险的因此不推荐，两个更好的选择是用<strong>weak或者是设置</strong>block的值为nil打破循环引用。</p>
+<p>下面的代码片段说明了这个问题,myController对象对completionHandler强引用，而在completionHandler中对myController对象也强引用，很明显会出现内存泄露。</p>
 <figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">MyViewController</span> *myController = [[<span class="type">MyViewController</span> alloc] init…];</span><br><span class="line">// ...</span><br><span class="line">myController.completionHandler =  ^(<span class="type">NSInteger</span> <span class="literal">result</span>) &#123;</span><br><span class="line">   [myController dismissViewControllerAnimated:<span class="type">YES</span> completion:<span class="keyword">nil</span>];</span><br><span class="line">&#125;;</span><br><span class="line">[self presentViewController:myController animated:<span class="type">YES</span> completion:^&#123;</span><br><span class="line">   [myController release];</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
-<p>你可以使用__block修饰符并且设置myController变量为空在block中</p>
+<p>解决方案1：可以使用__block修饰符并且设置myController变量为空在block中</p>
 <figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">MyViewController</span> * __block myController = [[<span class="type">MyViewController</span> alloc] init…];</span><br><span class="line">// ...</span><br><span class="line">myController.completionHandler =  ^(<span class="type">NSInteger</span> <span class="literal">result</span>) &#123;</span><br><span class="line">    [myController dismissViewControllerAnimated:<span class="type">YES</span> completion:<span class="keyword">nil</span>];</span><br><span class="line">    myController = <span class="keyword">nil</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>或者是你可以使用一个临时的weak变量</p>
+<p>解决方案2: 可以使用一个临时的weak变量</p>
 <figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">MyViewController</span> *myController = [[<span class="type">MyViewController</span> alloc] init…];</span><br><span class="line">// ...</span><br><span class="line"><span class="type">MyViewController</span> * __weak weakMyViewController = myController;</span><br><span class="line">myController.completionHandler =  ^(<span class="type">NSInteger</span> <span class="literal">result</span>) &#123;</span><br><span class="line">    [weakMyViewController dismissViewControllerAnimated:<span class="type">YES</span> completion:<span class="keyword">nil</span>];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 <p>对于非一般的循环，你应该使用:</p>
 <figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">MyViewController</span> *myController = [[<span class="type">MyViewController</span> alloc] init…];</span><br><span class="line">// ...</span><br><span class="line"><span class="type">MyViewController</span> * __weak weakMyController = myController;</span><br><span class="line">myController.completionHandler =  ^(<span class="type">NSInteger</span> <span class="literal">result</span>) &#123;</span><br><span class="line">    <span class="type">MyViewController</span> *strongMyController = weakMyController;</span><br><span class="line">    <span class="keyword">if</span> (strongMyController) &#123;</span><br><span class="line">        // ...</span><br><span class="line">        [strongMyController dismissViewControllerAnimated:<span class="type">YES</span> completion:<span class="keyword">nil</span>];</span><br><span class="line">        // ...</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        // <span class="type">Probably</span> nothing...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>在某些情况下,您可以使用<strong>unsafe_unretained如果类不是</strong>weak兼容。然而,这可能成为重要的不切实际的周期,因为很难或不可能验证__unsafe_unretained指针仍然有效,仍然指向同一个对象。</p>
-<h3 id="ARC管理AutoReleasePool">ARC管理AutoReleasePool</h3><p>Using ARC, you cannot manage autorelease pools directly using the NSAutoreleasePool class. Instead, you use @autoreleasepool blocks:<br>使用ARC，你不能管理自动释放池直接使用<code>NSAutoreleasePool</code>，你可以使用@autoreleasepool block代替:</p>
+<p>在这种情况下,已经有一个弱引用的weakMyController，但是为什么在block中还要声明一个强引用strongMyController的局部变量呢？在某些情况下,如果myController在block调用之前被释放了，那么继续执行block的中的内容是,那么就会crash，用一个强引用的局部变量可以保证在block中myController在存在的。<br>在某些情况下,您可以使用<strong>unsafe_unretained如果类不兼容</strong>weak。然而,这也可能成为严重不切实际的周期,因为很难或不可能验证__unsafe_unretained指针仍然有效,仍然指向同一个对象。</p>
+<h3 id="ARC管理AutoReleasePool">ARC管理AutoReleasePool</h3><p>使用ARC，你不能管理自动释放池直接使用<code>NSAutoreleasePool</code>，你可以使用@autoreleasepool block代替:</p>
 <pre><code><span class="variable">@autoreleasepool</span> {
      <span class="comment">// Code, such as a loop that creates a large number of temporary objects.</span>
 }
-</code></pre><p>这个简单的结构允许编译器推断引用技术的状态。在入口点，一个自动释放池被推入，正常退出(brek,return,goto,fall-through等等)自动释放池被推出。为了兼容现在的代码，如果退出是由于异常，那么自动释放池不会推出。</p>
+</code></pre><p>这个简单的结构允许编译器推断引用技术的状态。在入口点，一个自动释放池被Push，正常退出(brek,return,goto,fall-through等等)自动释放池被Pop。为了兼容现在的代码，如果退出是由于异常，那么自动释放池不会Pop。</p>
 <h3 id="AutoReleasePool实际应用">AutoReleasePool实际应用</h3><p>在ARC的实际应用中，之前遇到过一种情况，就是对于大量数据处理的时候，如果不进行手动销毁释放池，那将会出现一个非常非常严重的内存问题和性能问题。下面示例说明:</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSString</span> *imagePath = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:<span class="string">@"IMG_5401"</span> ofType:<span class="string">@"JPG"</span>];</span><br><span class="line">   <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">50</span>; i++)</span><br><span class="line">   &#123;</span><br><span class="line">       <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">100</span>; j++)</span><br><span class="line">       &#123;</span><br><span class="line">           <span class="built_in">UIImage</span> *image = [<span class="built_in">UIImage</span> imageWithContentsOfFile:imagePath];</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
 <p>在没有手动销毁外循环内的自动释放池的情况下:<br><img src="http://7xkpsz.com1.z0.glb.clouddn.com/demo1.png" alt=""><br>手动销毁的情况:<br><img src="http://7xkpsz.com1.z0.glb.clouddn.com/8F9A8A26-1067-4CF3-B21E-2CB1479560C1.png" alt=""></p>
@@ -205,7 +195,7 @@ NSLog(@<span class="string">"string: %@"</span>, <span class="built_in">string</
 
 <div class="article-share" id="share">
 
-  <div data-url="http://linfeng1009.gitcafe.io/2015/11/10/memory-arc/" data-title="iOS内存管理ARC | 大神的iOS开发博客" data-tsina="2502328960" class="share clearfix">
+  <div data-url="http://linfeng1009.gitcafe.io/2015/11/10/memory-arc/" data-title="iOS开发-ARC | 大神的iOS开发博客" data-tsina="2502328960" class="share clearfix">
   </div>
 
 </div>
