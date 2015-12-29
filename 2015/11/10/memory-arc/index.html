@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="theme-next ">
+<html class="theme-next   use-motion ">
 <head>
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -21,14 +21,18 @@
 
 
 
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
 
 
 
 
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
 
-<link href="//font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
 
-<link href="//main.css?v=" rel="stylesheet" type="text/css" />
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
 
 
   <meta name="keywords" content="内存管理," />
@@ -41,6 +45,8 @@
 
 
 
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
 
 
 
@@ -71,8 +77,8 @@ ARC可以让你没必要记住什么时候使用retain,release和autorelease方�
 <script type="text/javascript" id="hexo.configuration">
   var CONFIG = {
     scheme: '',
-    sidebar: '',
-    motion: 
+    sidebar: 'post',
+    motion: true
   };
 </script>
 
@@ -125,6 +131,73 @@ ARC可以让你没必要记住什么时候使用retain,release和autorelease方�
 <nav class="site-nav">
   
 
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-heartbeat fa-fw"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
   
 
   
@@ -191,6 +264,13 @@ ARC可以让你没必要记住什么时候使用retain,release和autorelease方�
           
 
           
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/11/10/memory-arc/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/11/10/memory-arc/" itemprop="commentsCount"></span>
+                </a>
+              </span>
             
           
 
@@ -370,6 +450,25 @@ NSLog(@<span class="string">"string: %@"</span>, <span class="built_in">string</
 
     <div class="post-spread">
       
+        <div class="ds-share flat" data-thread-key="2015/11/10/memory-arc/"
+     data-title="iOS开发-ARC理解"
+     data-content=""
+     data-url="http://linfeng1009.gitcafe.io/2015/11/10/memory-arc/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
     </div>
   </div>
 
@@ -381,6 +480,10 @@ NSLog(@<span class="string">"string: %@"</span>, <span class="built_in">string</
 
         
   <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2015/11/10/memory-arc/"
+           data-title="iOS开发-ARC理解" data-url="http://linfeng1009.gitcafe.io/2015/11/10/memory-arc/">
+      </div>
     
   </div>
 
@@ -404,33 +507,42 @@ NSLog(@<span class="string">"string: %@"</span>, <span class="built_in">string</
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+      <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" src="//default_avatar.jpg" alt="大神" itemprop="image"/>
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="大神" itemprop="image"/>
           <p class="site-author-name" itemprop="name">大神</p>
         </div>
         <p class="site-description motion-element" itemprop="description">擅长Objective-C开发，喜欢在Mac上开发iOS应用，常混迹于各大iOS开发论坛。</p>
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
-            <a href="/">
+            <a href="/archives">
               <span class="site-state-item-count">21</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
-            
+            <a href="/categories">
               <span class="site-state-item-count">5</span>
               <span class="site-state-item-name">分类</span>
-              
+              </a>
           </div>
 
           <div class="site-state-item site-state-tags">
-            
+            <a href="/tags">
               <span class="site-state-item-count">11</span>
               <span class="site-state-item-name">标签</span>
-              
+              </a>
           </div>
 
         </nav>
@@ -446,6 +558,24 @@ NSLog(@<span class="string">"string: %@"</span>, <span class="built_in">string</
 
         <div class="links-of-author motion-element">
           
+            
+              <span class="links-of-author-item">
+                <a href="http://www.cocoachina.com" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/2502328960/profile?rightmod=1&wvr=6&mod=personinfo&is_all=1" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+          
         </div>
 
         
@@ -453,10 +583,34 @@ NSLog(@<span class="string">"string: %@"</span>, <span class="built_in">string</
 
         <div class="links-of-author motion-element">
           
+            <p class="site-author-name">Links</p>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.cocoachina.com" target="_blank">CocoaChina</a>
+              </span>
+            
+          
         </div>
 
       </section>
 
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ARC概述"><span class="nav-number">1.</span> <span class="nav-text">ARC概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ARC规则"><span class="nav-number">2.</span> <span class="nav-text">ARC规则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ARC生命周期修饰符"><span class="nav-number">3.</span> <span class="nav-text">ARC生命周期修饰符</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Property修饰"><span class="nav-number">3.1.</span> <span class="nav-text">Property修饰</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#变量修饰符"><span class="nav-number">3.2.</span> <span class="nav-text">变量修饰符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用生命周期修饰符来避免强应用循环"><span class="nav-number">3.3.</span> <span class="nav-text">使用生命周期修饰符来避免强应用循环</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ARC管理AutoReleasePool"><span class="nav-number">3.4.</span> <span class="nav-text">ARC管理AutoReleasePool</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AutoReleasePool实际应用"><span class="nav-number">3.5.</span> <span class="nav-text">AutoReleasePool实际应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#栈变量初始化为nil"><span class="nav-number">3.6.</span> <span class="nav-text">栈变量初始化为nil</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用编译标志启用或禁用ARC"><span class="nav-number">3.7.</span> <span class="nav-text">使用编译标志启用或禁用ARC</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Toll-Free_Bridging(无缝桥接)"><span class="nav-number">4.</span> <span class="nav-text">Toll-Free Bridging(无缝桥接)</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
       
 
     </div>
@@ -470,7 +624,7 @@ NSLog(@<span class="string">"string: %@"</span>, <span class="built_in">string</
       <div class="footer-inner">
         <div class="copyright" >
   
-  &copy; 
+  &copy;  2014 - 
   <span itemprop="copyrightYear">2015</span>
   <span class="with-love">
     <i class="icon-next-heart fa fa-heart"></i>
@@ -497,35 +651,55 @@ NSLog(@<span class="string">"string: %@"</span>, <span class="built_in">string</
     <div class="back-to-top"></div>
   </div>
 
-  <script type="text/javascript" src="//jquery/index.js?v=2.1.3"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
 
   
   
 
   
     
+
+  
     
-
   
 
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"dashen1009"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+    
+     
 
+
+    
   
 
   
-
-  <script type="text/javascript" src="//helpers.js?v="></script>
-  <script type="text/javascript" src="//velocity/velocity.min.js"></script>
-<script type="text/javascript" src="//velocity/velocity.ui.min.js"></script>
-
-<script type="text/javascript" src="//motion.js?v=" id="motion.global"></script>
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
 
 
-  <script type="text/javascript" src="//fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-  <script type="text/javascript" src="//jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
 
   
   
-<script type="text/javascript" src="//bootstrap.scrollspy.js?v=" id="bootstrap.scrollspy.custom"></script>
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
 
 
 <script type="text/javascript" id="sidebar.toc.highlight">
@@ -686,7 +860,7 @@ NSLog(@<span class="string">"string: %@"</span>, <span class="built_in">string</
 
 
 
-  <script type="text/javascript" src="//bootstrap.js"></script>
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
 
   
   

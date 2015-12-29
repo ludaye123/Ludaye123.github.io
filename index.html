@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="theme-next ">
+<html class="theme-next   use-motion ">
 <head>
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -21,15 +21,21 @@
 
 
 
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
 
 
 
 
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
 
-<link href="//font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
 
-<link href="//main.css?v=" rel="stylesheet" type="text/css" />
 
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
 
 
 
@@ -39,6 +45,8 @@
 
 
 
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
 
 
 
@@ -60,8 +68,8 @@
 <script type="text/javascript" id="hexo.configuration">
   var CONFIG = {
     scheme: '',
-    sidebar: '',
-    motion: 
+    sidebar: 'post',
+    motion: true
   };
 </script>
 
@@ -116,6 +124,73 @@
 <nav class="site-nav">
   
 
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-heartbeat fa-fw"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
   
 
   
@@ -201,6 +276,13 @@
 
           
             
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/12/22/ProducterAndCustomerMode/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/12/22/ProducterAndCustomerMode/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -219,17 +301,17 @@
         
           <span itemprop="articleBody">
             
-              <h1 id="生产者与消费者问题">生产者与消费者问题</h1><p>前段时间一个朋友问到这个问题，这是一个典型的多线程例子,记得以前在大学上操作系统这门课程有学习过,在此记录下我的实现方式。</p>
-<p>这个问题有两个要求：<br>1.生产者在仓库未满的情况下生产，否则停止生产<br>2.消费者仅在仓库有产品时才能消费，否则等待生产</p>
-<p>实现方式1: 利用iOS GCD中dispatch_semaphore_t信号转化实现</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSMutableArray</span> *buffer = [[<span class="built_in">NSMutableArray</span> alloc] init];</span><br><span class="line">   <span class="built_in">NSArray</span> *nums = @[@<span class="number">1</span>,@<span class="number">2</span>,@<span class="number">3</span>,@<span class="number">4</span>,@<span class="number">5</span>];</span><br><span class="line">   <span class="built_in">dispatch_queue_t</span> queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>);</span><br><span class="line">   dispatch_semaphore_t semaphoere = dispatch_semaphore_create(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">   <span class="comment">// 生产者线程</span></span><br><span class="line">   <span class="built_in">dispatch_async</span>(queue, ^&#123;</span><br><span class="line">       <span class="keyword">while</span> (<span class="literal">YES</span>) &#123;</span><br><span class="line">           <span class="keyword">@synchronized</span>(<span class="keyword">self</span>) &#123;</span><br><span class="line">               <span class="keyword">if</span>(buffer<span class="variable">.count</span> == MAX_SIZE)</span><br><span class="line">               &#123;</span><br><span class="line">                   <span class="built_in">NSLog</span>(<span class="string">@"缓存已满,等待消耗"</span>);</span><br><span class="line">                   <span class="keyword">if</span>(dispatch_semaphore_wait(semaphoere, DISPATCH_TIME_FOREVER))</span><br><span class="line">                       <span class="keyword">continue</span>;</span><br><span class="line">               &#125;</span><br><span class="line">               <span class="keyword">id</span> num = nums[arc4random_uniform((u_int32_t)nums<span class="variable">.count</span>)];</span><br><span class="line">               [buffer addObject:num];</span><br><span class="line">               <span class="built_in">NSLog</span>(<span class="string">@"Producter: %@"</span>,num);</span><br><span class="line"></span><br><span class="line">               dispatch_semaphore_signal(semaphoere)</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;);</span><br><span class="line">   </span><br><span class="line">   <span class="comment">// 消费者线程</span></span><br><span class="line">   <span class="built_in">dispatch_async</span>(queue, ^&#123;</span><br><span class="line">       <span class="keyword">while</span> (<span class="literal">YES</span>) &#123;</span><br><span class="line">           <span class="keyword">@synchronized</span>(<span class="keyword">self</span>) &#123;</span><br><span class="line">               <span class="keyword">if</span>(buffer<span class="variable">.count</span> == <span class="number">0</span>)</span><br><span class="line">               &#123;</span><br><span class="line">                   <span class="built_in">NSLog</span>(<span class="string">@"缓存为空,等待生产"</span>);</span><br><span class="line">                  <span class="keyword">if</span>(dispatch_semaphore_wait(semaphoere, DISPATCH_TIME_FOREVER))</span><br><span class="line">                      <span class="keyword">continue</span>;</span><br><span class="line">               &#125;</span><br><span class="line">               </span><br><span class="line">               <span class="keyword">id</span> num = [buffer firstObject];</span><br><span class="line">               [buffer removeObjectAtIndex:<span class="number">0</span>];</span><br><span class="line">               <span class="built_in">NSLog</span>(<span class="string">@"Customer: %@"</span>,num);</span><br><span class="line">               dispatch_semaphore_signal(semaphoere)</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;);</span><br></pre></td></tr></table></figure>
-<p>实现方式2: 利用pthread中的mutex和cond实现</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSMutableArray</span> *buffer = [[<span class="built_in">NSMutableArray</span> alloc] init];</span><br><span class="line"></span><br><span class="line">    pthread_mutex_t *mutex = (pthread_mutex_t *)malloc(<span class="keyword">sizeof</span>(pthread_mutex_t));</span><br><span class="line">    pthread_mutex_init(mutex, <span class="literal">NULL</span>);</span><br><span class="line">    </span><br><span class="line">    pthread_cond_t *cond = (pthread_cond_t *)malloc(<span class="keyword">sizeof</span>(pthread_cond_t));</span><br><span class="line">    pthread_cond_init(cond, <span class="literal">NULL</span>);</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    <span class="built_in">NSArray</span> *nums = @[@<span class="number">1</span>,@<span class="number">2</span>,@<span class="number">3</span>,@<span class="number">4</span>,@<span class="number">5</span>];</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">dispatch_queue_t</span> queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 生产者线程</span></span><br><span class="line">    <span class="built_in">dispatch_async</span>(queue, ^&#123;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">while</span> (<span class="literal">YES</span>) &#123;</span><br><span class="line">            </span><br><span class="line">            pthread_mutex_lock(mutex);</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span>(buffer<span class="variable">.count</span> == MAX_SIZE)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="built_in">NSLog</span>(<span class="string">@"缓存已满,等待消耗"</span>);</span><br><span class="line">                pthread_cond_wait(cond, mutex);</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">id</span> num = nums[arc4random_uniform((u_int32_t)nums<span class="variable">.count</span>)];</span><br><span class="line">            [buffer addObject:num];</span><br><span class="line">            <span class="built_in">NSLog</span>(<span class="string">@"Producter: %@"</span>,num);</span><br><span class="line">            pthread_cond_signal(cond);</span><br><span class="line">            pthread_mutex_unlock(mutex);</span><br><span class="line">            </span><br><span class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:arc4random_uniform(<span class="number">2</span>)];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 消费者线程</span></span><br><span class="line">    <span class="built_in">dispatch_async</span>(queue, ^&#123;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">while</span> (<span class="literal">YES</span>) &#123;</span><br><span class="line"></span><br><span class="line">            pthread_mutex_lock(mutex);</span><br><span class="line">            <span class="keyword">if</span>(buffer<span class="variable">.count</span> == <span class="number">0</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="built_in">NSLog</span>(<span class="string">@"缓存为空,等待生产"</span>);</span><br><span class="line">                pthread_cond_wait(cond, mutex);</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">id</span> num = [buffer firstObject];</span><br><span class="line">            [buffer removeObjectAtIndex:<span class="number">0</span>];</span><br><span class="line">            <span class="built_in">NSLog</span>(<span class="string">@"Customer: %@"</span>,num);</span><br><span class="line">            pthread_cond_signal(cond);</span><br><span class="line">            pthread_mutex_unlock(mutex);</span><br><span class="line">            </span><br><span class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:arc4random_uniform(<span class="number">3</span>)];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure>
-<p>最开始我是Pythond实现的，也记录下</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">from threading import Thread,Condition</span><br><span class="line">import <span class="tag">time</span></span><br><span class="line">import random</span><br><span class="line"></span><br><span class="line">buffer = []</span><br><span class="line">condition = <span class="function"><span class="title">Condition</span><span class="params">()</span></span></span><br><span class="line">MAX_NUM = <span class="number">20</span></span><br><span class="line"></span><br><span class="line">class <span class="function"><span class="title">ProducerThread</span><span class="params">(Thread)</span></span>:</span><br><span class="line">    def <span class="function"><span class="title">run</span><span class="params">(self)</span></span>:</span><br><span class="line">        nums = <span class="function"><span class="title">range</span><span class="params">(<span class="number">5</span>)</span></span></span><br><span class="line">        global buffer</span><br><span class="line">        while True:</span><br><span class="line">            num = random.<span class="function"><span class="title">choice</span><span class="params">(nums)</span></span></span><br><span class="line">            condition.<span class="function"><span class="title">acquire</span><span class="params">()</span></span></span><br><span class="line">            <span class="keyword">if</span> <span class="function"><span class="title">len</span><span class="params">(buffer)</span></span> == MAX_NUM:</span><br><span class="line">                <span class="function"><span class="title">print</span><span class="params">(<span class="string">"缓存已满,等待消耗"</span>)</span></span></span><br><span class="line">                condition.<span class="function"><span class="title">wait</span><span class="params">()</span></span></span><br><span class="line"></span><br><span class="line">            buffer.<span class="function"><span class="title">append</span><span class="params">(num)</span></span></span><br><span class="line">            <span class="function"><span class="title">print</span><span class="params">(<span class="string">"Procuder %d"</span>%num)</span></span></span><br><span class="line">            condition.<span class="function"><span class="title">notify</span><span class="params">()</span></span></span><br><span class="line">            condition.<span class="function"><span class="title">release</span><span class="params">()</span></span></span><br><span class="line">            <span class="tag">time</span>.<span class="function"><span class="title">sleep</span><span class="params">(random.random()</span></span>)</span><br><span class="line"></span><br><span class="line">class <span class="function"><span class="title">CustomerThread</span><span class="params">(Thread)</span></span>:</span><br><span class="line">    def <span class="function"><span class="title">run</span><span class="params">(self)</span></span>:</span><br><span class="line">        global buffer</span><br><span class="line">        while True:</span><br><span class="line">            condition.<span class="function"><span class="title">acquire</span><span class="params">()</span></span></span><br><span class="line">            <span class="keyword">if</span> not buffer:</span><br><span class="line">                <span class="function"><span class="title">print</span><span class="params">(<span class="string">"缓存为空,等待生产"</span>)</span></span></span><br><span class="line">                condition.<span class="function"><span class="title">wait</span><span class="params">()</span></span></span><br><span class="line">            num = buffer.<span class="function"><span class="title">pop</span><span class="params">(<span class="number">0</span>)</span></span></span><br><span class="line">            <span class="function"><span class="title">print</span><span class="params">(<span class="string">"Customer %d"</span>%num)</span></span></span><br><span class="line">            condition.<span class="function"><span class="title">notify</span><span class="params">()</span></span></span><br><span class="line">            condition.<span class="function"><span class="title">release</span><span class="params">()</span></span></span><br><span class="line">            <span class="tag">time</span>.<span class="function"><span class="title">sleep</span><span class="params">(random.random()</span></span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    <span class="function"><span class="title">ProducerThread</span><span class="params">()</span></span>.<span class="function"><span class="title">start</span><span class="params">()</span></span></span><br><span class="line">    <span class="function"><span class="title">CustomerThread</span><span class="params">()</span></span>.<span class="function"><span class="title">start</span><span class="params">()</span></span></span><br></pre></td></tr></table></figure>
-
-            
+            生产者与消费者问题前段时间一个朋友问到这个问题，这是一个典型的多线程例子,记得以前在大学上操作系统这门课程有学习过,在此记录下我的实现方式。
+这个问题有两个要求：1.生产者在仓库未满的情况下生产，否则停止生产2.消费者仅在仓库有产品时才能消费，否则等待生产
+实现方式1: 利用iOS GCD中dispatch_semaphore_t信号转化实现
+123456789101112131415161718192021222324252627282930313233343536373839404142NSMutableArray *buffer = [[NSMutableArray alloc] init];   NSArray *nums = @[@1,@2,@3,@4,@5];   dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);   dispatch_semaphore_t semaphoere = dispatch_semaphore_create(0);   // 生产者线程   dispatch_async(queue, ^&#123;       while (YES) &#123;           @synchronized(self) &#123
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/12/22/ProducterAndCustomerMode/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -304,6 +386,13 @@
 
           
             
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/12/09/protocol-default-imp/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/12/09/protocol-default-imp/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -322,26 +411,15 @@
         
           <span itemprop="articleBody">
             
-              <h2 id="协议方法默认实现">协议方法默认实现</h2><p>用OC定义的协议方法无法默认实现，这样造成的影响就会出现许多冗余的代码。如下情况(本例用Swift代替)</p>
-<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">protocol TeamRecord &#123;  <span class="variable"><span class="keyword">var</span> wins</span>: <span class="typename">Int</span> &#123; <span class="keyword">get</span> &#125;  <span class="variable"><span class="keyword">var</span> losses</span>: <span class="typename">Int</span> &#123; <span class="keyword">get</span> &#125;  func winningPercentage() -&gt; <span class="typename">Double</span>&#125;struct BaseballRecord: TeamRecord &#123;  <span class="variable"><span class="keyword">var</span> wins</span>: <span class="typename">Int</span>  <span class="variable"><span class="keyword">var</span> losses</span>: <span class="typename">Int</span>  let seasonLength = <span class="number">162</span>  func winningPercentage() -&gt; <span class="typename">Double</span> &#123;    <span class="keyword">return</span> <span class="typename">Double</span>(wins) / (<span class="typename">Double</span>(wins) + <span class="typename">Double</span>(losses))  &#125;&#125;struct BasketballRecord: TeamRecord &#123;  <span class="variable"><span class="keyword">var</span> wins</span>: <span class="typename">Int</span>  <span class="variable"><span class="keyword">var</span> losses</span>: <span class="typename">Int</span>  let seasonLength = <span class="number">82</span>  func winningPercentage() -&gt; <span class="typename">Double</span> &#123;    <span class="keyword">return</span> <span class="typename">Double</span>(wins) / (<span class="typename">Double</span>(wins) + <span class="typename">Double</span>(losses))  &#125;&#125;</span><br></pre></td></tr></table></figure>
-<p>其中BaseballRecord类和BasketballRecord类都遵循了TeamRecord协议，但是实现winningPercentage的方法，其实现的内容是一致的，出现过多冗余的代码会给后期的维护增加难度，但好在是在Swift中提供了一中可以默认实现协议方法,扩展当前的协议，然后实现想要默认实现的方法。</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">protocol</span> <span class="title">TeamRecord</span> </span>&#123;  <span class="keyword">var</span> wins: <span class="type">Int</span> &#123; <span class="keyword">get</span> &#125;  <span class="keyword">var</span> losses: <span class="type">Int</span> &#123; <span class="keyword">get</span> &#125;  <span class="func"><span class="keyword">func</span> <span class="title">winningPercentage</span><span class="params">()</span></span> -&gt; <span class="type">Double</span>&#125;<span class="class"><span class="keyword">extension</span> <span class="title">TeamRecord</span> </span>&#123;  <span class="func"><span class="keyword">func</span> <span class="title">winningPercentage</span><span class="params">()</span></span> -&gt; <span class="type">Double</span> &#123;    <span class="keyword">return</span> <span class="type">Double</span>(wins) / (<span class="type">Double</span>(wins) + <span class="type">Double</span>(losses))  &#125;&#125;</span><br></pre></td></tr></table></figure>
-<p>经过上述修改后，代码如下,在遵循协议的类中，省去了冗余协议方法的实现，代码简洁了不少，有木有！！哈哈！！！</p>
-<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">struct BaseballRecord: TeamRecord &#123;  <span class="variable"><span class="keyword">var</span> wins</span>: <span class="typename">Int</span>  <span class="variable"><span class="keyword">var</span> losses</span>: <span class="typename">Int</span>  let seasonLength = <span class="number">162</span>&#125;struct BasketballRecord: TeamRecord &#123;  <span class="variable"><span class="keyword">var</span> wins</span>: <span class="typename">Int</span>  <span class="variable"><span class="keyword">var</span> losses</span>: <span class="typename">Int</span>  let seasonLength = <span class="number">82</span>&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="协议扩展方法调">协议扩展方法调</h2><p>默认实现协议的方法有一定的好处，但是在开发项目中，默认实现的方法并不能满足所有的情况，有时必须要实现协议的方法，如果一个在遵循某个协议的类中，实现了该协议的方法，但是该协议又扩展实现了方法的默认实现，在这种情况下，该调用哪个方法呢？ </p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">protocol</span> <span class="title">MyProtocol</span></span>&#123;</span><br><span class="line">    <span class="func"><span class="keyword">func</span> <span class="title">test</span><span class="params">()</span></span></span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">MyProtocol</span></span>&#123;   </span><br><span class="line">    <span class="func"><span class="keyword">func</span> <span class="title">test</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">"Hello World"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyType</span>: <span class="title">MyProtocol</span> </span>&#123;</span><br><span class="line">    <span class="func"><span class="keyword">func</span> <span class="title">test</span><span class="params">()</span></span> &#123;</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">"Hello Sunday"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>实例化MyType，然后调用test方法</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">var</span> type: MyType = <span class="function"><span class="title">MyType</span><span class="params">()</span></span></span><br><span class="line">type.<span class="function"><span class="title">test</span><span class="params">()</span></span>   <span class="comment">// 打印的结果是 Hello Sunday</span></span><br></pre></td></tr></table></figure>
-<p>当然我们也可以实例化MyType给MyProtocol类型变量</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">var</span> type1: MyProtocol = <span class="function"><span class="title">MyType</span><span class="params">()</span></span></span><br><span class="line">type1.<span class="function"><span class="title">test</span><span class="params">()</span></span> <span class="comment">// 打印的结果是 Hello Sunday</span></span><br></pre></td></tr></table></figure>
-<p>这两种情况的结果是一样的，没什么区别，但是如果修改一下Myprotocol方法的定义，让其方法在扩展中实现</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">protocol</span> <span class="title">MyProtocol</span></span>&#123;</span><br><span class="line">  <span class="comment">//  func test()</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">MyProtocol</span></span>&#123;   </span><br><span class="line">    <span class="func"><span class="keyword">func</span> <span class="title">test</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">"Hello World"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyType</span>: <span class="title">MyProtocol</span> </span>&#123;</span><br><span class="line">    <span class="func"><span class="keyword">func</span> <span class="title">test</span><span class="params">()</span></span> &#123;</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">"Hello Sunday"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>再打印结果</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">var</span> type: MyType = <span class="function"><span class="title">MyType</span><span class="params">()</span></span></span><br><span class="line">type.<span class="function"><span class="title">test</span><span class="params">()</span></span>   <span class="comment">// 打印的结果是 Hello Sunday</span></span><br><span class="line"><span class="tag">var</span> type1: MyProtocol = <span class="function"><span class="title">MyType</span><span class="params">()</span></span></span><br><span class="line">type1.<span class="function"><span class="title">test</span><span class="params">()</span></span> <span class="comment">// 打印的结果是 Hello World</span></span><br></pre></td></tr></table></figure>
-<p>从其结果可以知道，如果协议中的方法未在该协议中定义，而是在其扩展中定义实现，当实例化遵循改协议的类给该协议变量时，调用协议的方法不是在该类中实现的，而是实现默认的方法.</p>
-
-            
+            协议方法默认实现用OC定义的协议方法无法默认实现，这样造成的影响就会出现许多冗余的代码。如下情况(本例用Swift代替)
+1protocol TeamRecord &#123;  var wins: Int &#123; get &#125;  var losses: Int &#123; get &#125;  func winningPercentage() -&gt; Double&#125;struct BaseballRecord: TeamRecord &#123;  var wins: Int  var losses: Int  let seasonLength = 162  func winningPercentage() -&gt; Double &#123;    return Double(wins) / (Double(wins) + Double(losses))  &#125;&#125;struct BasketballRecord: TeamRecord &#123;  var wins: Int  var losses: Int  let seasonLength = 82  func winningPercentage() -&gt; Double &#123;    return Double(wins) /
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/12/09/protocol-default-imp/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -416,6 +494,13 @@
 
           
             
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/11/10/memory-arc/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/11/10/memory-arc/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -434,130 +519,19 @@
         
           <span itemprop="articleBody">
             
-              <p>ARC是一个编译器的特征,提供自动管理对Objective-C对象的分配内存,而不是总是思索什么时候<code>retain</code>和什么时候<code>release</code>操作，ARC会让你把更多地精力集中在编码上。<br><img src="https://developer.apple.com/library/prerelease/ios/releasenotes/ObjectiveC/RN-TransitioningToARC/Art/ARC_Illustration.jpg" alt=""></p>
-<h2 id="ARC概述">ARC概述</h2><hr>
-<p>ARC可以让你没必要记住什么时候使用<code>retain</code>,<code>release</code>和<code>autorelease</code>方法,ARC会预估对象的生命周期并且在编译时自动插入合适的内存管理方法，也会生成合适的dealloc方法。<br>一个完整正确实现的Person类可能是这样的：</p>
-<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">@interface</span> <span class="attribute">Person </span>: NSObject</span><br><span class="line"><span class="variable">@property</span> NSString *firstName;</span><br><span class="line"><span class="variable">@property</span> NSString *lastName;</span><br><span class="line"><span class="variable">@property</span> NSNumber *yearOfBirth;</span><br><span class="line"><span class="variable">@property</span> Person *spouse;</span><br><span class="line"><span class="variable">@end</span></span><br><span class="line"> </span><br><span class="line"><span class="variable">@implementation</span> Person</span><br><span class="line"><span class="variable">@end</span></span><br><span class="line"><span class="attribute">TODO</span>: 属性默认是Strong引用</span><br></pre></td></tr></table></figure>
-<p>使用ARC，实现contrived方法</p>
-<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="atom">void</span>)<span class="atom">contrived</span> </span><br><span class="line">&#123;</span><br><span class="line">    <span class="name">Person</span> *<span class="atom">aPerson</span> = [[<span class="name">Person</span> <span class="atom">alloc</span>] <span class="atom">init</span>];</span><br><span class="line">    [<span class="atom">aPerson</span> <span class="atom">setFirstName</span>:@<span class="string">"William"</span>];</span><br><span class="line">    [<span class="atom">aPerson</span> <span class="atom">setLastName</span>:@<span class="string">"Dudney"</span>];</span><br><span class="line">    [<span class="atom">aPerson</span> <span class="atom">setYearOfBirth</span>:[[<span class="name">NSNumber</span> <span class="atom">alloc</span>] <span class="atom">initWithInteger</span>:<span class="number">2011</span>]];</span><br><span class="line">    <span class="name">NSLog</span>(@<span class="string">"aPerson: %@"</span>, <span class="atom">aPerson</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>ARC会负责内存管理，所以Person和NSNumber对象都不会有内存泄露。<br>你也可以安全的实现Person类的takeLastNameFrom:方法</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)takeLastNameFrom:(Person *)person </span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">NSString</span> *oldLastname = [<span class="keyword">self</span> lastName];</span><br><span class="line">    [<span class="keyword">self</span> setLastName:[person lastName]];</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"Lastname changed from %@ to %@"</span>, oldLastname, [<span class="keyword">self</span> lastName]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>ARC确保oldLastname在NSLog语句前不会释放。</p>
-<h2 id="ARC规则">ARC规则</h2><hr>
-<p>1.不能明确地调用<code>dealloc</code>,实现或调用<code>retain</code>,<code>release</code>,<code>retainCount</code>或<code>autorelease</code>方法，禁止扩充使用<code>@selector(retain), @selector(release)</code>等等。内存管理是编译器的工作，因此没有必要再使用内存管理的方法。如果你非得在ARC环境下使用内存管理的方法,那你会得到这样一个错误。</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="rule"><span class="attribute">error</span>:<span class="value"> ARC forbids explicit message send of <span class="string">'release'</span></span><br><span class="line">	[obj release]</span></span>;</span><br></pre></td></tr></table></figure>
-<p>2.不要显示调用<code>dealloc</code>方法，不管是在ARC或者是MRC环境下，只要对象的所有者不持有该对象，该对象就会被废弃，并且都会调用对象的<code>dealloc</code>方法。<br>3.自定义<code>dealloc</code>方法在ARC中是没有必要调用<code>[super dealloc]</code>(其实会编译错误)。在自定义<code>dealloc</code>方法内有使用到C语言库，在该库内分配缓存时，需要通过<code>free</code>来释放内存。还有适用于移除已注册的代理或观察者对象。</p>
-<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">-</span> (void)<span class="tag">dealloc</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="attr_selector">[[NSNotificationCenter defaultCenter]</span> <span class="tag">removeObserver</span><span class="pseudo">:self</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>4.可以直接使用<code>CFRetain</code>,<code>CFRelease</code>，以及其他与CoreFoundation风格类似对象关联的方法。(CF对象需要手动管理内存)<br>5.你不能使用<code>NSAllocateObject</code>或<code>NSDeallocateObject</code>,创建对象使用<code>alloc</code>运行时会负责释放对象。<br>6.你不能结构体中使用对象指针，你可以创建一个Objective-C类来替代管理数据。<br>7.<code>id</code>和<code>void *</code>显示转化需告诉编译器关于对象的生命周期。在MRC中，id变量强制转换void*变量并不会出现问题。如下示例:</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">id</span> obj = [][<span class="built_in">NSObject</span> alloc] init];</span><br><span class="line"><span class="keyword">void</span> *p = obj;</span><br><span class="line"><span class="keyword">id</span> obj1 = p;</span><br><span class="line">[ojb1 relase];</span><br></pre></td></tr></table></figure>
-<p>但是在ARC环境下就会引起编译错误。<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">error</span>: implict conversion <span class="keyword">of</span> an Objective-C pointer <span class="keyword">to</span> 'void *' <span class="keyword">is</span> disallowed <span class="keyword">with</span> ARC</span><br><span class="line">void *p = obj;</span><br><span class="line"><span class="keyword">error</span>: implicit conversion <span class="keyword">of</span> an Objective-C piinter <span class="keyword">to</span> 'void *' <span class="keyword">is</span> disallowed <span class="keyword">with</span> ARC </span><br><span class="line"><span class="property">id</span> obj1 = p;</span><br></pre></td></tr></table></figure></p>
-<p>id型或者对象型变量赋值给void*或者逆向赋值时都需要进行特定的转换。如果只想单纯地赋值操作，可以使用<code>__bridge</code>转化。ARC环境下会有提示。</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">id</span> obj = [[<span class="built_in">NSObject</span> alloc] init];</span><br><span class="line"><span class="keyword">void</span> *p= (__bridge <span class="keyword">void</span> *)obj;</span><br><span class="line"><span class="keyword">id</span> obj1 = (__bridge <span class="keyword">id</span>)p;</span><br></pre></td></tr></table></figure>
-<p>虽然<code>id</code>和<code>void*</code>通过<code>__bridge</code>相互转化，但是转换为<code>void*</code>的<code>__bridge</code>转换，其安全性与赋值给<code>__unsafe_unretained</code>修饰的变量类似，甚至会更低。如果管理时没有注意到赋值对象的所有者,就会因悬挂指针导致程序Crash。说到<strong>bridge转化，还有其他两种转换方式，`</strong>bridge_retained<code>和</code>__bridge_transfer`转化。如下示例分别说明:</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">id</span> obj = [[<span class="built_in">NSObject</span> alloc] init];</span><br><span class="line"><span class="keyword">void</span> *p = (__bridge_retained)obj;</span><br></pre></td></tr></table></figure>
-<p><code>__bridge_retained</code>转换可以使要转换赋值的变量也持有所赋值的对象。在MRC环境下源代码实现如下:</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">id</span> obj = [[<span class="built_in">NSObject</span> alloc] init];</span><br><span class="line"><span class="keyword">void</span> *p = obj;</span><br><span class="line">[(<span class="keyword">id</span>)p retain];</span><br></pre></td></tr></table></figure>
-<p>__bridge_retained转换变为了retain,也就是说obj和变量p同时持有对象。再看下面的示例:</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> *p = <span class="number">0</span>;</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">id</span> obj = [[<span class="built_in">NSObject</span> alloc] init];</span><br><span class="line">	p = (__bridge_retained <span class="keyword">void</span> *)obj; </span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"%@"</span>,[(__bridge <span class="keyword">id</span>)p class]);</span><br><span class="line"><span class="comment">// 打印结果为：NSObject</span></span><br></pre></td></tr></table></figure>
-<p>变量作用域结束的时，虽然随着持有强引用的变量obj失效，对象也会随之释放，但由于<code>__bridge_retained</code>转换使得变量p持有该对象，因此该对象并不会被废弃。下面比较一下MRC代码:<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> *p = <span class="number">0</span>;</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">id</span> obj = [[<span class="built_in">NSObject</span> alloc] init]; <span class="comment">// retainCount -&gt; 1</span></span><br><span class="line">	p = [obj retain];  <span class="comment">// retainCount -&gt; 2</span></span><br><span class="line">	[obj release];  <span class="comment">// retainCount -&gt; 1</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 此时retainCount为1，对象仍然存在</span></span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"%@"</span>,[(__bridge <span class="keyword">id</span>)p class]);</span><br></pre></td></tr></table></figure></p>
-<p><code>__bridge_transfer</code>转换提供与此相反的操作,被转换得变量所持有的对象在该变量被赋值给转换目标变量之后会被释放。</p>
-<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="property">id</span> obj = (__bridge_transfer <span class="property">id</span>)p;</span><br></pre></td></tr></table></figure>
-<p>在MRC的表述如下:</p>
-<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="property">id</span> obj = (<span class="property">id</span>)p;</span><br><span class="line">p retain];</span><br><span class="line">[(<span class="property">id</span>)p release];</span><br></pre></td></tr></table></figure>
-<p>同<code>__bridge_retained</code>转换与<code>retain</code>类似,<code>__bridge_transfer</code>转换与release相似。在给id obj赋值时retain即相当于__strong修饰符的变量。通过上面的两种转换，那么不使用id型或对象型变量也可以生成、持有以及释放对象。虽然可以这么做，但在ARC并不推荐。</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> *p = (__bridge_retained <span class="keyword">void</span> *)[[<span class="built_in">NSObject</span> alloc] init];</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"%@"</span>,[(__bridge <span class="keyword">id</span>) class]);</span><br><span class="line">(<span class="keyword">void</span>)(__bridge_transfer <span class="keyword">id</span>)p;</span><br></pre></td></tr></table></figure>
-<p>上面代码等同于在MRC的如下代码:</p>
-<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="atom">id</span> <span class="atom">p</span> = [[<span class="name">NSObject</span> <span class="atom">alloc</span>] <span class="atom">init</span>];</span><br><span class="line"><span class="name">NSLog</span>(@<span class="string">"%@"</span>,[<span class="atom">p</span> <span class="atom">class</span>]);</span><br><span class="line">[<span class="atom">p</span> <span class="atom">release</span>];</span><br></pre></td></tr></table></figure>
-<p>这些转换大多使用在Objective-C对象与Core Foundation对象之间的转换。</p>
-<p>8.不能使用<code>NSAutoreleasePool</code>对象，ARC提供<code>@autoreleasepool</code>block来代替。这种方式比<code>NSAutoreleasePool</code>效率更高。<br>9.你不能使用区域，再也没有必要使用<code>NSZone</code>，它们被现在的Objective-C运行时忽略。<br>10.为了兼容手动<code>retain-release</code>代码，ARC强加了约束对于方法命名,在MRC中，用于对象生成/持有的方法必须遵守以下的命名规则。</p>
-<ul>
-<li>alloc</li>
-<li>new</li>
-<li>copy</li>
-<li>mutableCopy</li>
-</ul>
-<p>以上述名称开头的方法在返回对象时,必须返回给调用方所应当持有的对象。在ARC中也是如此，返回的对象完全没有改变，只是在ARC有效时要追加一条命名规则。</p>
-<ul>
-<li>init</li>
-</ul>
-<p>以<code>init</code>开头的方法的规则比alloc/new/copy/mutableCopy更严格。该方法必须是实例方法，并且必须要返回对象，返回的对象应为id型/instancetype型/方法生命类的对象类型,还有就是该类的基类或子类型。该返回对象并不注册到autoreleasepool上，基本上只是对<code>alloc</code>方法返回值得对象进行初始化处理并返回该对象。<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">id</span> obj = [[<span class="built_in">NSObject</span> alloc] init];</span><br></pre></td></tr></table></figure></p>
-<p>如此代码所示,init方法会初始化alloc方法返回的对象，然后再返回给调用方。<br>下面我们来看看以init开头的方法的命名规则。</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">-</span> (<span class="tag">id</span>)<span class="rule"><span class="attribute">initWithDictionary</span>:<span class="value">(NSDictionary *)dict</span></span>;</span><br></pre></td></tr></table></figure>
-<p>该方法遵守了命名规则，但想下面的两个方法虽然也以init开头，但是没有返回对象，因此不能使用。<br><figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">- <span class="list">(<span class="keyword">void</span>)</span>initWithObject<span class="comment">;</span></span><br><span class="line">- <span class="list">(<span class="keyword">void</span>)</span>initialize<span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
-<p>还有不能给一个访问器的命名以<code>new</code>开头。如果声明一个属性它的命名以<code>new</code>开头，除非你指定一个不同的getter方法，否则不能正常运行。</p>
-<pre><code><span class="comment">// Won't work:</span>
-<span class="variable">@property</span> NSString *newTitle;
-
-<span class="comment">// Works:</span>
-<span class="variable">@property</span> (getter=theNewTitle) NSString *newTitle;
-</code></pre><h2 id="ARC生命周期修饰符">ARC生命周期修饰符</h2><hr>
-<p>ARC给对象提供几个生命周期修饰符，一个弱引用(weak)不会延伸它所指向对象的生命周期，当没有强引用这个对象时，它会自动变为nil,合理的使用weak将帮助你确保不会创建循环引用。</p>
-<h3 id="Property修饰">Property修饰</h3><p><code>weak</code>和<code>strong</code>关键字被引用修饰新声明的属性,如下所示:</p>
-<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 下面的声明与 @property(retain) MyClass *myObject;同义</span></span><br><span class="line"><span class="comment">// ARC环境下，对象默认的修饰是strong</span></span><br><span class="line"><span class="variable">@property</span>(strong) MyClass *myObject;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 下面的声明与 "@property(assign) MyClass *myObject;"类似</span></span><br><span class="line"><span class="comment">// 除了MyClass 实例被释放，这个属性的值被设置为nil代替保留一个悬挂指针</span></span><br><span class="line"><span class="variable">@property</span>(weak) MyClass *myObject;</span><br></pre></td></tr></table></figure>
-<h3 id="变量修饰符">变量修饰符</h3><p>你可以用下面几个生命周期修饰符修饰变量:</p>
-<pre><code>__<span class="keyword">strong</span>
-__<span class="keyword">weak</span>
-__unsafe_unretained
-__autoreleasing
-</code></pre><p><strong>strong是默认的，对象的一直存在，直到没有其他的strong对象引用。
-</strong>weak不会保持引用对象的生命，当指向的变量没有被其他strong对象引用，所指向的队形被设置为nil。<br><strong>unsafe_unretained 指定一个引用，不会保持引用对象的生命，当没有其他strong变量引用所指的对象，它所引用不会设置为nil。如果它所引用的对象被释放了，会指向一个悬挂指针(野指针)。
-</strong>autoreleasing 通常用来暗示参数，传递引用在返回时自动释放。</p>
-<p>你应该正确修饰变量，格式如下:<br><code>ClassName * qualifier variableName;</code></p>
-<p>eg:</p>
-<pre><code>MyClass <span class="keyword">*</span> __weak myWeakReference;    
-MyClass <span class="keyword">*</span> __unsafe_unretained myUnsafeReference;
-</code></pre><p>注意当使用__weak变量在栈上时，思考下面的示例:</p>
-<pre><code>NSString * __weak <span class="built_in">string</span> = <span class="string">[[NSString alloc] initWithFormat:@"First Name: %@", [self firstName]]</span>;
-NSLog(@<span class="string">"string: %@"</span>, <span class="built_in">string</span>);
-</code></pre><p>虽然string被赋值了一个字符串对象，但是由于字符串对象没有其他强引用对象引用，因此生成后会立刻释放，打印语句显示的内容为null</p>
-<p>你也需要通过引用传递对象，下面代码能正常运行</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSError</span> *error;</span><br><span class="line"><span class="built_in">BOOL</span> OK = [myObject performOperationWithError:&amp;error];</span><br><span class="line"><span class="keyword">if</span> (!OK) &#123;</span><br><span class="line">    <span class="comment">// Report the error.</span></span><br><span class="line">    <span class="comment">// ...</span></span><br></pre></td></tr></table></figure>
-<p>然而，error的隐式声明为:</p>
-<pre><code><span class="title">NSError</span> * __strong <span class="built_in">error</span>;
-</code></pre><p>方法的声明为:</p>
-<pre><code><span class="tag">-</span>(<span class="tag">BOOL</span>)<span class="rule"><span class="attribute">performOperationWithError</span>:<span class="value">(NSError * __autoreleasing *)error</span></span>;
-</code></pre><p>编译器因此会重写代码:</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSError</span> * __<span class="keyword">strong</span> error;</span><br><span class="line"><span class="built_in">NSError</span> * __autoreleasing tmp = error;</span><br><span class="line"><span class="built_in">BOOL</span> OK = [myObject performOperationWithError:&amp;tmp];</span><br><span class="line">error = tmp;</span><br><span class="line"><span class="keyword">if</span> (!OK) &#123;</span><br><span class="line">    <span class="comment">// Report the error.</span></span><br><span class="line">    <span class="comment">// ...</span></span><br></pre></td></tr></table></figure>
-<p>局部变量的声明(<strong>strong)与参数(_</strong>autoreleasing)之间不匹配造成编译器创建临时变量。像这样传递参数，可以直接手动声明变量为__autoreleasing,没有必要让编译器再生成中间变量。</p>
-<h3 id="使用生命周期修饰符来避免强应用循环">使用生命周期修饰符来避免强应用循环</h3><p>你可以使用生命周期修饰符来避免强引用循环,例如，如果一个视图对象安排在父子层级，并且父对象需要指向子对象，反之亦然。你让父对象与子对象强关联，子对象与父对象弱关联。其他情况可能更微妙,特别是涉及block对象。</p>
-<p>在MRC环境中，<strong>block id x;x没有保留。在ARC环境中，</strong>block id x;默认是保留x。为了在ARC下获得MRC的行为，你可以使用<strong>unsafe_unretained </strong>block id x;正如名字<strong>unsafe_unretained </strong>block id x;所示。然而，没有保留的变量是很危险的因此不推荐，两个更好的选择是用<strong>weak或者是设置</strong>block的值为nil打破循环引用。</p>
-<p>下面的代码片段说明了这个问题,myController对象对completionHandler强引用，而在completionHandler中对myController对象也强引用，很明显会出现内存泄露。</p>
-<figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">MyViewController</span> *myController = [[<span class="type">MyViewController</span> alloc] init…];</span><br><span class="line">// ...</span><br><span class="line">myController.completionHandler =  ^(<span class="type">NSInteger</span> <span class="literal">result</span>) &#123;</span><br><span class="line">   [myController dismissViewControllerAnimated:<span class="type">YES</span> completion:<span class="keyword">nil</span>];</span><br><span class="line">&#125;;</span><br><span class="line">[self presentViewController:myController animated:<span class="type">YES</span> completion:^&#123;</span><br><span class="line">   [myController release];</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
-<p>解决方案1：可以使用__block修饰符并且设置myController变量为空在block中</p>
-<figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">MyViewController</span> * __block myController = [[<span class="type">MyViewController</span> alloc] init…];</span><br><span class="line">// ...</span><br><span class="line">myController.completionHandler =  ^(<span class="type">NSInteger</span> <span class="literal">result</span>) &#123;</span><br><span class="line">    [myController dismissViewControllerAnimated:<span class="type">YES</span> completion:<span class="keyword">nil</span>];</span><br><span class="line">    myController = <span class="keyword">nil</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>解决方案2: 可以使用一个临时的weak变量</p>
-<figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">MyViewController</span> *myController = [[<span class="type">MyViewController</span> alloc] init…];</span><br><span class="line">// ...</span><br><span class="line"><span class="type">MyViewController</span> * __weak weakMyViewController = myController;</span><br><span class="line">myController.completionHandler =  ^(<span class="type">NSInteger</span> <span class="literal">result</span>) &#123;</span><br><span class="line">    [weakMyViewController dismissViewControllerAnimated:<span class="type">YES</span> completion:<span class="keyword">nil</span>];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>对于非一般的循环，你应该使用:</p>
-<figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">MyViewController</span> *myController = [[<span class="type">MyViewController</span> alloc] init…];</span><br><span class="line">// ...</span><br><span class="line"><span class="type">MyViewController</span> * __weak weakMyController = myController;</span><br><span class="line">myController.completionHandler =  ^(<span class="type">NSInteger</span> <span class="literal">result</span>) &#123;</span><br><span class="line">    <span class="type">MyViewController</span> *strongMyController = weakMyController;</span><br><span class="line">    <span class="keyword">if</span> (strongMyController) &#123;</span><br><span class="line">        // ...</span><br><span class="line">        [strongMyController dismissViewControllerAnimated:<span class="type">YES</span> completion:<span class="keyword">nil</span>];</span><br><span class="line">        // ...</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        // <span class="type">Probably</span> nothing...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>在这种情况下,已经有一个弱引用的weakMyController，但是为什么在block中还要声明一个强引用strongMyController的局部变量呢？在某些情况下,如果myController在block调用之前被释放了，那么继续执行block的中的内容是,那么就会crash，用一个强引用的局部变量可以保证在block中myController在存在的。<br>在某些情况下,您可以使用<strong>unsafe_unretained如果类不兼容</strong>weak。然而,这也可能成为严重不切实际的周期,因为很难或不可能验证__unsafe_unretained指针仍然有效,仍然指向同一个对象。</p>
-<h3 id="ARC管理AutoReleasePool">ARC管理AutoReleasePool</h3><p>使用ARC，你不能管理自动释放池直接使用<code>NSAutoreleasePool</code>，你可以使用@autoreleasepool block代替:</p>
-<pre><code><span class="variable">@autoreleasepool</span> {
-     <span class="comment">// Code, such as a loop that creates a large number of temporary objects.</span>
-}
-</code></pre><p>这个简单的结构允许编译器推断引用技术的状态。在入口点，一个自动释放池被Push，正常退出(brek,return,goto,fall-through等等)自动释放池被Pop。为了兼容现在的代码，如果退出是由于异常，那么自动释放池不会Pop。</p>
-<h3 id="AutoReleasePool实际应用">AutoReleasePool实际应用</h3><p>在ARC的实际应用中，之前遇到过一种情况，就是对于大量数据处理的时候，如果不进行手动销毁释放池，那将会出现一个非常非常严重的内存问题和性能问题。下面示例说明:</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSString</span> *imagePath = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:<span class="string">@"IMG_5401"</span> ofType:<span class="string">@"JPG"</span>];</span><br><span class="line">   <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">50</span>; i++)</span><br><span class="line">   &#123;</span><br><span class="line">       <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">100</span>; j++)</span><br><span class="line">       &#123;</span><br><span class="line">           <span class="built_in">UIImage</span> *image = [<span class="built_in">UIImage</span> imageWithContentsOfFile:imagePath];</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
-<p>在没有手动销毁外循环内的自动释放池的情况下:<br><img src="http://7xkpsz.com1.z0.glb.clouddn.com/demo1.png" alt=""><br>手动销毁的情况:<br><img src="http://7xkpsz.com1.z0.glb.clouddn.com/8F9A8A26-1067-4CF3-B21E-2CB1479560C1.png" alt=""></p>
-<h3 id="栈变量初始化为nil">栈变量初始化为nil</h3><p>使用ARC,strong,weak和autoreleasing栈变量会隐式的初始化为nil。</p>
-<pre><code>- (<span class="keyword">void</span>)myMethod {
-    <span class="built_in">NSString</span> *name;
-    <span class="built_in">NSLog</span>(<span class="string">@"name: %@"</span>, name);
-}
-</code></pre><p>将会打印null而不是崩溃</p>
-<h3 id="使用编译标志启用或禁用ARC">使用编译标志启用或禁用ARC</h3><p>启用ARC使用<code>-fobjc-arc</code>编译标志，禁用ARC的编译标致<code>-fno-objc-arc</code></p>
-<h2 id="Toll-Free_Bridging(无缝桥接)">Toll-Free Bridging(无缝桥接)</h2><hr>
-<p>在许多Cocoa应用中，你需要使用Core Foundation风格的对象，例如Core Foundation，CoreGraphics等等。编译器不会自动管理Core Foundation对象的生命周期，你必须调用CFRetain和CFRelease来管理Core Foundation对象的生命周期。</p>
-<p>编译器必须知道由谁来负责释放转换后的对象,如果你把一个NSObject当作 Core Foundation 对象来使用,则ARC将不再负责释放该对象。但你必须明确地告诉ARC你的这个意图,编译器没办法自己做主。同样如果你创建一个Core Foundation对象并把它转换为NSObject对象,你也必须告诉ARC占据对象的所有权,并在适当的时候释放该对象。这就是所谓的 bridging casts。</p>
-<p>__bridge 改变Objective-C和Core Foundation对象的之间的类型转化，不改变对象的所有权。</p>
-<p>__bridge_retained or CFBridgingRetain 将Objective-C对象转变为Core Foundation对象，并且所有权转变给Core Foundation,由程序员管理内存。</p>
-<p>__bridge_transfer or CFBridgingRelease 将非Objective-C对象转变为Objective-C对象，所有权转变给ARC，由系统管理。</p>
-<p>eg:</p>
-<figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="pp">- <span class="params">(void)</span>logFirstNameOfPerson:<span class="params">(<span class="variable">ABRecordRef</span>)</span>person &#123;</span><br><span class="line"> </span><br><span class="line">    NSString *name = <span class="params">(<span class="variable">NSString</span> *)</span>ABRecordCopyValue<span class="params">(person, k<span class="variable">ABPersonFirstNameProperty</span>)</span>;</span><br><span class="line">    NSLog<span class="params">(@<span class="string">"Person's first name: %@"</span>, name)</span>;</span><br><span class="line">    [name release];</span><br><span class="line">&#125;</span></span><br></pre></td></tr></table></figure>
-<p>替换:</p>
-<figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="pp">- <span class="params">(void)</span>logFirstNameOfPerson:<span class="params">(<span class="variable">ABRecordRef</span>)</span>person &#123;</span><br><span class="line"> </span><br><span class="line">    NSString *name = <span class="params">(<span class="variable">NSString</span> *)</span>CFBridgingRelease<span class="params">(<span class="variable">ABRecordCopyValue</span>(person, k<span class="variable">ABPersonFirstNameProperty</span>)</span>);</span><br><span class="line">    NSLog<span class="params">(@<span class="string">"Person's first name: %@"</span>, name)</span>;</span><br><span class="line">&#125;</span></span><br></pre></td></tr></table></figure>
-
-            
+            ARC是一个编译器的特征,提供自动管理对Objective-C对象的分配内存,而不是总是思索什么时候retain和什么时候release操作，ARC会让你把更多地精力集中在编码上。
+ARC概述
+ARC可以让你没必要记住什么时候使用retain,release和autorelease方法,ARC会预估对象的生命周期并且在编译时自动插入合适的内存管理方法，也会生成合适的dealloc方法。一个完整正确实现的Person类可能是这样的：
+12345678910@interface Person : NSObject@property NSString *firstName;@property NSString *lastName;@property NSNumber *yearOfBirth;@property Person *spouse;@end @implementation Person@endTODO: 属性默认是Strong引用
+使用ARC，实现contrived方法
+12345678- (void)contrived &#123;    Person *aPerson = [[Person alloc] init];    [aPerson setFirstName:@"William"];    [aPerson setLastName:@"Dudney"];    [a
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/11/10/memory-arc/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -617,6 +591,13 @@ NSLog(@<span class="string">"string: %@"</span>, <span class="built_in">string</
 
           
             
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/10/29/Cocoa-Framework-生成脚本/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/29/Cocoa-Framework-生成脚本/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -635,9 +616,14 @@ NSLog(@<span class="string">"string: %@"</span>, <span class="built_in">string</
         
           <span itemprop="articleBody">
             
-              <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Sets the target folders and the final framework product.</span></span><br><span class="line">FMK_NAME=<span class="variable">$&#123;PROJECT_NAME&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Install dir will be the final output to the framework.</span></span><br><span class="line"><span class="comment"># The following line create it in the root folder of the current project.</span></span><br><span class="line">INSTALL_DIR=<span class="variable">$&#123;SRCROOT&#125;</span>/Products/<span class="variable">$&#123;FMK_NAME&#125;</span>.framework</span><br><span class="line"></span><br><span class="line"><span class="comment"># Working dir will be deleted after the framework creation.</span></span><br><span class="line">WRK_DIR=build</span><br><span class="line">DEVICE_DIR=<span class="variable">$&#123;WRK_DIR&#125;</span>/Release-iphoneos/<span class="variable">$&#123;FMK_NAME&#125;</span>.framework</span><br><span class="line">SIMULATOR_DIR=<span class="variable">$&#123;WRK_DIR&#125;</span>/Release-iphonesimulator/<span class="variable">$&#123;FMK_NAME&#125;</span>.framework</span><br><span class="line"></span><br><span class="line"><span class="comment"># -configuration $&#123;CONFIGURATION&#125;</span></span><br><span class="line"><span class="comment"># Clean and Building both architectures.</span></span><br><span class="line">xcodebuild -configuration <span class="string">"Release"</span> -target <span class="string">"<span class="variable">$&#123;FMK_NAME&#125;</span>"</span> -sdk iphoneos clean build</span><br><span class="line">xcodebuild -configuration <span class="string">"Release"</span> -target <span class="string">"<span class="variable">$&#123;FMK_NAME&#125;</span>"</span> -sdk iphonesimulator clean build</span><br><span class="line"></span><br><span class="line"><span class="comment"># Cleaning the oldest.</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="operator">-d</span> <span class="string">"<span class="variable">$&#123;INSTALL_DIR&#125;</span>"</span> ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">rm -rf <span class="string">"<span class="variable">$&#123;INSTALL_DIR&#125;</span>"</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line">mkdir -p <span class="string">"<span class="variable">$&#123;INSTALL_DIR&#125;</span>"</span></span><br><span class="line"></span><br><span class="line">cp -R <span class="string">"<span class="variable">$&#123;DEVICE_DIR&#125;</span>/"</span> <span class="string">"<span class="variable">$&#123;INSTALL_DIR&#125;</span>/"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Uses the Lipo Tool to merge both binary files (i386 + armv6/armv7) into one Universal final product.</span></span><br><span class="line">lipo -create <span class="string">"<span class="variable">$&#123;DEVICE_DIR&#125;</span>/<span class="variable">$&#123;FMK_NAME&#125;</span>"</span> <span class="string">"<span class="variable">$&#123;SIMULATOR_DIR&#125;</span>/<span class="variable">$&#123;FMK_NAME&#125;</span>"</span> -output <span class="string">"<span class="variable">$&#123;INSTALL_DIR&#125;</span>/<span class="variable">$&#123;FMK_NAME&#125;</span>"</span></span><br><span class="line"></span><br><span class="line">rm -r <span class="string">"<span class="variable">$&#123;WRK_DIR&#125;</span>"</span></span><br></pre></td></tr></table></figure>
-            
+            12345678910111213141516171819202122232425262728293031# Sets the target folders and the final framework product.FMK_NAME=$&#123;PROJECT_NAME&#125;# Install dir will be the final output to the framework.# The following line create it in the root folder of the current project.INSTALL_DIR=$&#123;SRCROOT&#125;/Products/$&#123;FMK_NAME&#125;.framework# Working dir will be deleted after the framework creation.WRK_DIR=buildDEVICE_DIR=$&#123;WRK_DIR&#125;/Release-iphoneos/$&#123;FMK_NAME&#125;.frameworkSIMULATOR_DIR=$&#123;WRK_DIR&#125;/Release-iphonesimulator/$&#123;FMK_NAME&#125;.framework# -configur
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/10/29/Cocoa-Framework-生成脚本/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -712,6 +698,13 @@ NSLog(@<span class="string">"string: %@"</span>, <span class="built_in">string</
 
           
             
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/10/20/3D-Touch实践/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/20/3D-Touch实践/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -730,23 +723,18 @@ NSLog(@<span class="string">"string: %@"</span>, <span class="built_in">string</
         
           <span itemprop="articleBody">
             
-              <h2 id="3D_Touch简介">3D Touch简介</h2><p>随着iOS9以及iPhone 6s和iPhone 6s plus的发布，苹果添加一种立体的用户界面:<br>用户在主屏幕上不需要打开APP，按压图标就可以快速访问APP提供的一些功能。<br>在APP内，用户按压界面就可以预览更多地内容，获得加速访问的特征。</p>
-<h2 id="主屏幕Quick_Action">主屏幕Quick Action</h2><p><img src="https://developer.apple.com/library/prerelease/ios/documentation/UserExperience/Conceptual/Adopting3DTouchOniPhone/Art/maps_directions_home_2x.png" alt=""></p>
-<p>快速选项(Quick Action)可以让用户预见并加速与APP交互，iOS9SDK提供的官方API可以使你定义静态或者动态的快速选项，以及检测当前设备快速选项的可用性。</p>
-<p>1.定义静态快速选项选项在APP工程的<code>Info.plist</code>文件中添加<code>UIApplicationShortcutItems</code>数组。<br>2.定义动态快速选项使用<code>UIApplicationShortcutItem</code>和相关的API，然后给应用程序的共享对象<code>UIApplication</code>使用<code>shortcutItems</code>这个属性添加动态的快速选项。</p>
-<h3 id="静态快速选项">静态快速选项</h3><p><code>UIApplicationShortcutItems</code>(iOS数组)给APP指定静态主屏幕的快速选项，这个键包含了一个字典数组，每个字典包含关于一个快速选项的详细信息。<br>你可以指定静态快速选项给你的APP用一个字典数组。当用户在支持3D Touch的设备上按压主屏幕图标时，在主屏幕上显示快速选项的数量是由系统决定的(只能显示4个)。<br>静态快速选项你在<code>Info.plist</code>文件中定义显示在主屏幕上以同样地顺序出现在文件中。下面是一个Demo:<br><img src="http://7xkpsz.com1.z0.glb.clouddn.com/3dtouchInfoplist.png" alt=""></p>
-<p>然后的AppDelegate.m文件中添加<code>application:performActionForShortcutItem:completionHandler:</code>代理方法，根据<code>UIApplicationShortcutItem</code>的type属性和之前在info.plist设置<code>UIApplicationShortcutItemType</code>对应的在值来判断，用户点击的是哪个快速选项。这个方法当用户通过选择一条接近激活应用时就会调用，除了<code>-application:willFinishLaunchingWithOptions: or -application:didFinishLaunchingWithOptions returns NO.</code>这种情况。在<code>-application:didFinishLaunchingWithOptions</code>中可以通过<code>UIApplicationLaunchOptionsShortcutItemKey</code>键来获取当前接收快速选项的<code>UIApplicationShortcutItem</code>对象，来处理用户的意图。<br>demo运行结果:<br><img src="http://7xkpsz.com1.z0.glb.clouddn.com/3dtouchquickaction.gif" alt=""></p>
-<p><img src="http://7xkpsz.com1.z0.glb.clouddn.com/D1CAC8C1-A43C-4E11-B382-96D1270FD133.png" alt=""></p>
-<p>静态定义快速在运行时常用的key:<br>UIApplicationShortcutItemType (必须使用) 用来区分与其他快速选项的分类<br>UIApplicationShortcutItemTitle (必须使用) 快速选项显示的标题<br>UIApplicationShortcutItemSubtitle  快速选项显示的子标题<br>UIApplicationShortcutItemIconType  图片类型由系统提供<br>UIApplicationShortcutItemIconFile  自定义的图标<br>UIApplicationShortcutItemUserInfo  附加信息</p>
-<p>Demo地址: <a href="https://github.com/ludaye123/3DTouch-Static-QuickActions.git" target="_blank" rel="external">GitHub</a></p>
-<h3 id="动态快速选项">动态快速选项</h3><p>定义动态快速选项使用<code>UIApplicationShortcutItem</code>和相关的API，然后给应用程序的共享对象<code>UIApplication</code>使用<code>shortcutItems</code>这个属性添加动态的快速选项。示例代码如下:</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)setupApplicationShortcutItems</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">UIApplicationShortcutIcon</span> *homeIcon = [<span class="built_in">UIApplicationShortcutIcon</span> iconWithType:<span class="built_in">UIApplicationShortcutIconTypeCompose</span>];</span><br><span class="line">    <span class="built_in">UIApplicationShortcutIcon</span> *messageIcon = [<span class="built_in">UIApplicationShortcutIcon</span> iconWithTemplateImageName:<span class="string">@"message"</span>];</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">NSDictionary</span> *userInfo1 = @&#123;<span class="string">@"key"</span>:<span class="string">@"home"</span>&#125;;</span><br><span class="line">    <span class="built_in">NSDictionary</span> *userInfo2 = @&#123;<span class="string">@"key"</span>:<span class="string">@"message"</span>&#125;;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    <span class="built_in">UIMutableApplicationShortcutItem</span> *homeShortcutItem = [[<span class="built_in">UIMutableApplicationShortcutItem</span> alloc] initWithType:<span class="string">@"io.gitcafe.linfeng1009.main"</span> localizedTitle:<span class="string">@"主页"</span> localizedSubtitle:<span class="string">@"跳转主页"</span> icon:homeIcon userInfo:userInfo1];</span><br><span class="line">    <span class="built_in">UIMutableApplicationShortcutItem</span> *messageShortcutItem = [[<span class="built_in">UIMutableApplicationShortcutItem</span> alloc] initWithType:<span class="string">@"io.gitcafe.linfeng1009.message"</span> localizedTitle:<span class="string">@"消息"</span> localizedSubtitle:<span class="string">@"跳转消息"</span> icon:messageIcon userInfo:userInfo2];</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">NSArray</span> *items = @[homeShortcutItem,messageShortcutItem];</span><br><span class="line">    <span class="built_in">NSArray</span> *exsitItems = [<span class="built_in">UIApplication</span> sharedApplication]<span class="variable">.shortcutItems</span>;</span><br><span class="line">    <span class="built_in">NSArray</span> *updateItems = [exsitItems arrayByAddingObjectsFromArray:items];</span><br><span class="line">    </span><br><span class="line">    [<span class="built_in">UIApplication</span> sharedApplication]<span class="variable">.shortcutItems</span> = updateItems;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>运行效果:</p>
-<p><img src="http://7xkpsz.com1.z0.glb.clouddn.com/2C7B34D8-D1B0-4AEA-98D9-D4DF3C812743.png" alt=""></p>
-<h3 id="动态_VS_静态快速选项">动态 VS 静态快速选项</h3><p>定义主屏幕动态快速选项使用这个类(UIApplicationShortcutItem),代码创建快速选项，并且在运行时注册它们给应用程序对象。<br>定义主屏幕静态快速在运行时用<code>UIApplicationShortcutItems</code>数组在Xcode工程的<code>info.plist</code>文件中，当你的应用被安装时系统注册静态快速选项。<br>系统限制了快速在运行时显示的数量，当用户按压主屏幕上的图标，在限制显示的快速在运行时的标题内，静态快速在运行时具有优先显示(demo中可以看出)，开始显示在列表的顶部位置。如果你的静态快速在运行时没有超过限定显示的数量，并且也动态定义了快速在运行时，那么动态创建的快速在运行时也会显示。</p>
-
-            
+            3D Touch简介随着iOS9以及iPhone 6s和iPhone 6s plus的发布，苹果添加一种立体的用户界面:用户在主屏幕上不需要打开APP，按压图标就可以快速访问APP提供的一些功能。在APP内，用户按压界面就可以预览更多地内容，获得加速访问的特征。
+主屏幕Quick Action
+快速选项(Quick Action)可以让用户预见并加速与APP交互，iOS9SDK提供的官方API可以使你定义静态或者动态的快速选项，以及检测当前设备快速选项的可用性。
+1.定义静态快速选项选项在APP工程的Info.plist文件中添加UIApplicationShortcutItems数组。2.定义动态快速选项使用UIApplicationShortcutItem和相关的API，然后给应用程序的共享对象UIApplication使用shortcutItems这个属性添加动态的快速选项。
+静态快速选项UIApplicationShortcutItems(iOS数组)给APP指定静态主屏幕的快速选项，这个键包含了一个字典数组，每个字典包含关于一个快速选项的详细信息。你可以指定静态快速选项给你的APP用一个字典数组。当用户在支持3D Touch的设备上按压主屏幕图标时，在主屏幕上显示快速选项的数量是由系统决定的(只能显示4个)。静态快速选项你在Info.plist文件中定义显示在主屏幕上以同
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/10/20/3D-Touch实践/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -821,6 +809,13 @@ NSLog(@<span class="string">"string: %@"</span>, <span class="built_in">string</
 
           
             
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/10/19/object-parse/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/19/object-parse/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -839,24 +834,21 @@ NSLog(@<span class="string">"string: %@"</span>, <span class="built_in">string</
         
           <span itemprop="articleBody">
             
-              <p>Apple开源库: <a href="http://opensource.apple.com/tarballs/objc4/" target="_blank" rel="external">点击这里</a>，当前版本为最新版本:objc4-647.tar.gz</p>
-<p><img src="http://blog.leichunfeng.com/images/object_model.png" alt=""></p>
-<h2 id="Object">Object</h2><hr>
-<p>在Objective-C中，除了一些基本类型外，基本上都可以称之为对象。首先从类的实例进行分析：<br>打开刚刚下载源码的工程：<br>找到objc_private.h这个文件，在文件的上面部分可以看到Class和id的定义</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> objc_class *Class;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> objc_object *<span class="keyword">id</span>;</span><br></pre></td></tr></table></figure>
-<p>可以看到Class和id分为objc_class和objc_object类型的指针，Command+左键查看下objc_object的定义。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> objc_object &#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    isa_t isa;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ISA() assumes this is NOT a tagged pointer object</span></span><br><span class="line">    <span class="function">Class <span class="title">ISA</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// getIsa() allows this to be a tagged pointer object</span></span><br><span class="line">    <span class="function">Class <span class="title">getIsa</span><span class="params">()</span></span>;</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>由此可以得知，其实oc对象实质上就是一个objc_object结构体的对象，仅包含一个isa的成员变量，isa所对应的内容就是对象所属的类。id在运行时通过isa可以指向任意的oc对象。</p>
-<h2 id="Class">Class</h2><hr>
-<p>对象发送一个消息时，所需的数据和方法都是由其所属类提供的，类描述了对象占用空间大小，成员变量的类型以及描述对象的行为。实质就是对象发送消息以及所需的数据是通过isa找到其所属的类，类来提供其对象所需的一切。<br>类的定义如下:<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> objc_class : objc_object &#123;</span><br><span class="line">    Class superclass;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *name;</span><br><span class="line">    <span class="keyword">uint32_t</span> version;</span><br><span class="line">    <span class="keyword">uint32_t</span> info;</span><br><span class="line">    <span class="keyword">uint32_t</span> instance_size;</span><br><span class="line">    <span class="keyword">struct</span> old_ivar_list *ivars;</span><br><span class="line">    <span class="keyword">struct</span> old_method_list **methodLists;</span><br><span class="line">    Cache cache;</span><br><span class="line">    <span class="keyword">struct</span> old_protocol_list *protocols;</span><br><span class="line">    <span class="comment">// CLS_EXT only</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">uint8_t</span> *ivar_layout;</span><br><span class="line">    <span class="keyword">struct</span> old_class_ext *ext;</span><br><span class="line"></span><br><span class="line">   <span class="comment">//  more</span></span><br><span class="line">    	...</span><br><span class="line">   <span class="comment">// more</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p>在类的定义中，可以得出类实质上也是对象，它也包含isa成员变量，成员变量列表，方法列表以及协议列表。<br>那么类对象的isa对应的值又是什么呢？ 带着个这个问题继续。</p>
-<h2 id="Meta_Class">Meta Class</h2><hr>
-<p>通过上面类的定义得知类其实也是对象，既然是对象那就有对应的所属类，这个类称之为元类(Meta Class)，元类保存了静态方法列表。<br>我们在创建一个对象时，经常会使用某个类调用alloc或者new方法，例如[UIView new],给类对象发送一个new消息，和对象发送消息一样，类对象也要通过其isa找到对应的所属类，去查找响应的方法。<br>那么问题来了？元类是不是也是对象呢？ 没错，元类也是对象，叫做元类对象，那么它的isa对应的所属类又是什么？元类对象对应的所属类叫做根元类(Root Meta Class)。那么根元类理所当然也是一个对象，isa对应的值就是其本身。至于元类，在开发中并不能显示的调用而且也没用必要。</p>
-<h2 id="总结">总结</h2><hr>
-<p>1.类的对象发送消息时，根据isa找到其所属类，然后从类提供的方法去查找，如果当前类找不到，再从其父类中查找，直到找到，否则异常(不能识别方法)。<br>2.类对象发送消失时，根据isa找到元类，然后从元类提供的方法去查找，如果当前类找不到，在从其父类中查找，直到找到，否则异常。</p>
+            Apple开源库: 点击这里，当前版本为最新版本:objc4-647.tar.gz
 
-            
+Object
+在Objective-C中，除了一些基本类型外，基本上都可以称之为对象。首先从类的实例进行分析：打开刚刚下载源码的工程：找到objc_private.h这个文件，在文件的上面部分可以看到Class和id的定义
+12typedef struct objc_class *Class;typedef struct objc_object *id;
+可以看到Class和id分为objc_class和objc_object类型的指针，Command+左键查看下objc_object的定义。
+123456789101112struct objc_object &#123;private:    isa_t isa;    public:    // ISA() assumes this is NOT a tagged pointer object    Class ISA();    // getIsa() allows this to be a tagged pointer object    Class getIsa();    ...&#125;;
+由此可以得知，其实oc对象实质上就是一个objc_object结构体的对象，仅包含一个isa的成员变量，isa所对应的内容就是对象所属的类。i
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/10/19/object-parse/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -931,6 +923,13 @@ NSLog(@<span class="string">"string: %@"</span>, <span class="built_in">string</
 
           
             
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/10/13/git-commad/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/13/git-commad/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -949,11 +948,15 @@ NSLog(@<span class="string">"string: %@"</span>, <span class="built_in">string</
         
           <span itemprop="articleBody">
             
-              <p>1.初始化仓库 git init<br>2.添加文件到仓库<br>    git add <file><br>    git commit</file></p>
-<p>3.查看仓库当前分支状态 git status<br>4.对比文件  git diff <file><br>5.查看提交记录 git log<br>6.查看命令记录 git reflog<br>7.回滚到上一个版本 git reset —hard HEAD^ 上上个版本git reset —hard HEAD^^<br>8.回滚到上20个版本 git reset —hard HEAD~20<br>9.修改了工作区文件，想放弃修改 git checkout — <file><br>10.修改了工作区文件，摒弃commit到缓存区，想放弃修改<br>  git reset HEAD <file><br>  git checkout — <file><br>11.添加到缓存区的文件<br>    rm <file><br>    工作区和版本库不一致<br>    两个选择<br>    从版本库中删除: git rm <file> ,git commit -m “说明”<br>    恢复文件: git checkout — <file><br>12.添加远程库 git remote add origin 仓库地址<br>远程库是空的，我们第一次推送master分支时，加上了-u参数，Git不但会把本地的master分支内容推送的远程新的master分支，还会把本地的master分支和远程的master分支关联起来<br>之后推送使用 git push origin master， 拉取文件 git pull origin master<br>13.克隆远程库 git clone 仓库地址<br>14.查看分支 git branch (-a 包括远程分支)<br>15.创建分支 git branch <name><br>16.切换分支 git checkout <name><br>17.创建并切换分支 git checkout -b <name><br>18.在当前分支合并其他分支  git merge <name><br>19.删除分支 git branch -d <name><br>20.合并分支禁用Fast forward git merge —no-ff -m “合并说明” <name><br>21.保存当前工作区 git stash<br>22.查看缓存工作区列表 git stash list<br>22.恢复工作区 git stash pop<br>23.查看远程库信息 git remote -v；<br>24.本地新建的分支如果不推送到远程，对其他人就是不可见的；从本地推送分支，使用git push origin branch-name，如果推送失败，先用git pull抓取远程的新提交；在本地创建和远程分支对应的分支，使用git checkout -b branch-name origin/branch-name，本地和远程分支的名称最好一致;建立本地分支和远程分支的关联，使用git branch —set-upstream branch-name origin/branch-name,从远程抓取分支，使用git pull，如果有冲突，要先处理冲突。</name></name></name></name></name></name></file></file></file></file></file></file></file></p>
-
-            
+            1.初始化仓库 git init2.添加文件到仓库    git add     git commit
+3.查看仓库当前分支状态 git status4.对比文件  git diff 5.查看提交记录 git log6.查看命令记录 git reflog7.回滚到上一个版本 git reset —hard HEAD^ 上上个版本git reset —hard HEAD^^8.回滚到上20个版本 git reset —hard HEAD~209.修改了工作区文件，想放弃修改 git checkout — 10.修改了工作区文件，摒弃commit到缓存区，想放弃修改  git reset HEAD   git checkout — 11.添加到缓存区的文件    rm     工作区和版本库不一致    两个选择    从版本库中删除: git rm  ,git commit -m “说明”    恢复文件: git checkout — 12.添加远程库 git remote add origin 仓库地址远程库是空的，我们第一次推送master分支时，加上了-u参数，Git不但会把本地的master分支内容推送的远程新的master分支，还会把本地的master分支和远程的master分支关联起来之后推送使用 git push origin master， 拉取文件 git pul
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/10/13/git-commad/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -1028,6 +1031,13 @@ NSLog(@<span class="string">"string: %@"</span>, <span class="built_in">string</
 
           
             
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/10/08/stack-view/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/08/stack-view/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -1046,47 +1056,16 @@ NSLog(@<span class="string">"string: %@"</span>, <span class="built_in">string</
         
           <span itemprop="articleBody">
             
-              <p>英文原文: <a href="http://www.raywenderlich.com/114552/uistackview-tutorial-introducing-stack-views" target="_blank" rel="external">UIStackView Tutorial: Introducing Stack Views</a></p>
-<p>我们都在那里，有个新的需求，你需要在运行时添加或者移除一个视图，并且也需要调整邻近的视图的位置。<br>你采用什么方法？你给约束添加输出口在故事板上这样你就能激活或者禁用某些吗?或者你使用第三方库？或根据复杂性也许你能在代码中做一切。<br>也许这次你的视图层次没有必要在运行时改变，但是你必须考虑如何把一个新视图嵌入到你的故事板。你有没有最终只是清除所有的约束并从头开始重新添加它们，因为它比执行复杂的约束操作更加容易吗？<br>随着UIStackView的引入，上面的任务变得非常简单。堆栈视图提供一种水平或者垂直布局多个视图方式。通过配置一些简单的属性，例如: <code>alignment</code>,<code>distribution</code>和<code>spacing</code>.你可以定义包含的视图如何去调整自己可用的空间。</p>
-<h2 id="开始">开始</h2><p>在这篇UIStackView的引导，你运行的APP叫做<code>Vacation Spots</code>.它是一个简单的APP,向你展示一个为了摆脱烦恼的地名的列表。<br>但是不要收拾包裹就走人，因为这里有一些问题你将通过使用堆栈视图来修复，比你单独使用自动布局更加简单的一种方式.<br>开始下载<a href="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/VacationSpots_Starter.zip" target="_blank" rel="external">初始工程</a>作为引导，运行它在iPhone6模拟器上，你将看到你可能去度假的地名列表.<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/01-table-view-is-now-correct_750x1334-281x500.png" alt=""><br>去London的信息界面通过点击London单元.<br>初略一看，这个视图好像没什么问题，但是它有一些问题.<br>1.看到视图底部的排列的按钮.它们之间当前的位置有一个固定的空间值，所以它们没有适配屏幕的宽度。为了全面的看到问题，临时旋转模拟器屏幕到横屏方向通过按下Command和left按键(左方向箭头).<br><img src="http://cdn2.raywenderlich.com/wp-content/uploads/2015/09/02-issues-visible-in-landscape-view_1334x750-480x270.png" alt=""><br>2.点击靠近<code>WEATHER</code>的<code>Hide</code>按钮，成功隐藏文字，但是没有重新调整它下面部分的位置，留下一块空白空间。<br><img src="http://cdn4.raywenderlich.com/wp-content/uploads/2015/09/03-hide-weather-issue_750x1334-281x500.png" alt=""><br>3.每节段的顺序能够改善，将会有更多逻辑，如果<code>what to see</code>这部分位置放置到<code>why visit</code>这部分后面，在<code>weather</code>它们之间。<br>4.底部的按钮有点太靠近视图底部边缘在横屏模式下。最好是如果你可以减少不同部分之间的间距——但只有在横向模式。</p>
-<p>现在,你有一个想法你会做改善,是时候进入这个项目。<br>打开<code>Main.storyboard</code>并且查看<code>Spot Info View Controller</code>场景，有一些颜色在你的堆栈视图中。<br><img src="http://cdn4.raywenderlich.com/wp-content/uploads/2015/09/04-colorful-scene-in-storyboard_504x636-396x500.png" alt=""></p>
-<p>这些标签和按钮已经设置了各种背景颜色在运行时会被清除。在故事板中，它们简单的可视帮助显示如何改变堆视图的各种属性从而影响内嵌视图的结构.<br>你现在不需要这样做,但是如果在任何时候你想看到背景颜色在运行应用程序时,可以暂时注释掉以下行在 SpotInfoViewController内的viewDidLoad方法。<br><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Clear background colors from labels and buttons</span></span><br><span class="line"><span class="keyword">for</span> <span class="keyword">view</span> <span class="keyword">in</span> backgroundColoredViews &#123;</span><br><span class="line">  <span class="keyword">view</span>.backgroundColor = UIColor.clearColor()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>当然，任意输出口连接的标签有占位符文本，那些设置的输出口变量的名称为了使它们连接。这使得更简单告诉标签将更新它们的文本在运行时。例如，标签随着文本<whyvisitlabel>被连接为：</whyvisitlabel></p>
-<pre><code><span class="preprocessor">@IBOutlet</span> <span class="keyword">weak</span> <span class="keyword">var</span> whyVisitLabel: <span class="type">UILabel</span>!
-</code></pre><p>需要注意的另一件事是，故事板的场景不是默认600x600的方块当使用size classes.<br>size classes一直可用，但初始导航控制器的大小设置为iPhone 4英寸以下模拟指标部分在属性检查器。这一点容易使用故事板;模拟指标属性在运行时没有任何影响——视图将为不同的设备调整。<br><img src="http://cdn4.raywenderlich.com/wp-content/uploads/2015/09/05-simulated-metrics-iphone-4-inch_639x173.png" alt=""></p>
-<h2 id="你的第一个堆视图">你的第一个堆视图</h2><hr>
-<p>第一件事你将通过使用堆视图修复底部排列按钮之间的空隙。堆栈视图可以分发其视图沿其轴以不同的方式,与等量的方法之一是每个视图之间的间距。<br>幸运地是，嵌入已存在的视图到新堆视图中并不是火箭科学。首先，选择所有的按钮底部的位置<code>Spot Info View Controller</code>场景通过点击一个,然后按住Command键点击另外两个:<br><img src="http://cdn4.raywenderlich.com/wp-content/uploads/2015/09/06-select-bottom-row-of-buttons_420x80.png" alt=""><br>如果大纲视图不是已经打开,继续打开它通过显示文档大纲按钮左下角的画布:<br><img src="http://cdn4.raywenderlich.com/wp-content/uploads/2015/09/07-document-outline-button_120x40.png" alt=""><br>验证所有三个按钮选择通过检查他们的大纲视图:<br><img src="http://cdn1.raywenderlich.com/wp-content/uploads/2015/09/08-verify-button-selection_360x90.png" alt=""><br>他们并不都是选择,你也可以在大纲视图命令点击每个按钮来选择他们。一旦选中,单击新的堆栈按钮底部的工具栏自动布局正确的故事板的画布上:<br><img src="http://cdn4.raywenderlich.com/wp-content/uploads/2015/09/09-stack_button_outlined_148x52.png" alt=""><br>这些按钮将被嵌入新的堆栈视图中:<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/10-bottom-row-is-now-in-stack-view_640x100.png" alt=""><br>这些按钮现在整齐彼此连靠着-你很快就会解决。<br>虽然堆栈视图负责定位按钮,但是你还需要添加自动布局约束位置堆栈视图本身。<br>嵌入一个视图在堆栈视图时,约束其他视图删除。例如,嵌入在堆栈视图按钮之前,<code>Submit Rating</code>按钮的顶部有一个垂直间距约束连接它的底部<code>Rating</code>标签:<br><img src="http://cdn2.raywenderlich.com/wp-content/uploads/2015/09/11-prior-constraint_420x90.png" alt=""><br>点击<code>Submit Rating</code>按钮,它不再有任何约束附加到它:<br><img src="http://cdn1.raywenderlich.com/wp-content/uploads/2015/09/12-no-more-constraints_400x80.png" alt=""><br>验证约束消失的另一种方法是通过查看尺寸检查器(⌥⌘5):<br><img src="http://cdn4.raywenderlich.com/wp-content/uploads/2015/09/13-check-size-inspector_640x80.png" alt=""><br>为了约束添加到堆栈视图本身,您首先需要选择。在故事板中选择一个堆栈视图很棘手,如果其视图完全填满堆栈视图。一个简单的方法是在大纲视图选择堆栈视图:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/14-stack-view-document-outline-selection_660x80.png" alt=""><br>另一个技巧是按住Shift键和右键单击任何堆栈视图的视图,或者Control-Shift-click如果你使用触控板。你会得到一个上下文菜单,显示了视图层次结构在你点击的位置,和你只是选择堆栈视图菜单中点击它。现在,选择堆栈视图使用Shift-Right-click方法:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/15-select-stack-view-in-view-hierarchy-menu_400x280.png" alt=""><br>现在，点击Pin按钮在自动布局工具栏上给它添加约束:<br><img src="http://cdn4.raywenderlich.com/wp-content/uploads/2015/09/16-pin-button_142x57.png" alt=""><br>First add a check to Constrain to margins. Then add the following constraints to the edges of your stack view:<br>首先添加一个检查约束边缘。然后添加以下约束你的边缘堆栈视图:</p>
-<pre><code><span class="string">Top:</span> <span class="number">20</span>, <span class="string">Leading:</span> <span class="number">0</span>, <span class="string">Trailing:</span> <span class="number">0</span>, <span class="string">Bottom:</span> <span class="number">0</span>
-</code></pre><p>仔细检查上面的数字,上下左右的约束,确保焊接层选择。然后点击添加4约束:<br><img src="http://cdn4.raywenderlich.com/wp-content/uploads/2015/09/17-bottom-stack-view-constraints_264x364.png" alt=""><br>堆栈的视图是正确的大小,但它已经扩大了第一个按钮填充任何额外的空间:<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/18-first-button-is-stretched_400x80.png" alt=""><br>属性决定了一个堆栈视图列出了其观点沿轴分布性质。目前,它的设置来填补,这意味着所包含的视图将完全填补堆栈视图沿其轴。为此,堆栈视图只会扩大它的一个视图来填补这一额外的空间,具体地说,它扩展了视图内容紧凑优先级最低的水平,或者如果所有优先级相等,它扩展了第一个视图。<br>然而,你不是寻找按钮完全填满堆栈视图——你希望他们是等距的。确保堆栈视图仍然选择和属性检查器。改变填充等于间距的分布:<br><img src="http://cdn2.raywenderlich.com/wp-content/uploads/2015/09/19-change-distribution-to-equal-spacing_640x148.png" alt=""><br>现在编译和运行,点击任何单元,旋转模拟器(⌘→)。你会发现底部按钮现在空间本身同样!<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/20-now-buttons-are-equally-spaced_1334x750-480x270.png" alt=""><br>为了解决这个问题不使用堆栈视图,您将不得不使用间隔的视图,每一对按钮之间。你必须添加等宽约束到所有的间隔的视图以及大量的额外约束。<br>它会看起来像下面这样。为了在截图中可见,间隔的视图有一个浅灰色背景:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/21-alternate-solution-1_346x76.png" alt=""><br>这不是太多的问题如果你只有这一次的故事板,但许多视图是动态的。这不是一个简单的任务在运行时来添加一个新按钮或隐藏或删除现有的按钮，由于相邻间隔视图和约束，为了隐藏一个视图在堆栈视图,所有你要做的就是设置包含视图的隐藏属性为true和堆栈视图处理其余的。这就是你会修理间隔在<code>WEATHER</code>下面标签当用户隐藏文本。您将在本教程稍后做一旦天气部分标签添加到一个堆栈视图。</p>
-<h2 id="转化部分">转化部分</h2><hr>
-<p>你会把所有的其他部分在SpotInfoViewController使用堆栈视图。这将使您可以轻松地完成剩下的任务。接下里你将转化评级部分。</p>
-<h3 id="评级部分">评级部分</h3><p>正如上面你刚刚创建堆栈视图，选择旁边的<code>Rating</code>标签和<code>Star</code>标签:<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/22-select-rating-label-and-stars-label_640x74.png" alt=""><br>然后单击栈上的按钮来将它们嵌入在堆栈视图:<br><img src="http://cdn1.raywenderlich.com/wp-content/uploads/2015/09/23-after-clicking-stack-button_640x74.png" alt=""><br>现在点击Pin按钮，勾选<code>Constrain to margins</code>并且添加下面三个约束:<br>Top: 20, Leading: 0, Bottom: 20<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/24-add-second-stack-view-constraints_264x171.png" alt=""><br>现在去属性检查器设置间隔为8:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/25-set-spacing-to-8_259x87.png" alt=""><br>有可能你会看到一个错误的观点警告,看到这样<code>stars</code>标签已经超出界限的视图:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/26-stars-label-weirdly-stretched_640x85.png" alt=""><br>有时Xcode可能暂时显示警告或堆栈视图位置不正确,但警告将会消失,你让其他更新。您通常可以忽略这些。然而,立即修复它,你能说服堆栈视图布局通过将其框架由一个点和背部或临时改变它的一个布局属性。为了说明这一点,改变从填补顶部对齐,然后回到填补。现在你会看到星星标签位置正确:<br><img src="http://cdn4.raywenderlich.com/wp-content/uploads/2015/09/27-change-alignment-to-top-and-back_640x85.png" alt=""><br>构建和运行验证一切看起来和之前一模一样。</p>
-<h3 id="取消嵌入堆栈视图">取消嵌入堆栈视图</h3><p>在你走得太远之前,最好有一些基本的“急救”培训。有时你可能会发现自己与你不再需要额外的堆栈视图,可能是因为实验、重构或只是偶然。幸运的是,有一个简单的方法来从堆栈视图unembed视图。首先,你要选择你想要删除的堆栈视图。然后按住Option键,点击栈上的按钮。在出现的上下文菜单中点击Unembed:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/28-how-to-unembed_186x71.png" alt=""><br>另一个方法是选择堆栈视图,然后从菜单中选择Editor\ Unembed。</p>
-<h3 id="你的第一个垂直堆栈视图">你的第一个垂直堆栈视图</h3><p>现在，你将创建你的第一个垂直堆栈视图，选择<code>WHY VISIT</code>标签和<code>&lt;whyVisitLabel&gt;</code>如下:<br><img src="http://cdn1.raywenderlich.com/wp-content/uploads/2015/09/29-select-why-visit-labels_640x90.png" alt=""><br>Xcode将正确推断,这应该是一个垂直堆栈视图基于标签的位置。单击堆栈按钮嵌入这两个堆栈视图:<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/30-embed-why-visit-labels_640x90.png" alt=""><br>较低的标签以前约束将视图的右边距,但约束时被嵌入在堆栈视图。目前,堆栈视图没有约束,所以采用的固有宽度最大的视图。<br>随着堆栈视图被选择，点击Pin按钮，勾选<code>Constrain to margins</code>,设置上，左和右的约束为0.<br>然后,单击下拉底部约束和选择<code>WEATHER</code>(当前距离=20)：<br><img src="http://cdn4.raywenderlich.com/wp-content/uploads/2015/09/31-dont-select-nearest-neighbor-constraint_463x417.png" alt=""><br>默认情况下,显示最近的邻居的约束,这为约束隐藏按钮底部的距离15。你真需要约束下面的<code>WEATHER</code>标签。最后,点击 Add 4 Constraints。您现在应该看到如下:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/32-why-visit-stack-view-stretched_640x90.png" alt=""><br>您现在有了一个扩展堆栈视图右边固定在右边距的视图。然而,底部标签还是一样的宽度。你会解决这个问题通过更新堆栈视图对齐属性。</p>
-<h2 id="对齐属性">对齐属性</h2><hr>
-<p>对齐属性决定了一个堆栈视图列出了其视图垂直于轴。垂直堆栈视图,可能的值<code>Fill</code>,<code>Leading</code>、<code>Center</code>和<code>Trailing</code>。可能水平堆栈视图对齐值略有不同:<br><img src="http://cdn2.raywenderlich.com/wp-content/uploads/2015/09/33-horizontal-and-vertical-alignment_594x171.png" alt=""><br><code>.Top</code>代替<code>.Leading</code>,<code>Bottom</code>代替<code>.Trailing</code>,也有两个属性,只在水平方向上是有效的。<code>.FirstBaseline</code>, <code>.LastBaseline</code>。<br>选择每个值,看看它如何影响标签的位置垂直堆栈视图:<br>Fill:<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/34-alignment-fill_640x64.png" alt=""><br>Leading:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/35-alignment-leading_640x64.png" alt=""><br>Center:<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/36-alignment-center_640x64.png" alt=""><br>Trailing:<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/37-alignment-trailing_640x64.png" alt=""><br>当你完成测试每个值,设置对齐来填充:<br><img src="http://cdn1.raywenderlich.com/wp-content/uploads/2015/09/38-now-select-alignment-fill_640x64.png" alt=""><br>然后构建和运行验证一切看起来不错,没有退化。</p>
-<p>指定<code>Fill</code>意味着你想要的所有视图完全填满堆栈视图垂直于它的轴。这导致<code>WHY VISIT</code>标签来扩大自己的右边缘。<br>但如果你只想要底部标签扩大自身优势?<br>现在,没关系因为标签在运行时将有一个透明的背景,但它将很重要当你转化<code>weather</code>部分时。<br>您将了解如何完成,使用一个额外的堆栈视图。</p>
-<h2 id="转化WHAT_TO_SEE部分">转化WHAT TO SEE部分</h2><hr>
-<p>这个部分非常类似于前面,所以这里的说明是短暂的。<br>1.首先，选择<code>WHAT TO SEE</code>标签和下面的<code>&lt;whatToSeeLabel&gt;</code><br>2.点击堆栈按钮<br>3.点击Pin按钮<br>4.勾选<code>Constrain to margin</code>,并且添加下面四个约束:<br>Top: 20, Leading: 0, Trailing: 0, Bottom: 20<br>5.设置堆栈视图的对齐方式为Fill<br>你的故事板现在看起来应该是这样的:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/39-after-what-to-see-section_640x308.png" alt=""><br>构建和运行验证一切看起来仍然一样。<br>这使得你只有<code>WEATHER</code>部分了。</p>
-<h2 id="转化WEATHER部分">转化WEATHER部分</h2><p>WEATHER部分比其他部分更加复杂，由于包含隐藏按钮。<br>一种方法你可以用将创建一个嵌套的堆栈视图通过将天气标签和隐藏按钮嵌入到一个水平堆栈视图,然后嵌入水平堆栈视图和<code>&lt;weatherInfoLabel&gt;</code>垂直堆栈视图。<br>看起来像这样的:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/40-weather-stack-in-stack_640x92.png" alt=""><br>注意<code>WEATHER</code>标签已经扩大到等于<code>Hide</code>按钮的高度。这并不是理想的方法,因为这将导致基线之间的有额外的空间<code>WEATHER</code>标签和它下面的文本。<br>记住,<code>alignment</code>指定定位垂直堆栈视图。所以,你可以设置<code>alignment</code>到<code>Bottom</code>:<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/41-weather-stack-in-stack-alignment-bottom_640x92.png" alt=""><br>但你真的不想<code>Hide</code>按钮的高度决定堆栈视图的高度。<br>您将实际的方法是有<code>Hide</code>按钮不会在天气的堆栈视图部分,或任何其他堆栈视图。<br>它仍将是一个顶层视图的子视图,您将添加一个约束<code>WEATHER</code>标签——这将会在堆栈视图。没错,你会从一个按钮添加一个约束之外的一个堆栈视图标签在一个堆栈视图!<br>选择<code>WEATHER</code>标签和它下面的<code>&lt;weatherInfoLabel&gt;</code>：<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/42-select-weather-and-info-label_640x92.png" alt=""><br>点击堆栈按钮:<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/43-weather-click-stack-button_640x92.png" alt=""><br>点击Pin按钮，勾选<code>Constrain to margins</code>，添加下面四个约束:<br>Top: 20, Leading: 0, Trailing: 0, Bottom: 20<br>设置堆栈视图的对齐方式为Fill:<br><img src="http://cdn2.raywenderlich.com/wp-content/uploads/2015/09/44-weather-alignment-fill_640x92.png" alt=""><br>你需要<code>Hide</code>按钮的左边缘和<code>WEATHER</code>标签的右边缘之间的约束,因此天气标签填补堆栈视图不能工作。<br>但是,你希望<code>&lt;weatherInfoLabel&gt;</code>填补堆栈底部视图<br>。你可以做到这一点通过嵌入<code>WEATHER</code>标签到垂直堆栈视图。记住,一个垂直堆栈视图的一致性可以设置<code>.Leading</code>,如果堆栈视图是超出其内在的宽度,其包含的视图仍将是其主要方面保持一致。<br>选择<code>WEATHER</code>标签使用文档大纲,或通过使用Control-Shift-click方法:<br><img src="http://cdn4.raywenderlich.com/wp-content/uploads/2015/09/45-select-just-the-weather-label_640x92.png" alt=""><br>然后点击堆栈按钮:<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/46-weather-in-horizontal-stack_640x92.png" alt=""><br>设置<code>Alignment</code>为<code>Leading</code>,确保<code>Axis</code>设置为<code>Vertical</code>：<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/47-vertical-and-leading_640x92.png" alt=""><br>很完美!你有外堆栈视图拉伸内部堆栈视图来填补宽度,但内部堆栈视图允许标签保持原来的宽度!<br>构建和运行。为什么是闲逛的<code>Hide</code>按钮在文本中间呢?<br><img src="http://cdn1.raywenderlich.com/wp-content/uploads/2015/09/48-hide-label-incorrect-position_750x573-419x320.png" alt=""><br>这是因为当你嵌入天气标签在堆栈视图,和它之间的任何约束,<code>Hide</code>按钮被移除。<br>添加新的约束从隐藏按钮<code>control - drag``WEATHER</code>标签:<br><img src="http://cdn1.raywenderlich.com/wp-content/uploads/2015/09/49-drag-to-weather-label_380x94.png" alt=""><br>然后按住Shift选择多个选项,并选择水平间距和基线。然后点击添加约束:<br><img src="http://cdn2.raywenderlich.com/wp-content/uploads/2015/09/50-add-multiple-constraints_380x224.png" alt=""><br>构建和运行。隐藏按钮现在应该正确定位,因为被设置为隐藏的标签是嵌入在一个堆栈视图,紧迫的隐藏隐藏标签,并调整它下面的视图-—一切无需手动调整任何约束。<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/51-hide-button-works_750x732-328x320.png" alt=""><br>现在所有的部分都是独特的堆栈视图,你将它们嵌入到外部堆栈视图,这将使最后的两个任务微不足道。</p>
-<h2 id="顶层堆栈视图">顶层堆栈视图</h2><hr>
-<p>命令点击选择所有五个顶级堆栈视图在大纲视图:<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/52-select-all-stack-views-in-outline_640x260.png" alt=""><br>然后点击堆栈按钮:<br><img src="http://cdn4.raywenderlich.com/wp-content/uploads/2015/09/53-stack-all-the-views_640x185.png" alt=""><br>点击Pin按钮，勾选<code>Constrain to margins</code>,添加所有边缘的约束为0。设置<code>Spacing</code>为20，<code>Alignment</code>为<code>Fill</code>,你的故事板场景看起来像这样:<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/54-set-the-spacing-to-20-and-alignment-to-fill_640x300.png" alt=""><br>编译运行:<br><img src="http://cdn1.raywenderlich.com/wp-content/uploads/2015/09/55-hide-button-lost-again_750x487-480x312.png" alt=""><br>哎呀!看起来<code>Hide</code>按钮再次失去了约束当<code>WEATHER</code>堆栈视图是嵌入在外层堆栈视图。没问题,再加上约束以同样的方式。<br>从<code>Hide</code>按钮<code>control - drag``WEATHER</code>标签,然后按住<code>Shift</code>,选择水平间距和基线。然后点击添加约束:<br><img src="http://cdn4.raywenderlich.com/wp-content/uploads/2015/09/56-add-constraints-to-button-again_380x223.png" alt=""><br>编译运行，<code>Hide</code>按钮现在的位置是正确的。</p>
-<h2 id="重新定位视图">重新定位视图</h2><hr>
-<p>现在,所有的部分都是在一个顶级堆栈视图中,您将修改<code>WHAT TO SEE</code>部分的位置到<code>WEATHER</code>部分上面。<br>从大纲视图选择中间堆栈视图,并将其拖动到第一和第二的视图之间。</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">注意:保持堆栈的指针稍微往左视图之间你拖动它,这样它仍然是一个外堆栈视图的子视图。蓝色小圆应该定位在两个堆栈视图之间的左边缘,而不是在正确的边缘:</span><br></pre></td></tr></table></figure>
-<p><img src="http://cdn2.raywenderlich.com/wp-content/uploads/2015/09/57-drag-and-drop-to-reposition-section_639x130.png" alt=""><br>现在<code>WEATHER</code>部分是第三节从顶部起,但自从<code>Hide</code>按钮不是堆栈视图的一部分,它不会被移动,所以它的结构将会错位。<br>点击<code>Hide</code>按钮选择它:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/58-hide-button-not-moved_640x130.png" alt=""><br>然后单击解决自动布局问题中的三角形形状的按钮自动布局工具栏和下所选视图部分,点击update frame:<br><img src="http://cdn2.raywenderlich.com/wp-content/uploads/2015/09/59-resolve-auto-layout-issues_356x269.png" alt=""><br><code>Hide</code>按钮将会返回正确的位置:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/60-hide-button-back-to-correct-position_640x130.png" alt=""><br>很好，用自动布局重新定位视图和重新添加约束就不会是你做过的最困难的事。</p>
-<h2 id="Size_Class基本配置">Size Class基本配置</h2><hr>
-<p>最后,你就可以把注意力转移到一个剩余的任务列表。在横屏模式中,垂直空间是非常珍贵的,所以你想将堆栈视图的部分更紧密地联系在一起。要做到这一点,您将使用大小类顶级堆栈视图的间距设置为10,而不是20时,垂直类是紧凑的大小。<br>选择顶级堆栈视图,单击+按钮旁边的<code>Spacing</code>:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/61-select-plus-button_260x120.png" alt=""><br>选择<code>Any Width &gt; Compact Height</code>:<br><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2015/09/62-anywidth-compact-height_403x108.png" alt=""><br>设置<code>Spacing</code>为10在新的<code>wAny hC</code>区域:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/63-set-spacing-to-10_260x160.png" alt=""><br>编译和运行。竖屏模式的间距应该保持不变。旋转模拟器(⌘←)和注意,部分减少之间的间距和按钮现在有充裕的空间从底部的视图:<br><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2015/09/64-spacing-in-iphone-landscape_1334x750-480x270.png" alt=""><br>如果你没有添加一个顶级堆栈视图中,您仍然可以使用大小类的垂直间距设置为10的四个约束条件,单独的五个部分,但它不是更好的设置在一个地方吗?<br>你和你的时间有更好的事情要做,例如动画!</p>
-<h2 id="动画">动画</h2><hr>
-<p>目前,有点突兀,隐藏和显示天气信息。您将添加一些动画平滑过渡。<br>堆栈视图与UIView动画引擎完全兼容。这意味着动画安排子视图的外观/消失,很简单,其切换动画块内部隐藏的属性。<br>是时候写些代码了，打开<code>SpotInfoViewController.swift</code>看到<code>updateWeatherInfoViews(hideWeatherInfo:animated:).</code><br>你看到这个方法的尾部这行</p>
-<pre><code>weatherInfoLabel<span class="class">.hidden</span> = shouldHideWeatherInfo
-</code></pre><p>用下面的方法代替它:</p>
-<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> animated &#123;</span><br><span class="line">  UIView.animateWithDuration(<span class="number">0.3</span>) &#123;</span><br><span class="line">    self.weatherInfoLabel.<span class="variable">hidden =</span> shouldHideWeatherInfo</span><br><span class="line">  &#125;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  weatherInfoLabel.<span class="variable">hidden =</span> shouldHideWeatherInfo</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>编译和运行,点击隐藏或显示按钮。动画感觉不是更好?<br>除了动画隐藏的属性视图中包含堆栈视图中,您还可以动画属性堆栈视图本身,如<code>alignment</code>、<code>distribution</code>、<code>spacing</code>和<code>axis</code>。</p>
-<h2 id="从这里去哪里?">从这里去哪里?</h2><p>你可以下载完成的代码<a href="http://cdn1.raywenderlich.com/wp-content/uploads/2015/09/VacationSpots_Complete.zip" target="_blank" rel="external">在这里</a><br>在这UIStackView教程中,您学到了很多关于堆栈视图以及堆栈视图使用的各种属性定位它的子视图。堆栈视图是高度可配置的,而且可能有一个以上的方式实现相同的结果。<br>最好的方法是建立在你学过的东西自己尝试各种属性。而不是设置属性和移动,请参阅玩其他属性如何影响视图中的堆栈视图的布局。<br>本教程是一个缩写版的第六章,“UIStackView和自动布局变化”和第七章“中间UIStackView”从iOS 9教程。如果你想了解更多关于UIStackView和其他新特性在iOS 9请看看这本书!<br>与此同时,如果你有任何问题或评论本教程或堆栈视图,请加入以下论坛讨论!</p>
-
-            
+            英文原文: UIStackView Tutorial: Introducing Stack Views
+我们都在那里，有个新的需求，你需要在运行时添加或者移除一个视图，并且也需要调整邻近的视图的位置。你采用什么方法？你给约束添加输出口在故事板上这样你就能激活或者禁用某些吗?或者你使用第三方库？或根据复杂性也许你能在代码中做一切。也许这次你的视图层次没有必要在运行时改变，但是你必须考虑如何把一个新视图嵌入到你的故事板。你有没有最终只是清除所有的约束并从头开始重新添加它们，因为它比执行复杂的约束操作更加容易吗？随着UIStackView的引入，上面的任务变得非常简单。堆栈视图提供一种水平或者垂直布局多个视图方式。通过配置一些简单的属性，例如: alignment,distribution和spacing.你可以定义包含的视图如何去调整自己可用的空间。
+开始在这篇UIStackView的引导，你运行的APP叫做Vacation Spots.它是一个简单的APP,向你展示一个为了摆脱烦恼的地名的列表。但是不要收拾包裹就走人，因为这里有一些问题你将通过使用堆栈视图来修复，比你单独使用自动布局更加简单的一种方式.开始下载初始工程作为引导，运行它在iPhone6模拟器上，你将看到你可能去度假的地名列表.去London的信息界面通过点击London单元.初略一看，这个视图好像没什么问题，但是它有一
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/10/08/stack-view/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -1161,6 +1140,13 @@ NSLog(@<span class="string">"string: %@"</span>, <span class="built_in">string</
 
           
             
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/09/29/thread-summary-gcd/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/09/29/thread-summary-gcd/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -1179,42 +1165,20 @@ NSLog(@<span class="string">"string: %@"</span>, <span class="built_in">string</
         
           <span itemprop="articleBody">
             
-              <h2 id="Grand_Central_Dispatch_(GCD)">Grand Central Dispatch (GCD)</h2><h3 id="1-GCD概述">1.GCD概述</h3><p>GCD由语言特征、运行时库和系统提供的增强功能组成，综合提升多核硬件支持代码在iOS和OS X中并发执行。</p>
-<h4 id="GCD对象和ARC">GCD对象和ARC</h4><p>当你构建你的应用使用OC语言编译时，所有的<code>dispatch</code>对象也是OC对象。同样的，在ARC的环境中，<code>dispatch</code>对象和任何其他OC对象一样会自动的<code>retain</code> 和 <code>release</code>。在MRC环境中时，使用<code>dispatch_retain</code>和<code>dispatch_release</code>函数(和OC语义相同)来保留或者释放派发对象。你不能使用<code>Core Foundation</code>的保留和释放函数。</p>
-<h3 id="2-创建和管理队列">2.创建和管理队列</h3><hr>
-<p>在GCD中，有两种队列，串行队列和并发队列，串行队列中根据FIFO的方式执行任务，但同时只能执行一个任务。并发队列也会根据FIFO的方式执行任务，但是同时可以执行多个任务。</p>
-<p>1.<code>dispatch_queue_t dispatch_get_main_queue(void);</code><br>返回一个主队列，主队列通过系统自动创建并且和你的应用的主线程相关联。</p>
-<p>2.<code>dispatch_queue_t dispatch_get_global_queue( long identifier, unsigned long flags);</code><br>返回一个全局的并发队列，任务提交到这个队列中会被安排与其他任务并发执行。</p>
-<p>3.<code>dispatch_queue_t dispatch_queue_create( const char *label, dispatch_queue_attr_t attr);</code><br>创建一个新的调度队列，label参数为对列贴上一个唯一的标示符，官方推荐名为反向的域名(com.example.myqueue), attr参数指定为<code>DISPATCH_QUEUE_SERIAL</code>或者<code>NULL</code>创建一个串行队列，指定为<code>DISPATCH_QUEUE_CONCURRENT</code>创建一个并发队列。</p>
-<p>4.<code>dispatch_queue_t dispatch_get_current_queue(void);</code><br>返回当前的队列，这个函数被定义永远都不会返回为NULL。当在提交的block上下文的外部调用时，这个函数会返回主队列如果是在主线程中调用。如果在其他任意的线程中调用，这个函数会返回默认的并发队列。</p>
-<p>5.<code>const char * dispatch_queue_get_label(dispatch_queue_t queue);</code>获取指定代理的唯一标示，返回可能为空</p>
-<h3 id="3-等候任务调度">3.等候任务调度</h3><p>GCD提供和管理FIFO队列，你的应用可以block对象的形式提交任务。block提交到调度队列在一个系统全面管理的线程池上执行。不能保证线程执行一个任务。GCD提供3种类型的队列:<br>主队列: 在你应用的主线程上顺序执行任务<br>并发队列: 任务按照先入先出的方式移除队列，并发执行并且能够以任意顺序完成<br>串行队列: 按照先入先出的方式同时只能执行一个任务<br>主队列是自动创建的通过系统并且和你应用的主线程关联。你的应用使用下面三个方法的其中一个去调用提交到主队列的block</p>
-<p>调用<code>dispatch_main</code><br>调用<code>UIApplicationMain</code>(iOS) 或 <code>NSApplicationMain</code>(OS X)<br>使用<code>CFRunLoopRef</code>在主线程 </p>
-<p>使用并发队列同时执行多个任务。GCD自动创建四个并发调度队列，并且在应用中是全局的，它们之间的区别仅在于优先级。你的应用请求这些队列使用<code>dispatch_get_global_queue</code>函数。因为这些并发队列在你用中是全局的，所以一你不需要保留或者释放，保留或者释放方法的调用对于它们是可以忽略的。</p>
-<p>使用串行队列可确保那些任务按照预期的方式执行。你的用用必须明确地创建和管理串行队列。如果有必要可以穿件多个串行队列，但是应该避免使用它们代替并发队列只是为了同时执行过个任务。</p>
-<p>1.<code>void dispatch_async( dispatch_queue_t queue, dispatch_block_t block);</code><br>提交一个block异步执行在指定调度队列上，并且立刻返回。</p>
-<p>2.<code>void dispatch_async_f( dispatch_queue_t queue, void *context, dispatch_function_t work);</code><br>再指定的队列上异步调用在应用中定义的方法，context为应用中自定义函数的参数，work为自定义函数的IMP<br>eg:</p>
-<pre><code>dispatch_function_t fuction = (dispatch_function_t)custonFuction;
-dispatch_async_f(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), (<span class="keyword">void</span> *)<span class="number">10</span>, fuction);
-
-<span class="keyword">void</span> custonFuction(<span class="keyword">int</span> par)
-{
-       <span class="built_in">NSLog</span>(<span class="string">@"%d"</span>,par);
-       <span class="built_in">NSLog</span>(<span class="string">@"%@"</span>,[<span class="built_in">NSThread</span> currentThread]);
-}
-</code></pre><p>3.<code>void dispatch_sync( dispatch_queue_t queue, dispatch_block_t block);</code><br>添加block到目标调度队列执行并且等待直到block执行完成，不像<code>dispatch_async</code>,这个函数不会返回直到block已经完成。调用这个函数并且目标队列为当前的队列会造成死锁。</p>
-<p>4.<code>void dispatch_after( dispatch_time_t when, dispatch_queue_t queue, dispatch_block_t block);</code><br>指定时间执行block,通常用来延时执行某个操作，而不用NSTimer</p>
-<p>5.<code>void dispatch_apply( size_t iterations, dispatch_queue_t queue, void (^block)( size_t));</code><br>多次执行block任务</p>
-<p>6.<code>void dispatch_once( dispatch_once_t *predicate, dispatch_block_t block);</code><br>在整个应用生命周期内仅仅执行一次block任务，通常实现单例模式</p>
-<p>eg:</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</span><br><span class="line">       </span><br><span class="line"><span class="built_in">NSString</span> *url = <span class="string">@"http://tao.goulew.com/users/upfile/201504/201504081150270big.jpg"</span>;</span><br><span class="line">        <span class="built_in">NSData</span> *data = [[<span class="built_in">NSData</span> alloc] initWithContentsOfURL:[<span class="built_in">NSURL</span> URLWithString:url]];</span><br><span class="line">        <span class="built_in">UIImage</span> *image = [<span class="built_in">UIImage</span> imageWithData:data];</span><br><span class="line">        <span class="built_in">dispatch_async</span>(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">           </span><br><span class="line">            <span class="keyword">if</span>(image)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">self</span><span class="variable">.imageView</span><span class="variable">.image</span> = image;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure>
-<h3 id="4-使用调度组">4.使用调度组</h3><p>调度组: 在应用中向调度队列中添加多个任务block，使用调度组可以追踪当所有的任务完成时，即便它们处于不同的队列中。<br>1.<code>void dispatch_group_async( dispatch_group_t group, dispatch_queue_t queue, dispatch_block_t block);</code><br>提交一个block到调度队列并且使这个block与指定的调度组相关联</p>
-<p>2.<code>dispatch_group_t dispatch_group_create( void);</code><br>创建一个调度组</p>
-<p>3.<code>void dispatch_group_notify( dispatch_group_t group, dispatch_queue_t queue, dispatch_block_t block);</code><br>调度一个block对象提交到队列中当之前提交的block对象已经完成时</p>
-<p>eg:<br><figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">dispatch_group_t group = dispatch_group_create<span class="list">()</span><span class="comment">;</span></span><br><span class="line">    dispatch_queue_t queue = dispatch_get_global_queue<span class="list">(<span class="keyword">DISPATCH_QUEUE_PRIORITY_DEFAULT</span>, <span class="number">0</span>)</span><span class="comment">;</span></span><br><span class="line">    </span><br><span class="line">dispatch_group_async<span class="list">(<span class="keyword">group</span>, queue, ^&#123;</span><br><span class="line">       </span><br><span class="line">    NSLog<span class="list">(@<span class="string">"%@任务1"</span>,[NSThread currentThread])</span><span class="comment">;</span></span><br><span class="line">&#125;)</span><span class="comment">;</span></span><br><span class="line">    </span><br><span class="line">    dispatch_group_async<span class="list">(<span class="keyword">group</span>, queue, ^&#123;</span><br><span class="line">           </span><br><span class="line">    NSLog<span class="list">(@<span class="string">"%@任务2"</span>,[NSThread currentThread])</span><span class="comment">;</span></span><br><span class="line">&#125;)</span><span class="comment">;</span></span><br><span class="line">    </span><br><span class="line">dispatch_group_async<span class="list">(<span class="keyword">group</span>, queue, ^&#123;</span><br><span class="line">       </span><br><span class="line">    NSLog<span class="list">(@<span class="string">"%@任务3"</span>,[NSThread currentThread])</span><span class="comment">;</span></span><br><span class="line">&#125;)</span><span class="comment">;</span></span><br><span class="line">    </span><br><span class="line">dispatch_group_notify<span class="list">(<span class="keyword">group</span>, queue, ^&#123;</span><br><span class="line">    </span><br><span class="line">    NSLog<span class="list">(@<span class="string">"所有的任务完成"</span>)</span><span class="comment">;</span></span><br><span class="line">&#125;)</span><span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
-
-            
+            Grand Central Dispatch (GCD)1.GCD概述GCD由语言特征、运行时库和系统提供的增强功能组成，综合提升多核硬件支持代码在iOS和OS X中并发执行。
+GCD对象和ARC当你构建你的应用使用OC语言编译时，所有的dispatch对象也是OC对象。同样的，在ARC的环境中，dispatch对象和任何其他OC对象一样会自动的retain 和 release。在MRC环境中时，使用dispatch_retain和dispatch_release函数(和OC语义相同)来保留或者释放派发对象。你不能使用Core Foundation的保留和释放函数。
+2.创建和管理队列
+在GCD中，有两种队列，串行队列和并发队列，串行队列中根据FIFO的方式执行任务，但同时只能执行一个任务。并发队列也会根据FIFO的方式执行任务，但是同时可以执行多个任务。
+1.dispatch_queue_t dispatch_get_main_queue(void);返回一个主队列，主队列通过系统自动创建并且和你的应用的主线程相关联。
+2.dispatch_queue_t dispatch_get_global_queue( long identifier, unsigned long flags);返回一个全局的并发队列，任务提交到这个队列中会被安排与其他任务并发执行。
+3.dispatch_
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/09/29/thread-summary-gcd/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -1289,6 +1253,13 @@ dispatch_async_f(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <spa
 
           
             
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/09/23/associated-object/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/09/23/associated-object/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -1307,55 +1278,44 @@ dispatch_async_f(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <spa
         
           <span itemprop="articleBody">
             
-              <h3 id="前言">前言</h3><p>之前在一个项目中，有多个地方要用到UIAlertView，每次都要遵循UIAlertView协议，实现代理方法，使得代码过于分散。在iOS8以后，官方提供了UIAlertController类，通过闭包终于可以甩掉之前的代理方法了，但是在iOS8一下，同样想实现这样的功能，首先想到的是通过创建一个category，但是在category中并不能添加属性。在官方文档中有看到 objc_setAssociatedObject 和 objc_getAssociatedObject运行时方法可以动态关联对象,那么这样就没问题了。</p>
-<h3 id="1-AssociatedObject_API简介">1.AssociatedObject API简介</h3><h4 id="objc_setAssociatedObject">objc_setAssociatedObject</h4><hr>
-<p><code>void objc_setAssociatedObject(id object, void *key, id value, objc_AssociationPolicy policy)</code><br>设置一个关联值对于一个给定对象使用给定的key和关联策略</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>object</td>
-<td>关联的对象</td>
-</tr>
-<tr>
-<td>key</td>
-<td>关联的key</td>
-</tr>
-<tr>
-<td>value</td>
-<td>关联对象关联的key对于的value</td>
-</tr>
-<tr>
-<td>policy</td>
-<td>关联策略</td>
-</tr>
-</tbody>
-</table>
-<p>关联策略类似于定于属性时的修饰(strong,weak,nonatomic)</p>
-<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> &#123;</span></span><br><span class="line"><span class="constant">   OBJC_ASSOCIATION_ASSIGN</span> = <span class="number">0</span>,</span><br><span class="line"><span class="constant">   OBJC_ASSOCIATION_RETAIN_NONATOMIC</span> = <span class="number">1</span>,</span><br><span class="line"><span class="constant">   OBJC_ASSOCIATION_COPY_NONATOMIC</span> = <span class="number">3</span>,</span><br><span class="line"><span class="constant">   OBJC_ASSOCIATION_RETAIN</span> = <span class="number">01401</span>,</span><br><span class="line"><span class="constant">   OBJC_ASSOCIATION_COPY</span> = <span class="number">01403</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h4 id="objc_getAssociatedObject">objc_getAssociatedObject</h4><hr>
-<p><code>id objc_getAssociatedObject(id object, void *key)</code><br>通过对象用指定的key获取value</p>
-<h4 id="objc_removeAssociatedObjects">objc_removeAssociatedObjects</h4><hr>
-<p><code>void objc_removeAssociatedObjects(id object)</code><br>移除关联对象所有关联的内容</p>
-<h3 id="2-使用AssociatedObject用Block代替UIAlertView的代理方法">2.使用AssociatedObject用Block代替UIAlertView的代理方法</h3><hr>
-<h4 id="2-1_定义AlertAction">2.1 定义AlertAction</h4><p>1.新建一个继承NSObject的DSAlertAction<br>2.定义一个title属性和block<br>3.定义一个初始化方法</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">void</span>(^DSAlertActionHandler) ();</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">DSAlertAction</span> : <span class="title">NSObject</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>,<span class="keyword">readonly</span>) <span class="built_in">NSString</span> *title;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>,<span class="keyword">readonly</span>) DSAlertActionHandler alertActionHandler;</span><br><span class="line"></span><br><span class="line">+ (<span class="keyword">id</span>)actionWithTitle:(<span class="built_in">NSString</span> *)title handler:(DSAlertActionHandler)alertActionHandler;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
-<h4 id="2-2_UIAlertView分类">2.2 UIAlertView分类</h4><hr>
-<p>1.初始化方法，注意在初始化方法中otherAlertActions是可变参数</p>
-<figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="pp">-<span class="params">(id)</span>initWithTitle:<span class="params">(<span class="variable">NSString</span> *)</span>title message:<span class="params">(<span class="variable">NSString</span> *)</span>message cancelAlertAction:<span class="params">(<span class="variable">DSAlertAction</span> *)</span>cancelAlertAction otherAlertActions:<span class="params">(<span class="variable">DSAlertAction</span> *)</span>otherAlertActions, </span>... <span class="variable">NS_REQUIRES_NIL_TERMINATION</span>;</span><br></pre></td></tr></table></figure>
-<p>2.添加一个addAction方法，用来添加操作<br>3.设置关联对象,初始化方法中otherAlertActions是可变参数，关联一个数组对象，用来存储这些参数，稍后会在其代理方法中使用</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="built_in">NSMutableArray</span> *)alertActions</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">NSMutableArray</span> *alertActions = objc_getAssociatedObject(<span class="keyword">self</span>, (__bridge <span class="keyword">void</span> *)ALERT_ACTIONS);</span><br><span class="line">    <span class="keyword">if</span>(!alertActions)</span><br><span class="line">    &#123;</span><br><span class="line">        alertActions = [<span class="built_in">NSMutableArray</span> array];</span><br><span class="line">        objc_setAssociatedObject(<span class="keyword">self</span>, (__bridge <span class="keyword">void</span> *)ALERT_ACTIONS, alertActions, OBJC_ASSO<span class="built_in">CIATION_RETAIN_NONATOMIC</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> alertActions;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>4.在代理方法中，调用在初始化方法中传递的操作</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)alertView:(<span class="built_in">UIAlertView</span> *)alertView clickedButtonAtIndex:(<span class="built_in">NSInteger</span>)buttonIndex</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(buttonIndex &gt;= <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">    	TODO: 从关联数组中取出对应的操作对象，然后调用其block</span><br><span class="line">        <span class="built_in">NSArray</span> *alertActions = objc_getAssociatedObject(<span class="keyword">self</span>, (__bridge <span class="keyword">void</span> *)ALERT_ACTIONS);</span><br><span class="line">        DSAlertAction *alertAction = alertActions[buttonIndex];</span><br><span class="line">        <span class="keyword">if</span>(alertAction<span class="variable">.alertActionHandler</span>)</span><br><span class="line">            alertAction<span class="variable">.alertActionHandler</span>();</span><br><span class="line">    &#125;    </span><br><span class="line">    objc_setAssociatedObject(<span class="keyword">self</span>, (__bridge <span class="keyword">void</span> *)ALERT_ACTIONS, <span class="literal">nil</span>, OBJC_ASSO<span class="built_in">CIATION_RETAIN_NONATOMIC</span>);</span><br><span class="line">    TODO: 在完成操作后，切记将关联key对象的值置空，防止内存泄露</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>同理，UIActionSheet可以这样实现。<br>具体代码已上传至GitHub: <a href="https://github.com/ludaye123/DSAlertView-Blocks" target="_blank" rel="external">https://github.com/ludaye123/DSAlertView-Blocks</a></p>
+            前言之前在一个项目中，有多个地方要用到UIAlertView，每次都要遵循UIAlertView协议，实现代理方法，使得代码过于分散。在iOS8以后，官方提供了UIAlertController类，通过闭包终于可以甩掉之前的代理方法了，但是在iOS8一下，同样想实现这样的功能，首先想到的是通过创建一个category，但是在category中并不能添加属性。在官方文档中有看到 objc_setAssociatedObject 和 objc_getAssociatedObject运行时方法可以动态关联对象,那么这样就没问题了。
+1.AssociatedObject API简介objc_setAssociatedObject
+void objc_setAssociatedObject(id object, void *key, id value, objc_AssociationPolicy policy)设置一个关联值对于一个给定对象使用给定的key和关联策略
 
-            
+
+
+参数
+描述
+
+
+
+
+object
+关联的对象
+
+
+key
+关联的key
+
+
+value
+关联对象关联的key对于的value
+
+
+policy
+关联策略
+
+
+
+关联策略类似于定于属性时的修饰(strong,weak,nonatomic)
+1234567enum &#123;   OBJC_ASSOCIATION_ASSI
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/09/23/associated-object/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -1413,30 +1373,30 @@ dispatch_async_f(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <spa
 
       <section class="site-overview sidebar-panel  sidebar-panel-active ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" src="//default_avatar.jpg" alt="大神" itemprop="image"/>
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="大神" itemprop="image"/>
           <p class="site-author-name" itemprop="name">大神</p>
         </div>
         <p class="site-description motion-element" itemprop="description">擅长Objective-C开发，喜欢在Mac上开发iOS应用，常混迹于各大iOS开发论坛。</p>
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
-            <a href="/">
+            <a href="/archives">
               <span class="site-state-item-count">21</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
-            
+            <a href="/categories">
               <span class="site-state-item-count">5</span>
               <span class="site-state-item-name">分类</span>
-              
+              </a>
           </div>
 
           <div class="site-state-item site-state-tags">
-            
+            <a href="/tags">
               <span class="site-state-item-count">11</span>
               <span class="site-state-item-name">标签</span>
-              
+              </a>
           </div>
 
         </nav>
@@ -1452,12 +1412,37 @@ dispatch_async_f(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <spa
 
         <div class="links-of-author motion-element">
           
+            
+              <span class="links-of-author-item">
+                <a href="http://www.cocoachina.com" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/2502328960/profile?rightmod=1&wvr=6&mod=personinfo&is_all=1" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+          
         </div>
 
         
         
 
         <div class="links-of-author motion-element">
+          
+            <p class="site-author-name">Links</p>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.cocoachina.com" target="_blank">CocoaChina</a>
+              </span>
+            
           
         </div>
 
@@ -1476,7 +1461,7 @@ dispatch_async_f(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <spa
       <div class="footer-inner">
         <div class="copyright" >
   
-  &copy; 
+  &copy;  2014 - 
   <span itemprop="copyrightYear">2015</span>
   <span class="with-love">
     <i class="icon-next-heart fa fa-heart"></i>
@@ -1503,35 +1488,55 @@ dispatch_async_f(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <spa
     <div class="back-to-top"></div>
   </div>
 
-  <script type="text/javascript" src="//jquery/index.js?v=2.1.3"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
 
   
   
 
   
     
+
+  
     
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"dashen1009"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+    
+     
+
+
+    
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
 
   
 
-
-  
-
-  
-
-  <script type="text/javascript" src="//helpers.js?v="></script>
-  <script type="text/javascript" src="//velocity/velocity.min.js"></script>
-<script type="text/javascript" src="//velocity/velocity.ui.min.js"></script>
-
-<script type="text/javascript" src="//motion.js?v=" id="motion.global"></script>
-
-
-  <script type="text/javascript" src="//fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-  <script type="text/javascript" src="//jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-
-  
-
-  <script type="text/javascript" src="//bootstrap.js"></script>
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
 
   
   
