@@ -67,7 +67,7 @@
 
 <script type="text/javascript" id="hexo.configuration">
   var CONFIG = {
-    scheme: '',
+    scheme: 'Mist',
     sidebar: 'post',
     motion: true
   };
@@ -134,6 +134,26 @@
               <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
             
             首頁
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分類
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            關於
           </a>
         </li>
       
@@ -242,6 +262,13 @@
 
           
             
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/09/22/thread-summary-nsoperate/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/09/22/thread-summary-nsoperate/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -260,82 +287,18 @@
         
           <span itemprop="articleBody">
             
-              <h2 id="NSOperation">NSOperation</h2><h3 id="1-NSOperation概述">1.NSOperation概述</h3><p><code>NSOperation</code>类是一个抽象类，你用来封装代码和数据与单一任务关联。因为它是抽象的，不能直接使用这个类，但可以直接子类化或者是使用系统定义好的子类(<code>NSInvocationOperation</code> or <code>NSBlockOperation</code>)去执行实际任务。尽管是抽象的，<code>NSOperation</code>基本实现包括了重要的逻辑确保安全执行你的任务。这些内建的逻辑允许你集中精力在实际实现的任务中，而不是粘合代码来确保它和系统其他的对象正常运行。</p>
-<p>一个操作对象是一个单一的对象，它只执行任务一次并且不能用来重复执行。你执行操作通过把它们加入到一个操作队列(<code>NSOperationQueue</code>的对象)中，操作队列中的操作就会直接执行在一个不同的线程，间接的使用<code>libdispatch</code>库(通常讲的GCD)</p>
-<h3 id="2-NSOperation的子类">2.NSOperation的子类</h3><p><code>NSOperation</code>是一个抽象类，系统预先给我们提供了两个子类，分别是:<code>NSInvocationOperation</code>和<code>NSBlockOperation</code>.</p>
-<h4 id="2-1_NSInvocationOperation">2.1 NSInvocationOperation</h4><p><code>NSInvocationOperation</code>类是<code>NSOperation</code>的具体子类，管理执行单一封装的任务，你可以使用这个类去启动一个操作，由指定的对象调用选择器。这个类实现非并发操作。</p>
-<h4 id="2-1-1_使用方法">2.1.1 使用方法</h4><p>初始化方法，返回一个<code>NSInvocationOperation</code>对象，指定的目标对象和选择器进行初始化</p>
-<pre><code><span class="pp">- <span class="params">(instancetype)</span>initWithTarget:<span class="params">(id)</span>target
-                  selector:<span class="params">(<span class="variable">SEL</span>)</span>sel
-                    object:<span class="params">(id)</span>arg</span>
-</code></pre><p>eg:</p>
-<pre><code>- (<span class="keyword">void</span>)viewDidLoad
-{
-    [<span class="keyword">super</span> viewDidLoad];
-     <span class="built_in">NSInvocationOperation</span> *invocaitonOperation = [[<span class="built_in">NSInvocationOperation</span> alloc]
-     initWithTarget:<span class="keyword">self</span> selector:<span class="keyword">@selector</span>(downLoadTask) object:<span class="literal">nil</span>];
-   <span class="comment">// [invocaitonOperation start];</span>
-       <span class="built_in">NSOperationQueue</span> *operationQueue = [[<span class="built_in">NSOperationQueue</span> alloc] init];
-    [operationQueue addOperation:invocaitonOperation];
-}    
-
-- (<span class="keyword">void</span>)downLoadTask
-{
-      <span class="built_in">NSLog</span>(<span class="string">@"%@"</span>,[<span class="built_in">NSThread</span> currentThread]);
-      TODO: &lt;<span class="built_in">NSThread</span>: <span class="number">0x7fc8cb502b60</span>&gt;{number = <span class="number">1</span>, name = main}
-      这里打印出当成线程的信息，是主线程，也就是说如果直接调用其start方法并不会去创建一个新的线程执
-      行任务，只是在当前线程中执行
-   TODO: &lt;<span class="built_in">NSThread</span>: <span class="number">0x7fb18a59a410</span>&gt;{number = <span class="number">2</span>, name = (null)}
-   修改上面的代码，把操作添加到操作队列后，在操作队列中会自动调用start,并且产生新的线程
-   <span class="built_in">NSBlockOperation</span> 同样如此
-}
-</code></pre><h4 id="2-2_NSBlockOperation">2.2 NSBlockOperation</h4><p><code>NSBlockOperation</code>是<code>NSOperation</code>的另一个具体的子类，管理并发执行的一个或多个block。你可以使用这个对象立马执行多个block，并没有为每个block创建一个单独操作对象。当执行超过一个block时，这个操作本身会考虑只有当所有的block执行完成后才会结束。Blocks增加到一个block操作中会分发一个默认的优先级的工作队列，block本身不应该设想关于配置它们执行的环境。</p>
-<h4 id="2-2-1_使用方法">2.2.1 使用方法</h4><p>指定一个block创建并返回<code>NSBlockOperation</code>对象</p>
-<pre><code>+ (instancetype)<span class="string">blockOperationWithBlock:</span>(<span class="typename">void</span> (^)(<span class="typename">void</span>))block
-- (<span class="typename">void</span>)<span class="string">addExecutionBlock:</span>(<span class="typename">void</span> (^)(<span class="typename">void</span>))block  <span class="comment">// 增加多个block</span>
-</code></pre><p>eg: </p>
-<pre><code><span class="built_in">NSBlockOperation</span> *blockOperation = [<span class="built_in">NSBlockOperation</span> blockOperationWithBlock:^{
-
-    <span class="built_in">NSLog</span>(<span class="string">@"%@"</span>,[<span class="built_in">NSThread</span> currentThread]);
-
-}];
-
-<span class="comment">//    [blockOperation start];</span>
-<span class="built_in">NSOperationQueue</span> *operationQueue = [[<span class="built_in">NSOperationQueue</span> alloc] init];
-[operationQueue addOperation:blockOperation];
-</code></pre><h4 id="2-3_自定义NSOperation">2.3 自定义NSOperation</h4><p>对于非并发的操作，你仅重载一个main方法即可，在这个方法中，你放置需要执行所给任务的代码，当然你也可以自定义一个初始化方法来构造和创建自定义类的对象。也许你可能想要定义getter和setter方法来访问数据从这个操作中，然而，如果你自定义的getter和setter方法，你必须确保这些方法能被安全的调用从多线程中。</p>
-<p>如果你想要创建一个并发操作，你至少需要重载下面的方法和属性。</p>
-<pre><code><span class="built_in">start</span>
-asynchronous
-executing
-finished
-</code></pre><p>对于一个并发操作，你的<code>start</code>方法是负责启动异步操作的方式。是否生产一个线程或者调用一个异步方法，你要从这个方法实现。在开始操作，你的<code>start</code>方法应该更新这个操作的执行状态通过<code>executing</code>属性记录。做这个操作是通过发送KVO通知给<code>executing</code>关键路径，这让其他与这个操作有联系的对象知道这个操作现在已经在运行，你的<code>executing</code>属性必须在线程安全的方式下提供状态变化。</p>
-<h3 id="3-NSOperation_依赖">3.NSOperation 依赖</h3><p>依赖是一种便捷的方式去执行操作按照指定的命令。你能添加和移除依赖给一个操作使用<code>addDependency:</code>和<code>removeDependency:</code>方法。默认情况，一个操作对象的依赖不认为是准备好的直到所有的依赖操作对象都完成执行。一旦最后一个依赖操作完成，这个依赖操作对象变成准备状态并且能够被执行。举个例子来说，有两个操作operation1和operation2，如果operation1依赖operation2,那么需要等operation2完成后，operation1才可以执行。</p>
-<p>eg: </p>
-<pre><code>  <span class="built_in">NSBlockOperation</span> *downOperation = [<span class="built_in">NSBlockOperation</span> blockOperationWithBlock:^{
-    <span class="comment">// 开始下载任务，例如下载一个一张图片</span>
-    <span class="built_in">NSLog</span>(<span class="string">@"下载图片"</span>);
-}];
-
-<span class="built_in">NSBlockOperation</span> *processOperation = [<span class="built_in">NSBlockOperation</span> blockOperationWithBlock:^{
-    <span class="comment">// 下载完成后，处理图片</span>
-    <span class="built_in">NSLog</span>(<span class="string">@"处理图片"</span>);
-}];
-
-[processOperation addDependency:downOperation];
-<span class="built_in">NSOperationQueue</span> *operationQueue = [[<span class="built_in">NSOperationQueue</span> alloc] init];
-[operationQueue addOperation:downOperation];
-[operationQueue addOperation:processOperation];
-TODO: 不要把操作设置依赖为自己本身，如果这样做会造成死循环，并且这个操作不会执行
-</code></pre><h2 id="NSOperationQueue">NSOperationQueue</h2><h3 id="1-NSOperationQueue的概述">1.NSOperationQueue的概述</h3><p><code>NSOperationQueue</code>类管理执行操作对象的集合，操作对象加入到队列后会保留在队列中直到它已经明确的取消或者完成执行任务。操作在队列内(但尚未执行)它们自己有组织的根据优先级和互相依赖的对象相应的去执行。一个应用可以创建多个操作队列并且可以提交操作到多个操作队列中的任何一个。<br>相互依赖的对象提供了一个绝对执行的命令给这些操作对象，甚至这个操作位于不同的操作队列中。一个操作对象不被考虑准备执行直到所有的依赖操作已经完成执行。对于准备执行的操作对象，操作队列总是先执行高优先级相对其他已准备的操作。<br>你不能直接移除一个操作从队列中在它被加入后。一个操作保留在队中直到它记录操作已经完成了任务。完成了任务并不意味着操作执行的任务也完成了。一个操作能够被取消。取消一个操作对象在队列中离开的对象通知对象尽可能快的中止任务。对于当前正在执行的操作，这意味着操作对象工作的执行代码必须检查取消状态，停止一切正在做的事情，并且标记它已经完成。对于排队但尚未执行的操作，队列必须调用操作对象的<code>start</code>方法，以便它可以处理取消事件并且标记它已完成。</p>
-<h3 id="2-NSOperationQueue常用方法和属性">2.NSOperationQueue常用方法和属性</h3><h4 id="2-1_方法">2.1 方法</h4><p><code>+ (NSOperationQueue *)currentQueue</code> 获取当前队列<br><code>+ (NSOperationQueue *)mainQueue</code>  获取与主线程相关联的操作队列<br><code>- (void)addOperation:(NSOperation *)operation</code> 添加一个操作<br><code>- (void)addOperations:(NSArray&lt;NSOperation *&gt; *)ops
-    waitUntilFinished:(BOOL)wait</code> 添加一个操作的数组，wait为YES会阻塞当前线程，直到所有的操作完成<br><code>- (void)addOperationWithBlock:(void (^)(void))block</code> 将一单一的block封装到一个操作对象内添加到队列<br><code>- (void)cancelAllOperations</code>  取消队列中所有执行的操作，这个方法会调用队列中所有操作对象的<code>cancel</code>方法<br><code>- (void)waitUntilAllOperationsAreFinished</code> 阻塞当前线程直到所有排队或者执行的操作完成执行</p>
-<h4 id="2-2_属性">2.2 属性</h4><p><code>@property NSInteger maxConcurrentOperationCount</code> 队列中能够同时执行的最大操作个数，默认没有限制<br><code>@property(getter=isSuspended) BOOL suspended</code> 队列是否处于活动状态 </p>
-<h3 id="3-NSOperationQueue的使用">3.NSOperationQueue的使用</h3><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSInvocationOperation</span> *operation1 = [[<span class="built_in">NSInvocationOperation</span> alloc] initWithTarget:<span class="keyword">self</span> selector:<span class="keyword">@selector</span>(processOperation) object:<span class="literal">nil</span>];</span><br><span class="line">    <span class="built_in">NSBlockOperation</span> *operation2 = [<span class="built_in">NSBlockOperation</span> blockOperationWithBlock:^&#123;</span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"操作2"</span>);</span><br><span class="line">    &#125;];</span><br><span class="line">    </span><br><span class="line"><span class="built_in">NSOperationQueue</span> *operationQueue = [[<span class="built_in">NSOperationQueue</span> alloc] init];</span><br><span class="line">[operationQueue addOperation:operation1];</span><br><span class="line">[operationQueue addOperation:operation2];</span><br><span class="line">[operationQueue addOperationWithBlock:^&#123;</span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"操作3"</span>);</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)processOperation</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"操作1"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="参考">参考</h3><p><a href="https://developer.apple.com/library/prerelease/ios/documentation/Cocoa/Reference/NSOperation_class/index.html" target="_blank" rel="external">NSOperation</a><br><a href="https://developer.apple.com/library/prerelease/ios/documentation/Cocoa/Reference/NSInvocationOperation_Class/index.html" target="_blank" rel="external">NSInvocationOperation</a><br><a href="https://developer.apple.com/library/prerelease/ios/documentation/Cocoa/Reference/NSBlockOperation_class/index.html#//apple_ref/doc/uid/TP40008157-CH1-SW2" target="_blank" rel="external">NSBlockOperation</a><br><a href="https://developer.apple.com/library/prerelease/ios/documentation/Cocoa/Reference/NSOperationQueue_class/" target="_blank" rel="external">NSOperationQueue</a></p>
-
-            
+            NSOperation1.NSOperation概述NSOperation类是一个抽象类，你用来封装代码和数据与单一任务关联。因为它是抽象的，不能直接使用这个类，但可以直接子类化或者是使用系统定义好的子类(NSInvocationOperation or NSBlockOperation)去执行实际任务。尽管是抽象的，NSOperation基本实现包括了重要的逻辑确保安全执行你的任务。这些内建的逻辑允许你集中精力在实际实现的任务中，而不是粘合代码来确保它和系统其他的对象正常运行。
+一个操作对象是一个单一的对象，它只执行任务一次并且不能用来重复执行。你执行操作通过把它们加入到一个操作队列(NSOperationQueue的对象)中，操作队列中的操作就会直接执行在一个不同的线程，间接的使用libdispatch库(通常讲的GCD)
+2.NSOperation的子类NSOperation是一个抽象类，系统预先给我们提供了两个子类，分别是:NSInvocationOperation和NSBlockOperation.
+2.1 NSInvocationOperationNSInvocationOperation类是NSOperation的具体子类，管理执行单一封装的任务，你可以使用这个类去启动一个操作，由指定的对象调用选择器。这个类实现非并发操作。
+2.1.1 使用方法初始化方法，返回一个N
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/09/22/thread-summary-nsoperate/#more" rel="contents">
+              閱讀全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -410,6 +373,13 @@ TODO: 不要把操作设置依赖为自己本身，如果这样做会造成死�
 
           
             
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/09/16/thread-summary-nsthread/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/09/16/thread-summary-nsthread/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -428,29 +398,24 @@ TODO: 不要把操作设置依赖为自己本身，如果这样做会造成死�
         
           <span itemprop="articleBody">
             
-              <p>iOS开发中，实现线程的方式总体有三种<br>1.NSThread<br>2.NSOperate 和 NSOperateQueue<br>3.GCD<br>还有一种更加底层的API,用pthread来实现</p>
-<h3 id="NSThread">NSThread</h3><p>一个NSThread对象控制一条线程的执行。用这个类当你想要让一个OC方法运行在它自己的执行线程中。线程特别有用 当你需要执行一个漫长的任务时,但是又不想阻塞应用中其他部分的执行。另外,你能够用线程去避免阻塞应用的主线程,处理用户界面和相关的事件操作。线程也能别用来把一个大的任务分解成多个小得任务,从而引领性能提升在多核计算机上。</p>
-<h4 id="1-NSThread的使用">1.NSThread的使用</h4><p>创建一个NSThread对象，官方提供了两个方法</p>
-<pre><code><span class="pp">- <span class="params">(instancetype)</span>initWithTarget:<span class="params">(id)</span>target
-                  selector:<span class="params">(<span class="variable">SEL</span>)</span>selector
-                    object:<span class="params">(id)</span>argument
+            iOS开发中，实现线程的方式总体有三种1.NSThread2.NSOperate 和 NSOperateQueue3.GCD还有一种更加底层的API,用pthread来实现
+NSThread一个NSThread对象控制一条线程的执行。用这个类当你想要让一个OC方法运行在它自己的执行线程中。线程特别有用 当你需要执行一个漫长的任务时,但是又不想阻塞应用中其他部分的执行。另外,你能够用线程去避免阻塞应用的主线程,处理用户界面和相关的事件操作。线程也能别用来把一个大的任务分解成多个小得任务,从而引领性能提升在多核计算机上。
+1.NSThread的使用创建一个NSThread对象，官方提供了两个方法
+- (instancetype)initWithTarget:(id)target
+                  selector:(SEL)selector
+                    object:(id)argument
 
-+ <span class="params">(void)</span>detachNewThreadSelector:<span class="params">(<span class="variable">SEL</span>)</span>aSelector
-                   toTarget:<span class="params">(id)</span>aTarget
-                 withObject:<span class="params">(id)</span>anArgument</span>
-</code></pre><h4 id="2-参数">2.参数</h4><p>target:    指定对象的消息通过选择器发送<br>selector: 选择器指定发送给目标对象的消息，这个选择器最多只有一个参数并且必须没有返回值<br>argument: 传给目标对象的单一参数，可以为空</p>
-<h4 id="3-区别">3.区别</h4><p><code>NSThread</code>提供成员方法和静态方法来创建其对象，前者跟后者的区别在于启动线程的时候，前者需要调用<code>start</code>方法来启动，后者会自动启动。</p>
-<h4 id="4-NSObject方法">4.NSObject方法</h4><p>用NSObject提供的<code>performSelectorInBackground</code>的方法隐式创建线程,通过<code>performSelectorOnMainThread</code>方法在主线程上的更新。</p>
-<pre><code><span class="pp">- <span class="params">(void)</span>performSelectorInBackground:<span class="params">(<span class="variable">SEL</span>)</span>aSelector withObject:<span class="params">(nullable id)</span>arg
-- <span class="params">(void)</span>performSelectorOnMainThread:<span class="params">(<span class="variable">SEL</span>)</span>aSelector withObject:<span class="params">(nullable id)</span>arg waitUntilDone:<span class="params">(<span class="variable">BOOL</span>)</span>wait</span>
-</code></pre><h4 id="5-常用属性和方法">5.常用属性和方法</h4><p>1.<code>sleepUntilDate</code> 睡眠直到指定的时间(<code>NSDate</code>)<br>2.<code>sleepForTimeInterval</code> 睡眠给定一个指定的时长(单位为秒)<br>3.<code>exit</code> 退出当前线程<br>4.<code>cancel</code> 取消当前线程<br>5.<code>isMainThread</code> 是否是主线程<br>6.<code>mainThread</code> 获取主线程<br>7.<code>currentThread</code> 获取当前线程<br>8.<code>executing</code> 是否正在执行(Bool)<br>9.<code>finished</code> 是否完成执行(Bool)<br>10.<code>cancelled</code> 是否取消(Bool)</p>
-<h4 id="6-通知">6.通知</h4><p><code>NSDidBecomeSingleThreadedNotification</code>  暂时没有实现<br><code>NSThreadWillExitNotification</code>  当线程将要退出的时候会发送此通知<br><code>NSWillBecomeMultiThreadedNotification</code> 当且仅当第一个线程从当前线程中派发的时候会发送此通知<br>通知中的object就是这个当前发送通知的传递的线程对象，这个通知不会包含userinfo字典内容</p>
-<h4 id="7-eg">7.eg</h4><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)viewDidLoad </span><br><span class="line">&#123;</span><br><span class="line">    [<span class="keyword">super</span> viewDidLoad];</span><br><span class="line"></span><br><span class="line">    <span class="comment">//    [NSThread detachNewThreadSelector:self toTarget:@selector(downloadTask) withObject:nil];</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">NSThread</span> *thread = [[<span class="built_in">NSThread</span> alloc] initWithTarget:<span class="keyword">self</span> selector:<span class="keyword">@selector</span>(downloadTask) object:<span class="literal">nil</span>];    </span><br><span class="line">    [thread start];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)downloadTask</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">///////////////////////</span></span><br><span class="line">    <span class="comment">// 开始执行比较耗时的是操作</span></span><br><span class="line">    <span class="comment">// 执行完成后，到主线程中进行刷新操作</span></span><br><span class="line">     <span class="built_in">NSString</span> *url = <span class="string">@"http://tao.goulew.com/users/upfile/201504/201504081150270big.jpg"</span>;</span><br><span class="line">    <span class="built_in">NSData</span> *data = [[<span class="built_in">NSData</span> alloc] initWithContentsOfURL:[<span class="built_in">NSURL</span> URLWithString:url]];</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span>(data)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">UIImage</span> *image = [<span class="built_in">UIImage</span> imageWithData:data];</span><br><span class="line">        [<span class="keyword">self</span> performSelectorOnMainThread:<span class="keyword">@selector</span>(updateUI:) withObject:image waitUntilDone:<span class="literal">YES</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)updateUI</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 更新页面操作</span></span><br><span class="line">    <span class="keyword">self</span><span class="variable">.imageView</span><span class="variable">.image</span> = image;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>一个简单下载图片的例子，效果如下</p>
-<p><img src="http://7xkpsz.com1.z0.glb.clouddn.com/Simulator%20Screen%20Shot%20Sep%2015,%202015,%2012.54.59.png?imageView2/2/w/320/h/568" alt=""></p>
-
-            
++ (void)detachNewThreadSelector:(SEL)aSelector
+                   toTarget:(id)aTarget
+                 withObject:(id)anArgument
+2.参数target:    指定对象的消息通过选择器发送selector: 选择器指定发送
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/09/16/thread-summary-nsthread/#more" rel="contents">
+              閱讀全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -525,6 +490,13 @@ TODO: 不要把操作设置依赖为自己本身，如果这样做会造成死�
 
           
             
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/08/20/create-pods/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/08/20/create-pods/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -543,22 +515,18 @@ TODO: 不要把操作设置依赖为自己本身，如果这样做会造成死�
         
           <span itemprop="articleBody">
             
-              <p>摘自:<a href="http://yulingtianxia.com/blog/2014/05/26/publish-your-pods-on-cocoapods-with-trunk/" target="_blank" rel="external">玉令天下</a></p>
-<p>简介<br>2014年5月20日，CocoaPods不再接受向CocoaPods/Specs的pull request，官方的说法是为了安全考虑，防止每个人的pod被其他人修改，于是CocoaPods团队开发了trunk服务，这样每个人都是其发布的pod的owner，没有权限的人无法修改，这样更安全。<br>更改后的提交架构是这样的：(来自官方图片)</p>
-<p><img src="http://blog.cocoapods.org/assets/blog_img/trunk/architecture-diagram.png" alt=""></p>
-<p>以前的podspec文件都是ruby格式，而trunk为我们带来了更轻便的json格式，你后你可以用json来配置你的pod了。不用担心过去我们发布的pod，他们依然健在，并且trunk会将podspec文件转化为podspec.json文件。<br>这里给出一个官方的介绍链接：<a href="http://blog.cocoapods.org/CocoaPods-Trunk/#transition" target="_blank" rel="external">http://blog.cocoapods.org/CocoaPods-Trunk/#transition</a><br>废话不多说，简要介绍下如何使用trunk新建我们的pod：<br>开始注册<br>trunk需要CocoaPods 0.33版本以上，用pod —version命令查看版本，如果版本低，需要升级：<br><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo gem <span class="keyword">install</span> cocoapods</span><br><span class="line">pod setup</span><br></pre></td></tr></table></figure></p>
-<p>然后会一直卡在Setting up CocoaPods master repo这里，这条命令用于跟新本地电脑上的保存的Pods依赖库tree。由于每天有很多人会创建或者更新Pods依赖库，这条命令执行的时候会相当慢，还请耐心等待。我们需要经常执行这条命令，否则有新的Pods依赖库的时候执行pod search命令是搜不出来的。再开启一个终端，通过cd ~/.cocoapods命令进入cocoapods根目录，然后通过du -sh *命令查看总的文件大小，如果隔一阵子会增加，那么说明一切正常，下载速度取决于你的网络。<br>更新完成后，下一步是注册trunk，这一步需要自备梯子，否则就会出现这种问题<br><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">pod</span> trunk register yulingtianxia<span class="variable">@gmail</span>.com <span class="string">'Yang Xiaoyu'</span> --description=<span class="string">'macbook pro'</span> --verbose</span><br></pre></td></tr></table></figure></p>
-<p>上面的命令是我注册时使用的，你需要把邮箱和名字以及描述替换成你的，加上—verbose可以输出详细debug信息，方便出错时查看。<br>注册后CocoaPods会给你的邮箱发送验证链接，点击后就注册成功了，可以用pod trunk me命令查看自己的注册信息：<br><figure class="highlight haml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">bogon:YXYNumberAnimationLabel yangxiaoyu$ pod trunk me</span><br><span class="line">  -<span class="ruby"> <span class="constant">Name</span><span class="symbol">:</span>     <span class="constant">Yang</span> <span class="constant">Xiaoyu</span></span><br><span class="line"></span>  -<span class="ruby"> <span class="constant">Email</span><span class="symbol">:</span>    yulingtianxia<span class="variable">@gmail</span>.com</span><br><span class="line"></span>  -<span class="ruby"> <span class="constant">Since</span><span class="symbol">:</span>    <span class="constant">May</span> <span class="number">25</span>th, <span class="number">20</span><span class="symbol">:</span><span class="number">27</span></span><br><span class="line"></span>  -<span class="ruby"> <span class="constant">Sessions</span><span class="symbol">:</span> </span><br><span class="line"></span>    -<span class="ruby"> <span class="constant">May</span> <span class="number">25</span>th, <span class="number">20</span><span class="symbol">:</span><span class="number">27</span> - <span class="constant">September</span> <span class="number">30</span>th, <span class="number">22</span><span class="symbol">:</span><span class="number">41</span>. <span class="constant">IP</span><span class="symbol">:</span> <span class="number">23.228</span>.<span class="number">209.171</span></span><br><span class="line"></span>  Description: macbook pro</span><br></pre></td></tr></table></figure></p>
-<p>上面是我的注册信息，CocoaPods不通过密码来验证用户，而是通过一个session token。<br>部署你的Pod<br>首先你需要建立一个podspec文件，这是我的podspec文件：</p>
-<figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod lib <span class="keyword">create</span> <span class="keyword">Library</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">Pod::Spec.<span class="built_in">new</span> <span class="built_in">do</span> |s|</span><br><span class="line">  s.name         = <span class="string">"YXYNumberAnimationLabel"</span></span><br><span class="line">  s.<span class="built_in">version</span>      = <span class="string">"1.0.1"</span></span><br><span class="line">  s.summary      = <span class="string">"一个可以动起来的数字Label"</span></span><br><span class="line">  s.description  = &lt;&lt;-DESC</span><br><span class="line">                    通过设置数字变化的插值来展现动画效果</span><br><span class="line">                   DESC</span><br><span class="line">  s.homepage     = <span class="string">"https://github.com/yulingtianxia/YXYNumberAnimationLabel"</span></span><br><span class="line">  </span><br><span class="line">  s.license      = <span class="string">'MIT'</span></span><br><span class="line">  s.author       = &#123; <span class="string">"YangXiaoyu"</span> =&gt; <span class="string">"yulingtianxia@gmail.com"</span> &#125;</span><br><span class="line">  s.social_media_url = <span class="string">"http://twitter.com/yulingtianxia"</span></span><br><span class="line">  s.source       = &#123; :git =&gt; <span class="string">"https://github.com/yulingtianxia/YXYNumberAnimationLabel.git"</span>, :tag =&gt; s.<span class="built_in">version</span>.to_s &#125;</span><br><span class="line"></span><br><span class="line">  s.<span class="built_in">platform</span>     = :ios, <span class="string">'6.0'</span></span><br><span class="line">  s.requires_arc = <span class="constant">true</span></span><br><span class="line"></span><br><span class="line">  s.source_files = <span class="string">'YXYNumberAnimationLabel/*'</span></span><br><span class="line">  s.frameworks = <span class="string">'Foundation'</span>, <span class="string">'UIKit'</span></span><br><span class="line">  <span class="comment">#s.private_header_files = 'Classes/ios/private/*.h'</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment">#s.dependency 'FLKAutoLayout', '~&gt; 0.1'</span></span><br><span class="line"><span class="function"><span class="keyword">end</span></span></span><br></pre></td></tr></table></figure>
-<p>具体配置什么的大家走很熟悉，这里只是讲述使用trunk后需要注意的地方和新的操作<br>在验证和上传你的podspec文件到trunk之前，需要将你的源码push到Github上，tag一个版本号并发布一个release版本，这样podspec文件中的s.source的值才能是准确的：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git add -A &amp;&amp; git <span class="operator"><span class="keyword">commit</span> -m <span class="string">"Release 1.0.1."</span>  </span><br><span class="line">git tag <span class="string">'1.0.1'</span>  </span><br><span class="line">git push <span class="comment">--tags  </span></span><br><span class="line">git push origin <span class="keyword">master</span></span></span><br></pre></td></tr></table></figure></p>
-<p>这两条命令是为pod添加版本号并打上tag:<br><figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span> <span class="operator">the</span> <span class="built_in">new</span> <span class="built_in">version</span> <span class="built_in">to</span> <span class="number">1.0</span>.1</span><br><span class="line"><span class="built_in">set</span> <span class="operator">the</span> <span class="built_in">new</span> tag <span class="built_in">to</span> <span class="number">1.0</span>.1</span><br></pre></td></tr></table></figure></p>
-<p>在你podspec文件下的路径运行pod trunk push YXYNumberAnimationLabel.podspec 命令，同样需要翻墙梯子自备，别忘了将YXYNumberAnimationLabel.podspec替换成你的podspec文件名。<br>pod trunk push命令做了如下三个工作：<br>验证你本地的podspec文件（你也可以用pod lib lint命令来验证）<br>上传你的podspec文件到trunk<br>将你的podspec文件转化成trunk需要的JSON文件<br>如果部署成功，CocosPods会在Twitter上@你<br>就像文章最开始的架构图描述的那样，你在trunk中的操作依然会在CocoaPods/Specs仓库中更新。以后再做更改时只需要更新版本号然后通过trunk来提交，不用向CocoaPods/Specspull request并等待审核和merge了。<br>运行pod setup来更新你的Pods依赖库tree后，再使用pod search YXYNumberAnimationLabel命令来查找刚刚加入的名字叫YXYNumberAnimationLabel的依赖库：<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-&gt; YXYNumberAnimationLabel (<span class="number">1.0</span>.1)</span><br><span class="line">   一个可以动起来的数字Label</span><br><span class="line">   pod <span class="string">'YXYNumberAnimationLabel'</span>, <span class="string">'~&gt; 1.0.1'</span></span><br><span class="line">   - <span class="string">Homepage:</span> <span class="string">https:</span><span class="comment">//github.com/yulingtianxia/YXYNumberAnimationLabel</span></span><br><span class="line">   - <span class="string">Source:</span>   <span class="string">https:</span><span class="comment">//github.com/yulingtianxia/YXYNumberAnimationLabel.git</span></span><br><span class="line">   - <span class="string">Versions:</span> <span class="number">1.0</span>.1, <span class="number">1.0</span>.0 [master repo]</span><br></pre></td></tr></table></figure></p>
-<p>将其他人加入到你的Pod<br>为了让其他人也有权限来和你一起建设你的代码，你需要运行下面的命令来赋予别人权限，假如我将kyle@cocoapods.org加入到我的名字叫ARAnalytics的库中，我需要运行下面的命令：<br><figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod trunk<span class="instruction"> add-owner </span>ARAnalytics kyle@cocoapods.org</span><br></pre></td></tr></table></figure></p>
+            摘自:玉令天下
+简介2014年5月20日，CocoaPods不再接受向CocoaPods/Specs的pull request，官方的说法是为了安全考虑，防止每个人的pod被其他人修改，于是CocoaPods团队开发了trunk服务，这样每个人都是其发布的pod的owner，没有权限的人无法修改，这样更安全。更改后的提交架构是这样的：(来自官方图片)
 
-            
+以前的podspec文件都是ruby格式，而trunk为我们带来了更轻便的json格式，你后你可以用json来配置你的pod了。不用担心过去我们发布的pod，他们依然健在，并且trunk会将podspec文件转化为podspec.json文件。这里给出一个官方的介绍链接：http://blog.cocoapods.org/CocoaPods-Trunk/#transition废话不多说，简要介绍下如何使用trunk新建我们的pod：开始注册trunk需要CocoaPods 0.33版本以上，用pod —version命令查看版本，如果版本低，需要升级：12sudo gem install cocoapodspod setup
+然后会一直卡在Setting up CocoaPods master repo这里，这条命令用于跟新本地电脑上的保存的Pods依赖库tree。由于每天有很多人会创建或者更新Pods依赖库，这条命令执行的时候会相
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/08/20/create-pods/#more" rel="contents">
+              閱讀全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -633,6 +601,13 @@ TODO: 不要把操作设置依赖为自己本身，如果这样做会造成死�
 
           
             
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/08/18/modified-by-helensong/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/08/18/modified-by-helensong/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -651,40 +626,20 @@ TODO: 不要把操作设置依赖为自己本身，如果这样做会造成死�
         
           <span itemprop="articleBody">
             
-              <p>在之前项目开发中，遇到过一些输入内容的判断，判断手机号码是否合法等等。<br>记录下iOS开发中常用的正则表达式。</p>
-<p>手机号码</p>
-<p>1)移动：134[0-8],135,136,137,138,139,150,151,157,158,159,182,187,188<br>2)联通：130,131,132,152,155,156,185,186<br>3)电信：133,1349,153,180,189<br>NSString * MOBILE = @”^1(3[0-9]|5[0-35-9]|8[025-9])\d{8}$”;</p>
-<p>中国移动：China Mobile<br>134[0-8],135,136,137,138,139,150,151,157,158,159,182,187,188<br>NSString * CM = @”^1(34[0-8]|(3[5-9]|5[017-9]|8[278])\d)\d{7}$”;</p>
-<p>中国联通：China Unicom<br>130,131,132,152,155,156,185,186<br>NSString * CU = @”^1(3[0-2]|5[256]|8[56])\d{8}$”;</p>
-<p>中国电信：China Telecom<br>133,1349,153,180,189<br>NSString * CT = @”^1((33|53|8[09])[0-9]|349)\d{7}$”;</p>
-<p>大陆地区固话及小灵通<br>区号：010,020,021,022,023,024,025,027,028,029<br>号码：七位或八位<br>NSString * PHS = @”^0(10|2[0-5789]|\d{3})\d{7,8}$”;</p>
-<pre><code>以上集合一起，并兼容<span class="number">14</span>开头的
-+ (<span class="built_in">BOOL</span>)isMobileNumber:(<span class="built_in">NSString</span> *)mobileNum
-{
-    <span class="built_in">NSString</span> * phoneRegex = <span class="string">@"^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$"</span>;
-    <span class="built_in">BOOL</span> isMatch = [mobileNum isMatchedByRegex:phoneRegex];
-    <span class="keyword">return</span> isMatch;
-}
-</code></pre><hr>
-<p>邮箱验证<br>       NSString *emailRegex = @”[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}”; </p>
-<p>匹配中文字符的正则表达式： [\u4e00-\u9fa5]<br>评注：匹配中文还真是个头疼的事，有了这个表达式就好办了 </p>
-<p>匹配双字节字符(包括汉字在内)：[^\x00-\xff]<br>评注：可以用来计算字符串的长度（一个双字节字符长度计2，ASCII字符计1） </p>
-<p>匹配空白行的正则表达式：\n\s*\r<br>评注：可以用来删除空白行 </p>
-<p>匹配HTML标记的正则表达式：&lt;(\S<em>?)[^&gt;]</em>&gt;.<em>?&lt;/\1&gt;|&lt;.</em>? /&gt;<br>评注：网上流传的版本太糟糕，上面这个也仅仅能匹配部分，对于复杂的嵌套标记依旧没有能力为力 </p>
-<p>匹配首尾空白字符的正则表达式：^\s<em>|\s</em>$<br>评注：可以用来删除行首行尾的空白字符(包括空格、制表符、换页符等等)，非常有用的表达式 </p>
-<p>匹配Email地址的正则表达式：\w+([-+.]\w+)<em>@\w+([-.]\w+)</em>.\w+([-.]\w+)*<br>评注：表单验证时很实用 </p>
-<p>匹配网址URL的正则表达式：[a-zA-z]+://[^\s]*<br>评注：网上流传的版本功能很有限，上面这个基本可以满足需求 </p>
-<p>匹配帐号是否合法(字母开头，允许5-16字节，允许字母数字下划线)：^[a-zA-Z][a-zA-Z0-9_]{4,15}$<br>评注：表单验证时很实用 </p>
-<p>匹配国内电话号码：\d{3}-\d{8}|\d{4}-\d{7}<br>评注：匹配形式如 0511-4405222 或 021-87888822 </p>
-<p>匹配腾讯QQ号：[1-9][0-9]{4,}<br>评注：腾讯QQ号从10000开始 </p>
-<p>匹配中国邮政编码：[1-9]\d{5}(?!\d)<br>评注：中国邮政编码为6位数字 </p>
-<p>匹配身份证：\d{15}|\d{18}<br>评注：中国的身份证为15位或18位 </p>
-<p>匹配ip地址：\d+.\d+.\d+.\d+<br>评注：提取ip地址时有用 </p>
-<p>匹配特定数字：<br>^[1-9]\d<em>$　 　 //匹配正整数<br>^-[1-9]\d</em>$ 　 //匹配负整数<br>^-?[1-9]\d<em>$　　 //匹配整数<br>^[1-9]\d</em>|0$　 //匹配非负整数（正整数 + 0）<br>^-[1-9]\d<em>|0$　　 //匹配非正整数（负整数 + 0）<br>^[1-9]\d</em>.\d<em>|0.\d</em>[1-9]\d<em>$　　 //匹配正浮点数<br>^-([1-9]\d</em>.\d<em>|0.\d</em>[1-9]\d<em>)$　 //匹配负浮点数<br>^-?([1-9]\d</em>.\d<em>|0.\d</em>[1-9]\d<em>|0?.0+|0)$　 //匹配浮点数<br>^[1-9]\d</em>.\d<em>|0.\d</em>[1-9]\d<em>|0?.0+|0$　　 //匹配非负浮点数（正浮点数 + 0）<br>^(-([1-9]\d</em>.\d<em>|0.\d</em>[1-9]\d*))|0?.0+|0$　　//匹配非正浮点数（负浮点数 + 0）<br>评注：处理大量数据时有用，具体应用时注意修正 </p>
-<p>匹配特定字符串：<br>^[A-Za-z]+$　　//匹配由26个英文字母组成的字符串<br>^[A-Z]+$　　//匹配由26个英文字母的大写组成的字符串<br>^[a-z]+$　　//匹配由26个英文字母的小写组成的字符串<br>^[A-Za-z0-9]+$　　//匹配由数字和26个英文字母组成的字符串<br>^\w+$　　//匹配由数字、26个英文字母或者下划线组成的字符串 </p>
-
-            
+            在之前项目开发中，遇到过一些输入内容的判断，判断手机号码是否合法等等。记录下iOS开发中常用的正则表达式。
+手机号码
+1)移动：134[0-8],135,136,137,138,139,150,151,157,158,159,182,187,1882)联通：130,131,132,152,155,156,185,1863)电信：133,1349,153,180,189NSString * MOBILE = @”^1(3[0-9]|5[0-35-9]|8[025-9])\d{8}$”;
+中国移动：China Mobile134[0-8],135,136,137,138,139,150,151,157,158,159,182,187,188NSString * CM = @”^1(34[0-8]|(3[5-9]|5[017-9]|8[278])\d)\d{7}$”;
+中国联通：China Unicom130,131,132,152,155,156,185,186NSString * CU = @”^1(3[0-2]|5[256]|8[56])\d{8}$”;
+中国电信：China Telecom133,1349,153,180,189NSString * CT = @”^1((33|53|8[09])[0-9]|349)\d{7}$”;
+大陆地区固话及小灵通区号：010,020,021
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/08/18/modified-by-helensong/#more" rel="contents">
+              閱讀全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -759,6 +714,13 @@ TODO: 不要把操作设置依赖为自己本身，如果这样做会造成死�
 
           
             
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/07/09/deepcopy-vs-shallowcopy/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/07/09/deepcopy-vs-shallowcopy/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -777,54 +739,23 @@ TODO: 不要把操作设置依赖为自己本身，如果这样做会造成死�
         
           <span itemprop="articleBody">
             
-              <p>苹果官方内存管理原则：<br>1.谁创建谁负责release：如果使用 alloc、new、copy、mutablecopy来创建对象，那么必须要调用release或者autorelease来释放对象。<br>2.谁retain谁负责release：只要你对对象使用了retain方法，那么必须要调用release或者autorelease来释放对象。</p>
-<p>深复制 VS 浅复制 (deep copy VS shallow copy)</p>
-<p>深复制：通过复制操作后，返回一个新的副本对象，对此副本对象的任何操作不会影响到原对象，当然原对象的任何操作也不会影响到副本对象。在OC中的深复制本质上是产生了一个新的对象，<br>也就是常说的内容复制(内容拷贝)；</p>
-<p>浅复制：通过复制操作后，得到一个副本对象，在OC中本质上是对于原对象的指针复制，没有产生新的对象。</p>
-<p>copy VS mutablecopy</p>
-<p>shallow copy eg:</p>
-<pre><code><span class="built_in">NSString</span> *scrStr  = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"deep copy vs shallow copy"</span>];
-<span class="built_in">NSString</span> *copyStr = [scrStr <span class="keyword">copy</span>];
+            苹果官方内存管理原则：1.谁创建谁负责release：如果使用 alloc、new、copy、mutablecopy来创建对象，那么必须要调用release或者autorelease来释放对象。2.谁retain谁负责release：只要你对对象使用了retain方法，那么必须要调用release或者autorelease来释放对象。
+深复制 VS 浅复制 (deep copy VS shallow copy)
+深复制：通过复制操作后，返回一个新的副本对象，对此副本对象的任何操作不会影响到原对象，当然原对象的任何操作也不会影响到副本对象。在OC中的深复制本质上是产生了一个新的对象，也就是常说的内容复制(内容拷贝)；
+浅复制：通过复制操作后，得到一个副本对象，在OC中本质上是对于原对象的指针复制，没有产生新的对象。
+copy VS mutablecopy
+shallow copy eg:
+NSString *scrStr  = [NSString stringWithFormat:@"deep copy vs shallow copy"];
+NSString *copyStr = [scrStr copy];
 
-<span class="built_in">NSLog</span>(<span class="string">@"scrStr = %p,copyStr = %p \n"</span>,scrStr,copyStr); <span class="comment">// 内存地址: scrStr = 0x100211d90,copyStr = 0x100211d90  一致</span>
-<span class="built_in">NSLog</span>(<span class="string">@"scrStr = %@,copyStr = %@ \n"</span>,scrStr,copyStr); <span class="comment">// 打印内容: scrStr = deep copy vs shallow copy,copyStr = deep copy vs shallow copy </span>
-</code></pre><p>deep copy eg:</p>
-<pre><code><span class="built_in">NSString</span> *scrStr  = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"deep copy vs shallow copy"</span>];
-<span class="built_in">NSMutableString</span> *copyStr = [scrStr mutableCopy];
-
-<span class="built_in">NSLog</span>(<span class="string">@"scrStr = %p,copyStr = %p \n"</span>,scrStr,copyStr); <span class="comment">//内存地址: scrStr = 0x100208490,copyStr = 0x100208490 内存地址不一致，说明生产了新的对象</span>
-<span class="built_in">NSLog</span>(<span class="string">@"scrStr = %@,copyStr = %@ \n"</span>,scrStr,copyStr); <span class="comment">//打印内容: scrStr = deep copy vs shallow copy,copyStr = deep copy vs shallow copy </span>
-</code></pre><p>deep copy eg:</p>
-<pre><code><span class="built_in">NSMutableString</span> *scrStr  = [<span class="built_in">NSMutableString</span> stringWithFormat:<span class="string">@"deep copy vs shallow copy"</span>];
-<span class="built_in">NSString</span> *copyStr = [scrStr mutableCopy];
-
-<span class="built_in">NSLog</span>(<span class="string">@"scrStr = %p,copyStr = %p \n"</span>,scrStr,copyStr); <span class="comment">//内存地址: scrStr = 0x100111f10,copyStr = 0x100111fe0 内存地址不一致，说明生产了新的对象</span>
-<span class="built_in">NSLog</span>(<span class="string">@"scrStr = %@,copyStr = %@ \n"</span>,scrStr,copyStr); <span class="comment">//打印内容: scrStr = deep copy vs shallow copy,copyStr = deep copy vs shallow copy </span>
-</code></pre><p>deep copy eg:</p>
-<pre><code><span class="built_in">NSMutableString</span> *scrStr  = [<span class="built_in">NSMutableString</span> stringWithFormat:<span class="string">@"deep copy vs shallow copy"</span>];
-<span class="built_in">NSMutableString</span> *copyStr = [scrStr mutableCopy];
-
-<span class="built_in">NSLog</span>(<span class="string">@"scrStr = %p,copyStr = %p \n"</span>,scrStr,copyStr); <span class="comment">//内存地址: scrStr = 0x100111f10,copyStr = 0x100111fe0 内存地址不一致，说明生产了新的对象</span>
-<span class="built_in">NSLog</span>(<span class="string">@"scrStr = %@,copyStr = %@ \n"</span>,scrStr,copyStr); <span class="comment">//打印内容: scrStr = deep copy vs shallow copy,copyStr = deep copy vs shallow copy </span>
-</code></pre><p>通过以上几个示例，当使用copy方法时，返回的是一个不可变副本，也就是相当于指针拷贝，使用mutablecopy方法时，会返回一个可变副本，相当于内容拷贝，会生成新的对象。</p>
-<p>Copy 内存管理</p>
-<p>浅复制内存管理 eg:</p>
-<pre><code><span class="built_in">NSString</span> *scrStr  = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"deep copy vs shallow copy"</span>];
-<span class="built_in">NSString</span> *copyStr = [scrStr <span class="keyword">copy</span>];
-<span class="built_in">NSLog</span>(<span class="string">@"srcStr = %zd,copyStr = %zd"</span>,[scrStr retainCount],[copyStr retainCount]); <span class="comment">//引用计数: srcStr = 2,copyStr = 2</span>
-[copyStr release];
-</code></pre><p>深复制内存管理 eg:</p>
-<pre><code><span class="built_in">NSMutableString</span> *scrStr  = [<span class="built_in">NSMutableString</span> stringWithFormat:<span class="string">@"deep copy vs shallow copy"</span>];
-<span class="built_in">NSString</span> *copyStr = [scrStr <span class="keyword">copy</span>];        
-<span class="built_in">NSLog</span>(<span class="string">@"srcStr = %zd,copyStr = %zd"</span>,[scrStr retainCount],[copyStr retainCount]); <span class="comment">//引用计数: srcStr = 1,copyStr = 1</span>
-[copyStr release];
-</code></pre><p>浅复制：没有产生新对象，但是原对象(副本对象)的引用计数会加1，上例中srcStr对象非自己生成，无需再调用release，但copyStr是srcStr对象的副本，所以需要调用release释放内存<br>深复制：产生新对象，原对象的引用计数不变，副本对象的引用计数为1，上例中srcStr对象非自己生成，无需再调用release,但copyStr是srcStr深复制而来，所以需要调用release释放内存</p>
-<p>总结：</p>
-<p>深复制：<br>        1.原对象和副本对象不是指向同一个对象<br>        2.原对象的引用计数不变，副本对象的引用计数为1<br>    3.深复制的实质是生成新的对象</p>
-<p>浅复制：<br>    1.原对象和副本对象指向同一个对象<br>    2.原对象(副本对象)的引用计数加1，相当于做了一次retain操作<br>    3.浅复制的实质没有产生新对象，仅是指针拷贝</p>
-
-            
+NSLog(@"scrStr = %p,copyStr = %p \n",scrStr,copyStr); // 内存地址: scrStr = 0x100211d90,cop
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/07/09/deepcopy-vs-shallowcopy/#more" rel="contents">
+              閱讀全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -899,6 +830,13 @@ TODO: 不要把操作设置依赖为自己本身，如果这样做会造成死�
 
           
             
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/07/07/xcode-update-plugin-problem/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/07/07/xcode-update-plugin-problem/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -917,11 +855,16 @@ TODO: 不要把操作设置依赖为自己本身，如果这样做会造成死�
         
           <span itemprop="articleBody">
             
-              <p>1.打开终端，输入以下代码获取到DVTPlugInCompatibilityUUID<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">`defaults <span class="keyword">read</span> <span class="regexp">/Applications/</span>Xcode.app<span class="regexp">/Contents/I</span>nfo DVTPlugInCompatibilityUUID`</span><br></pre></td></tr></table></figure></p>
-<p>2.然后输入如下命令   【最后一项是获取到的DVTPlugInCompatibilityUUID】</p>
-<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">find</span> ~<span class="regexp">/Library/</span>Application\ Support<span class="regexp">/Developer/</span>Shared<span class="regexp">/Xcode/</span>Plug-ins -name Info.plist -maxdepth <span class="number">3</span> | xargs -I&#123;&#125; defaults <span class="keyword">write</span> &#123;&#125; DVTPlugInCompatibilityUUIDs -array-add <span class="number">0420</span>B86A-AA43-<span class="number">4792</span>-<span class="number">9</span>ED0-<span class="number">6</span>FE0F2B16A13</span><br></pre></td></tr></table></figure>
+            1.打开终端，输入以下代码获取到DVTPlugInCompatibilityUUID1`defaults read /Applications/Xcode.app/Contents/Info DVTPlugInCompatibilityUUID`
+2.然后输入如下命令   【最后一项是获取到的DVTPlugInCompatibilityUUID】
+1find ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins -name Info.plist -maxdepth 3 | xargs -I&#123;&#125; defaults write &#123;&#125; DVTPlugInCompatibilityUUIDs -array-add 0420B86A-AA43-4792-9ED0-6FE0F2B16A13
             
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/07/07/xcode-update-plugin-problem/#more" rel="contents">
+              閱讀全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -996,6 +939,13 @@ TODO: 不要把操作设置依赖为自己本身，如果这样做会造成死�
 
           
             
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/06/08/quart2d/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/06/08/quart2d/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -1014,53 +964,20 @@ TODO: 不要把操作设置依赖为自己本身，如果这样做会造成死�
         
           <span itemprop="articleBody">
             
-              <p>一、添加水印<br>为了不让图片被别人滥用，造成侵权，一般都会给图片加上水印。在iOS里面添加水印可以通过[CoreGraphics]框架提供的方法来操作。<br>一般思路：<br>        1.开启一个跟原图大小一致的context<br>        2.将水印文字设置添加在原图上的位置并绘制在当前的context<br>        3.从当前的context获取新的图片<br>        4.关闭当前的context<br>    代码实现：</p>
-<pre><code>+ (<span class="built_in">UIImage</span> *)imageNamed:(<span class="built_in">NSString</span> *)name waterMark:(<span class="built_in">NSString</span> *)mark
+            一、添加水印为了不让图片被别人滥用，造成侵权，一般都会给图片加上水印。在iOS里面添加水印可以通过[CoreGraphics]框架提供的方法来操作。一般思路：        1.开启一个跟原图大小一致的context        2.将水印文字设置添加在原图上的位置并绘制在当前的context        3.从当前的context获取新的图片        4.关闭当前的context    代码实现：
++ (UIImage *)imageNamed:(NSString *)name waterMark:(NSString *)mark
 {
-    <span class="built_in">CGFloat</span> textWidth = <span class="number">0</span>;
-    <span class="built_in">UIImage</span> *originImage = [<span class="keyword">self</span> imageNamed:name];
-    textWidth = [mark boundingRectWithSize:<span class="built_in">CGSizeMake</span>(MAXFLOAT, <span class="number">20.0</span>) options:<span class="built_in">NSStringDrawingUsesLineFragmentOrigin</span> attributes:@{<span class="built_in">NSFontAttributeName</span>:[<span class="built_in">UIFont</span> systemFontOfSize:<span class="number">15.0</span>]} context:<span class="literal">nil</span>]<span class="variable">.size</span><span class="variable">.width</span>;
-    <span class="built_in">UIGraphicsBeginImageContextWithOptions</span>(originImage<span class="variable">.size</span>, <span class="literal">NO</span>, <span class="number">0.0</span>);
-    [originImage drawAtPoint:<span class="built_in">CGPointZero</span>];
-    [mark drawAtPoint:<span class="built_in">CGPointMake</span>(<span class="number">10.0</span>,<span class="number">5.0</span>) withAttributes:@{<span class="built_in">NSFontAttributeName</span>:[<span class="built_in">UIFont</span> systemFontOfSize:<span class="number">22.0</span>],<span class="built_in">NSForegroundColorAttributeName</span>:[<span class="built_in">UIColor</span> redColor]}];
-    <span class="built_in">UIImage</span> *newImage = <span class="built_in">UIGraphicsGetImageFromCurrentImageContext</span>();
-    <span class="built_in">UIGraphicsEndImageContext</span>();
-
-    <span class="keyword">return</span> newImage;
-}
-</code></pre><p> 效果图片如下：<br><img src="http://7xkpsz.com1.z0.glb.clouddn.com/watermark.png" alt="水印"></p>
-<p>二、截取圆形图片<br>在平常项目开发中设计会有一些圆形的图片，例如用户头像。大多会去设置View的layer的cornerRadius和masksToBounds.<br>    self.imageView.layer.cornerRadius = 50.0;<br>    self.imageView.layer.masksToBounds = YES;<br>这样做虽然能够达到我们要的效果，每一次加载都要去将视图的图层去渲染，这样严重影响性能。在项目中不推荐这样使用，有更好的方法去达到这种效果—-截图图片<br>在原图的基础上去截取一个圆形的图片，关键点就是在原图上绘制一个正切圆。<br>    代码实现：</p>
-<pre><code>+ (<span class="built_in">UIImage</span> *)circleImageWithNamed:(<span class="built_in">NSString</span> *)name
-{
-    <span class="built_in">UIImage</span> *originImage = [<span class="keyword">self</span> imageNamed:name];
-    <span class="built_in">CGFloat</span> newImageW = originImage<span class="variable">.size</span><span class="variable">.width</span> &lt; originImage<span class="variable">.size</span><span class="variable">.height</span>? originImage<span class="variable">.size</span><span class="variable">.width</span> : originImage<span class="variable">.size</span><span class="variable">.height</span>;
-    <span class="built_in">UIGraphicsBeginImageContextWithOptions</span>(originImage<span class="variable">.size</span>, <span class="literal">NO</span>, <span class="number">0.0</span>);
-    <span class="built_in">UIBezierPath</span> *path = [<span class="built_in">UIBezierPath</span> bezierPathWithOvalInRect:<span class="built_in">CGRectMake</span>(<span class="number">0.0</span>, <span class="number">0.0</span>, newImageW, newImageW)];
-    [path addClip];
-    [originImage drawAtPoint:<span class="built_in">CGPointZero</span>];
-    <span class="built_in">UIImage</span> *newImage = <span class="built_in">UIGraphicsGetImageFromCurrentImageContext</span>();
-    <span class="built_in">UIGraphicsEndImageContext</span>();
-
-    <span class="keyword">return</span> newImage;
-}
-</code></pre><p> 效果图如下：<br> <img src="http://7xkpsz.com1.z0.glb.clouddn.com/circle.png" alt="截取圆图"></p>
-<p> 三、绘制纯色图片<br> 在开发过程会有遇到给Button设置背景色情况，直接设置Button的backgourndcolor就没有高亮的效果，所以直接根据颜色去绘制一张纯色的图片<br>     代码实现:</p>
-<pre><code> + (<span class="built_in">UIImage</span> *)imageWith<span class="built_in">UIColor</span>:(<span class="built_in">UIColor</span> *)color
-{
-    <span class="built_in">CGRect</span> rect = <span class="built_in">CGRectMake</span>(<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">10.0</span>, <span class="number">10.0</span>);
-    <span class="built_in">UIGraphicsBeginImageContextWithOptions</span>(rect<span class="variable">.size</span>, <span class="literal">NO</span>, <span class="number">0.0</span>);
-    <span class="built_in">CGContextRef</span> context = <span class="built_in">UIGraphicsGetCurrentContext</span>();
-    <span class="built_in">CGContextSetFillColorWithColor</span>(context, color<span class="variable">.CGColor</span>);
-    <span class="built_in">CGContextFillRect</span>(context, rect);
-    <span class="built_in">UIImage</span> *image = <span class="built_in">UIGraphicsGetImageFromCurrentImageContext</span>();
-    <span class="built_in">UIGraphicsEndImageContext</span>();
-
-    <span class="keyword">return</span> image;
-}
-</code></pre><p>GitHub: <a href="https://github.com/ludaye123/UIImage-Quartz2D" target="_blank" rel="external">https://github.com/ludaye123/UIImage-Quartz2D</a></p>
-
-            
+    CGFloat textWidth = 0;
+    UIImage *originImage = [self imageNamed:name];
+    textWidth = [mark boundingRectWithSize:CGSizeMake(MAXFLOAT, 20.0) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15.0]} context:nil].size.width;
+    UIGraphicsBeginImageContextWithOpti
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/06/08/quart2d/#more" rel="contents">
+              閱讀全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -1135,6 +1052,13 @@ TODO: 不要把操作设置依赖为自己本身，如果这样做会造成死�
 
           
             
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/05/18/nslog/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/05/18/nslog/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -1153,43 +1077,48 @@ TODO: 不要把操作设置依赖为自己本身，如果这样做会造成死�
         
           <span itemprop="articleBody">
             
-              <p>打印当前的方法以及行号<br>NSMutableArray *someObject = [NSMutableArray array];<br>NSLog(@”%s:%d someObject=%@”, <strong>func</strong>, <strong>LINE</strong>, someObject);<br>[someObject addObject:@”foo”];<br>NSLog(@”%s:%d someObject=%@”, <strong>func</strong>, <strong>LINE</strong>, someObject);</p>
-<p>表1 预处理的宏</p>
-<table>
-<thead>
-<tr>
-<th>宏</th>
-<th>格式说明符</th>
-<th>描述 </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>func</strong></td>
-<td>%s</td>
-<td>当前被调用的方法 </td>
-</tr>
-<tr>
-<td><strong>LINE</strong></td>
-<td>%d</td>
-<td>当前的行号在源代码文件中 </td>
-</tr>
-<tr>
-<td><strong>FILE</strong></td>
-<td>%s</td>
-<td>源代码文件的路径</td>
-</tr>
-<tr>
-<td><strong>PRETTY_FUNCTION</strong></td>
-<td>%s</td>
-<td>类似 <strong>func</strong>, 但是包含详细信息在C++代码中</td>
-</tr>
-</tbody>
-</table>
-<p>项目中调试一般会定义一个宏，调试打印当前的信息，特别是在比较复杂的项目中调试。<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="id">#ifdef</span> DEBUG</span><br><span class="line"><span class="hexcolor">#def</span>ine <span class="function"><span class="title">DSLog</span><span class="params">(...)</span></span> <span class="function"><span class="title">NSLog</span><span class="params">(@<span class="string">"%s %d \n %@ \n\n"</span>,__func__,__LINE__,[NSString stringWithFormat:__VA_ARGS__])</span></span></span><br><span class="line"><span class="id">#else</span></span><br><span class="line"><span class="hexcolor">#def</span>ine <span class="function"><span class="title">DSLog</span><span class="params">(...)</span></span></span><br><span class="line"><span class="id">#endif</span></span><br><span class="line">#endif</span><br></pre></td></tr></table></figure></p>
+            打印当前的方法以及行号NSMutableArray *someObject = [NSMutableArray array];NSLog(@”%s:%d someObject=%@”, func, LINE, someObject);[someObject addObject:@”foo”];NSLog(@”%s:%d someObject=%@”, func, LINE, someObject);
+表1 预处理的宏
+
+
+
+宏
+格式说明符
+描述 
+
+
+
+
+func
+%s
+当前被调用的方法 
+
+
+LINE
+%d
+当前的行号在源代码文件中 
+
+
+FILE
+%s
+源代码文件的路径
+
+
+PRETTY_FUNCTION
+%s
+类似 func, 但是包含详细信息在C++代码中
+
+
+
+项目中调试一般会定义一个宏，调试打印当前的信息，特别是在比较复杂的项目中调试。123456#ifdef DEBUG#define DSLog(...) NSLog(@"%s %d \n %@ \n\n",__func__,__LINE__,[NSString stringWithFormat:__VA_ARGS__])#else#define DSLog(...)#endif#endif
 
             
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/05/18/nslog/#more" rel="contents">
+              閱讀全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -1249,6 +1178,13 @@ TODO: 不要把操作设置依赖为自己本身，如果这样做会造成死�
 
           
             
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/04/10/hello-world/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/04/10/hello-world/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -1267,18 +1203,23 @@ TODO: 不要把操作设置依赖为自己本身，如果这样做会造成死�
         
           <span itemprop="articleBody">
             
-              <p>Welcome to <a href="http://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="http://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="http://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick_Start">Quick Start</h2><h3 id="Create_a_new_post">Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run_server">Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate_static_files">Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy_to_remote_sites">Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+            Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
+Quick StartCreate a new post1$ hexo new "My New Post"
+More info: Writing
+Run server1$ hexo server
+More info: Server
+Generate static files1$ hexo generate
+More info: Generating
+Deploy to remote sites1$ hexo deploy
+More info: Deployment
 
             
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/04/10/hello-world/#more" rel="contents">
+              閱讀全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -1353,6 +1294,13 @@ TODO: 不要把操作设置依赖为自己本身，如果这样做会造成死�
 
           
             
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/02/12/corelocation-basic-use/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/02/12/corelocation-basic-use/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -1371,15 +1319,16 @@ TODO: 不要把操作设置依赖为自己本身，如果这样做会造成死�
         
           <span itemprop="articleBody">
             
-              <p>1.导入头文件<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#import <span class="title">&lt;CoreLocation/CoreLocation.h&gt;</span></span></span><br></pre></td></tr></table></figure></p>
-<p>2.定义一个属性<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) CLLocationManager *locationManager;</span><br></pre></td></tr></table></figure></p>
-<p>3.设置Get方法<br><figure class="highlight fsharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">- (CLLocationManager *)locationManager</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(!_locationManager)</span><br><span class="line">    &#123;</span><br><span class="line">        _locationManager = [[CLLocationManager alloc] init];</span><br><span class="line">        _locationManager.<span class="keyword">delegate</span> = self;</span><br><span class="line">        _locationManager.distanceFilter = <span class="number">100.0</span>; 	<span class="comment">// 定位距离过滤</span></span><br><span class="line"></span><br><span class="line">        /*</span><br><span class="line">        <span class="keyword">extern</span> const CLLocationAccuracy kCLLocationAccuracyBestForNavigation    <span class="comment">// 导航定位最好的精确度</span></span><br><span class="line">		<span class="keyword">extern</span> const CLLocationAccuracy kCLLocationAccuracyBest;				<span class="comment">// 定位最好的精确度</span></span><br><span class="line">		<span class="keyword">extern</span> const CLLocationAccuracy kCLLocationAccuracyNearestTenMeters;	<span class="comment">// 定位精确到10米</span></span><br><span class="line">		<span class="keyword">extern</span> const CLLocationAccuracy kCLLocationAccuracyHundredMeters;		<span class="comment">// 定位精确到100米</span></span><br><span class="line">		<span class="keyword">extern</span> const CLLocationAccuracy kCLLocationAccuracyKilometer;			<span class="comment">// 定位精确到1000米</span></span><br><span class="line">		<span class="keyword">extern</span> const CLLocationAccuracy kCLLocationAccuracyThreeKilometers;		<span class="comment">// 定位精确到3000米</span></span><br><span class="line">		*/</span><br><span class="line">        _locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters; <span class="comment">// 定位精确度</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> _locationManager;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>4.实现代理方法<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 授权状态代理方法</span></span><br><span class="line">- (<span class="typename">void</span>)<span class="string">locationManager:</span>(CLLocationManager *)manager <span class="string">didChangeAuthorizationStatus:</span>(CLAuthorizationStatus)status</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(status == kCLAuthorizationStatusAuthorizedAlways || status == kCLAuthorizationStatusAuthorizedWhenInUse)</span><br><span class="line">    &#123;</span><br><span class="line">        [self.locationManager startUpdatingLocation];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        NSLog(@<span class="string">"授权失败"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定位更新位置代理方法</span></span><br><span class="line">- (<span class="typename">void</span>)<span class="string">locationManager:</span>(CLLocationManager *)manager <span class="string">didUpdateLocations:</span>(NSArray *)locations</span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment">// locations包括的现在的位置</span></span><br><span class="line">    NSLog(@<span class="string">"%@"</span>,locations);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>5.开始定位<br>在viewController的viewDidLoad方法中开启定位服务<br><figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">-</span> (void)<span class="tag">viewDidLoad</span> &#123;</span><br><span class="line">    <span class="attr_selector">[super viewDidLoad]</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 注意在iOS8中使用定位服务，由于苹果对定位服务的启用了进一步做了限制，启用定位服务需要授权</span></span><br><span class="line">    <span class="comment">// 以及需要在info.plist 文件中配置才会弹出授权提示框</span></span><br><span class="line">    <span class="comment">// NSLocationWhenInUseUsageDescription     允许在前台定位</span></span><br><span class="line">    <span class="comment">// NSLocationAlwaysUsageDescription   	   允许在前后台定位</span></span><br><span class="line">    <span class="tag">if</span>([[UIDevice currentDevice].systemVersion doubleValue] &gt;= <span class="number">8.0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="attr_selector">[self.locationManager requestWhenInUseAuthorization]</span>;</span><br><span class="line"><span class="comment">//        [self.locationManager requestAlwaysAuthorization];</span></span><br><span class="line">		<span class="comment">// iOS8 在代理方法中确认授权成功后，启动定位服务</span></span><br><span class="line">    &#125;</span><br><span class="line">	<span class="tag">else</span></span><br><span class="line">	&#123;</span><br><span class="line">	    <span class="attr_selector">[self.locationManager startUpdatingLocation]</span>;</span><br><span class="line">	&#125;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>6.CLLocation常用属性和方法<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">@property</span>(<span class="keyword">readonly</span>, <span class="keyword">nonatomic</span>) CLLocationCoordinate2D coordinate; <span class="comment">// 经纬度</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">readonly</span>, <span class="keyword">nonatomic</span>) CLLocationDistance altitude; <span class="comment">// 海拔高度</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">readonly</span>, <span class="keyword">nonatomic</span>) CLLocationAccuracy horizontalAccuracy; <span class="comment">// 水平精确度</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">readonly</span>, <span class="keyword">nonatomic</span>) CLLocationAccuracy verticalAccuracy; <span class="comment">// 垂直精确度</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">readonly</span>, <span class="keyword">nonatomic</span>) CLLocationDirection course; <span class="comment">// 活动方向</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">readonly</span>, <span class="keyword">nonatomic</span>) CLLocationSpeed speed; <span class="comment">// 当前活动速度</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">readonly</span>, <span class="keyword">nonatomic</span>, <span class="keyword">copy</span>) <span class="built_in">NSDate</span> *timestamp; <span class="comment">// 定位更新时间</span></span><br></pre></td></tr></table></figure></p>
-
-            
+            1.导入头文件1#import &lt;CoreLocation/CoreLocation.h&gt;
+2.定义一个属性1@property (nonatomic, strong) CLLocationManager *locationManager;
+3.设置Get方法123456789101112131415161718192021- (CLLocationManager *)locationManager&#123;    if(!_locationManager)    &#123;        _locationManager = [[CLLocationManager alloc] init];        _locationManager.delegate = self;        _locationManager.distanceFilter = 100.0; 	// 定位距离过滤        /*        extern const CLLocationAccuracy kCLLocationAccuracyBestForNavigation    // 导航定位最好的精确度		extern const CLLocationAccuracy kCLLocationAccuracyBest;				// 定位最好的精确度		extern const C
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/02/12/corelocation-basic-use/#more" rel="contents">
+              閱讀全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -1450,10 +1399,10 @@ TODO: 不要把操作设置依赖为自己本身，如果这样做会造成死�
           </div>
 
           <div class="site-state-item site-state-categories">
-            
+            <a href="/categories">
               <span class="site-state-item-count">5</span>
               <span class="site-state-item-name">分類</span>
-              
+              </a>
           </div>
 
           <div class="site-state-item site-state-tags">
@@ -1515,7 +1464,7 @@ TODO: 不要把操作设置依赖为自己本身，如果这样做会造成死�
 <div class="theme-info">
   主題 -
   <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
-    NexT
+    NexT.Mist
   </a>
 </div>
 
@@ -1534,11 +1483,28 @@ TODO: 不要把操作设置依赖为自己本身，如果这样做会造成死�
 
   
     
-    
 
   
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"dashen1009"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+    
+     
 
 
+    
   
 
   

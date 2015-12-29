@@ -67,7 +67,7 @@
 
 <script type="text/javascript" id="hexo.configuration">
   var CONFIG = {
-    scheme: '',
+    scheme: 'Mist',
     sidebar: 'post',
     motion: true
   };
@@ -134,6 +134,26 @@
               <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
             
             首頁
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分類
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            關於
           </a>
         </li>
       
@@ -242,6 +262,13 @@
 
           
             
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/01/18/iOS-Concurrentcy-Programming/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/18/iOS-Concurrentcy-Programming/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -260,641 +287,21 @@
         
           <span itemprop="articleBody">
             
-              <p>iOS Concurrency Programming Guide</p>
-<p>iOS 和 Mac OS 传统的并发编程模型是线程，不过线程模型伸缩性不强，而且编写正确的线程代码也不容易。Mac OS 和 iOS 采取 asynchronous design approach 来解决并发的问题。</p>
-<p>引入的异步技术有两个：</p>
-<p>Grand Central Dispatch：系统管理线程，你不需要编写线程代码。只需定义想要执行的任务，然后添加到适当的dispatch queue。Grand Central Dispatch会负责创建线程和调度你的任务。系统直接提供线程管理，比应用实现更加高效。</p>
-<p>Operation Queue：Objective-C对象，类似于dispatch queue。你定义想要执行的任务，并添加任务到operation queue，后者负责调度和执行这些任务。和Grand Central Dispatch一样，Operation Queue也管理了线程，更加高效。</p>
-<p>Dispatch Queue</p>
-<p>基于C的执行自定义任务机制。dispatch queue按先进先出的顺序，串行或并发地执行任务。serial dispaptch queue一次只能执行一个任务，直接当前任务完成才开始出列并启动下一个任务。而concurrent dispatch queue则尽可能多地启动任务并发执行。</p>
-<p>优点：</p>
-<p>直观而简单的编程接口</p>
-<p>提供自动和整体的线程池管理</p>
-<p>提供汇编级调优的速度</p>
-<p>更加高效地使用内存</p>
-<p>不会trap内核under load</p>
-<p>异步分派任务到dispatch queue不会导致queue死锁</p>
-<p>伸缩性强</p>
-<p>serial dispatch queue比锁和其它同步原语更加高效</p>
-<p>Dispatch Sources</p>
-<p>Dispatch Sources 是基于C的系统事件异步处理机制。一个Dispatch Source封装了一个特定类型的系统事件，当事件发生时提交一个特定的block对象或函数到dispatch queue。你可以使用Dispatch Sources监控以下类型的系统事件：</p>
-<p>定时器</p>
-<p>信号处理器</p>
-<p>描述符相关的事件</p>
-<p>进程相关的事件</p>
-<p>Mach port事件</p>
-<p>你触发的自定义事件</p>
-<p>Operation Queues</p>
-<p>Operation Queues是Cocoa版本的并发dispatch queue，由 NSOperationQueue 类实现。dispatch queue总是按先进先出的顺序执行任务，而 Operation Queues 在确定任务执行顺序时，还会考虑其它因素。最主要的一个因素是指定任务是否依赖于另一个任务的完成。你在定义任务时配置依赖性，从而创建复杂的任务执行顺序图</p>
-<p>提交到Operation Queues的任务必须是 NSOperation 对象，operation object封装了你要执行的工作，以及所需的所有数据。由于 NSOperation 是一个抽象基类，通常你需要定义自定义子类来执行任务。不过Foundation framework自带了一些具体子类，你可以创建并执行相关的任务。</p>
-<p>Operation objects会产生key-value observing(KVO)通知，对于监控任务的进程非常有用。虽然operation queue总是并发地执行任务，你可以使用依赖，在需要时确保顺序执行</p>
-<p>异步设计技术</p>
-<p>通过确保主线程自由响应用户事件，并发可以很好地提高应用的响应性。通过将工作分配到多核，还能提高应用处理的性能。但是并发也带来一定的额外开销，并且使代码更加复杂，更难编写和调试代码。</p>
-<p>因此在应用设计阶段，就应该考虑并发，设计应用需要执行的任务，及任务所需的数据结构。</p>
-<p>Operation Queues</p>
-<p>基于Objective-C，因此基于Cocoa的应用通常会使用Operation Queues</p>
-<p>Operation Objects</p>
-<p>operation object 是 NSOperation 类的实例，封装了应用需要执行的任务，和执行任务所需的数据。NSOperation 本身是抽象基类，我们必须实现子类。Foundation framework提供了两个具体子类，你可以直接使用：</p>
-<p>类    描述<br>NSInvocationOperation    可以直接使用的类，基于应用的一个对象和selector来创建operation object。如果你已经有现有的方法来执行需要的任务，就可以使用这个类。<br>NSBlockOperation    可以直接使用的类，用来并发地执行一个或多个block对象。operation object使用“组”的语义来执行多个block对象，所有相关的block都执行完成之后，operation object才算完成。<br>NSOperation    基类，用来自定义子类operation object。继承NSOperation可以完全控制operation object的实现，包括修改操作执行和状态报告的方式。<br>所有operation objects都支持以下关键特性：</p>
-<p>支持建立基于图的operation objects依赖。可以阻止某个operation运行，直到它依赖的所有operation都已经完成。</p>
-<p>支持可选的completion block，在operation的主任务完成后调用。</p>
-<p>支持应用使用KVO通知来监控operation的执行状态。</p>
-<p>支持operation优先级，从而影响相对的执行顺序</p>
-<p>支持取消，允许你中止正在执行的任务</p>
-<p>并发 VS 非并发Operations</p>
-<p>通常我们通过将operation添加到operation queue中来执行该操作。但是我们也可以手动调用start方法来执行一个operation对象，这样做不保证operation会并发执行。NSOperation类对象的 isConcurrent 方法告诉你这个operation相对于调用start方法的线程，是同步还是异步执行的。isConcurrent 方法默认返回NO，表示operation与调用线程同步执行。</p>
-<p>如果你需要实现并发operation，也就是相对调用线程异步执行的操作。你必须添加额外的代码，来异步地启动操作。例如生成一个线程、调用异步系统函数，以确保start方法启动任务，并立即返回。</p>
-<p>多数开发者从来都不需要实现并发operation对象，我们只需要将operations添加到operation queue。当你提交非并发operation到operation queue时，queue会创建线程来运行你的操作，因此也能达到异步执行的目的。只有你不希望使用operation queue来执行operation时，才需要定义并发operations。</p>
-<p>创建一个 NSInvocationOperation 对象</p>
-<p>如果已经现有一个方法，需要并发地执行，就可以直接创建 NSInvocationOperation 对象，而不需要自己继承 NSOperation。</p>
-<p>@implementation MyCustomClass </p>
-<ul>
-<li>(NSOperation<em>)taskWithData:(id)data {<br>NSInvocationOperation</em> theOp = [[[NSInvocationOperation alloc] initWithTarget:self<br>selector:@selector(myTaskMethod:) object:data] autorelease]; </li>
-</ul>
-<p>return theOp;<br>} </p>
-<p>// This is the method that does the actual work of the task. </p>
-<ul>
-<li>(void)myTaskMethod:(id)data {<br>// Perform the task.<br>}<br>@end<br>创建一个 NSBlockOperation 对象</li>
-</ul>
-<p>NSBlockOperation 对象用于封装一个或多个block对象，一般创建时会添加至少一个block，然后再根据需要添加更多的block。当 NSBlockOperation 对象执行时，会把所有block提交到默认优先级的并发dispatch queue。然后 NSBlockOperation 对象等待所有block完成执行，最后标记自己已完成。因此可以使用block operation来跟踪一组执行中的block，有点类似于thread join等待多个线程的结果。区别在于block operation本身也运行在一个单独的线程，应用的其它线程在等待block operation完成时可以继续工作。</p>
-<p>NSBlockOperation* theOp = [NSBlockOperation blockOperationWithBlock: ^{<br>NSLog(@”Beginning operation.\n”);<br>// Do some work.<br>}];<br>使用 addExecutionBlock: 可以添加更多block到这个block operation对象。如果需要顺序地执行block，你必须直接提交到所需的dispatch queue。</p>
-<p>自定义Operation对象</p>
-<p>如果block operation和invocation operation对象不符合应用的需求，你可以直接继承 NSOperation，并添加任何你想要的行为。NSOperation 类提供通用的子类继承点，而且实现了许多重要的基础设施来处理依赖和KVO通知。继承所需的工作量主要取决于你要实现非并发还是并发的operation。</p>
-<p>定义非并发operation要简单许多，只需要执行主任务，并正确地响应取消事件;NSOperation 处理了其它所有事情。对于并发operation，你必须替换某些现有的基础设施代码。</p>
-<p>执行主任务</p>
-<p>每个operation对象至少需要实现以下方法：</p>
-<p>自定义initialization方法：初始化，将operation 对象设置为已知状态</p>
-<p>自定义main方法：执行你的任务</p>
-<p>你也可以选择性地实现以下方法：</p>
-<p>main方法中需要调用的其它自定义方法</p>
-<p>Accessor方法：设置和访问operation对象的数据</p>
-<p>dealloc方法：清理operation对象分配的所有内存</p>
-<p>NSCoding 协议的方法：允许operation对象archive和unarchive</p>
-<p>@interface MyNonConcurrentOperation : NSOperation {<br>id myData;<br>}<br>-(id)initWithData:(id)data;<br>@end </p>
-<p>@implementation MyNonConcurrentOperation </p>
-<ul>
-<li><p>(id)initWithData:(id)data {<br>if (self = [super init])<br>myData = [data retain];<br>return self;<br>} </p>
-</li>
-<li><p>(void)dealloc {<br>[myData release];<br>[super dealloc];<br>} </p>
-</li>
-</ul>
-<p>-(void)main {<br>@try {<br>NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];<br>// Do some work on myData and report the results.<br>[pool release];<br>}<br>@catch(…) {<br>// Do not rethrow exceptions.<br>}<br>}<br>@end<br>响应取消事件</p>
-<p>operation开始执行之后，会一直执行任务直到完成，或者显式地取消操作。取消可能在任何时候发生，甚至在operation执行之前。尽管 NSOperation 提供了一个方法，让应用取消一个操作，但是识别出取消事件则是你的事情。如果operation直接终止，可能无法回收所有已分配的内存或资源。因此operation对象需要检测取消事件，并优雅地退出执行。</p>
-<p>operation 对象定期地调用 isCancelled 方法，如果返回YES(表示已取消)，则立即退出执行。不管是自定义 NSOperation 子类，还是使用系统提供的两个具体子类，都需要支持取消。isCancelled方法本身非常轻量，可以频繁地调用而不产生大的性能损失。以下地方可能需要调用isCancelled：</p>
-<p>在执行任何实际的工作之前</p>
-<p>在循环的每次迭代过程中，如果每个迭代相对较长可能需要调用多次</p>
-<p>代码中相对比较容易中止操作的任何地方</p>
-<ul>
-<li>(void)main {<br>@try {<br>NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];<br>BOOL isDone = NO; </li>
-</ul>
-<p>while (![self isCancelled] &amp;&amp; !isDone) {<br>// Do some work and set isDone to YES when finished<br>}<br>[pool release];<br>}<br>@catch(…) {<br>// Do not rethrow exceptions.<br>}<br>}<br>注意你的代码还需要完成所有相关的资源清理工作</p>
-<p>为并发执行配置operations</p>
-<p>Operation对象默认按同步方式执行，也就是在调用start方法的那个线程中直接执行。由于operation queue为非并发operation提供了线程支持，对应用来说，多数operations仍然是异步执行的。但是如果你希望手工执行operations，而且仍然希望能够异步执行操作，你就必须采取适当的措施，通过定义operation对象为并发操作来实现。</p>
-<p>方法    描述<br>start    （必须）所有并发操作都必须覆盖这个方法，以自定义的实现替换默认行为。手动执行一个操作时，你会调用start方法。因此你对这个方法的实现是操作的起点，设置一个线程或其它执行环境，来执行你的任务。你的实现在任何时候都绝对不能调用super。<br>main    （可选）这个方法通常用来实现operation对象相关联的任务。尽管你可以在start方法中执行任务，使用main来实现任务可以让你的代码更加清晰地分离设置和任务代码<br>isExecuting<br>isFinished    （必须）并发操作负责设置自己的执行环境，并向外部client报告执行环境的状态。因此并发操作必须维护某些状态信息，以知道是否正在执行任务，是否已经完成任务。使用这两个方法报告自己的状态。<br>这两个方法的实现必须能够在其它多个线程中同时调用。另外这些方法报告的状态变化时，还需要为相应的key path产生适当的KVO通知。<br>isConcurrent    （必须）标识一个操作是否并发operation，覆盖这个方法并返回YES</p>
-<p>@interface MyOperation : NSOperation {<br>BOOL        executing;<br>BOOL        finished;<br>} </p>
-<ul>
-<li>(void)completeOperation;<br>@end </li>
-</ul>
-<p>@implementation MyOperation </p>
-<ul>
-<li><p>(id)init {<br>self = [super init];<br>if (self) {<br>executing = NO;<br>finished = NO;<br>}<br>return self;<br>} </p>
-</li>
-<li><p>(BOOL)isConcurrent {<br>return YES;<br>} </p>
-</li>
-<li><p>(BOOL)isExecuting {<br>return executing;<br>} </p>
-</li>
-<li><p>(BOOL)isFinished {<br>return finished;<br>} </p>
-</li>
-<li><p>(void)start {<br>// Always check for cancellation before launching the task.<br>if ([self isCancelled])<br>{<br>// Must move the operation to the finished state if it is canceled.<br>[self willChangeValueForKey:@”isFinished”];<br>finished = YES;<br>[self didChangeValueForKey:@”isFinished”];<br>return;<br>} </p>
-</li>
-</ul>
-<p>// If the operation is not canceled, begin executing the task.<br>[self willChangeValueForKey:@”isExecuting”];<br>[NSThread detachNewThreadSelector:@selector(main) toTarget:self withObject:nil];<br>executing = YES;<br>[self didChangeValueForKey:@”isExecuting”];<br>} </p>
-<ul>
-<li>(void)main {<br>@try {<br>NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init]; </li>
-</ul>
-<p>// Do the main work of the operation here. </p>
-<p>[self completeOperation];<br>[pool release];<br>}<br>@catch(…) {<br>// Do not rethrow exceptions.<br>}<br>} </p>
-<ul>
-<li>(void)completeOperation {<br>[self willChangeValueForKey:@”isFinished”];<br>[self willChangeValueForKey:@”isExecuting”]; </li>
-</ul>
-<p>executing = NO;<br>finished = YES; </p>
-<p>[self didChangeValueForKey:@”isExecuting”];<br>[self didChangeValueForKey:@”isFinished”];<br>}<br>@end<br>即使操作被取消，你也应该通知KVO observers，你的操作已经完成。当某个operation对象依赖于另一个operation对象的完成时，它会监测后者的isFinished key path。只有所有依赖的对象都报告已经完成，第一个operation对象才会开始运行。如果你的operation对象没有产生完成通知，就会阻止其它依赖于你的operation对象运行。</p>
-<p>维护KVO依从</p>
-<p>NSOperation类的key-value observing(KVO)依从于以下key paths：</p>
-<p>isCancelled</p>
-<p>isConcurrent</p>
-<p>isExecuting</p>
-<p>isFinished</p>
-<p>isReady</p>
-<p>dependencies</p>
-<p>queuePriority</p>
-<p>completionBlock</p>
-<p>如果你覆盖start方法，或者对NSOperation对象的其它自定义运行(覆盖main除外)，你必须确保自定义对象对这些key paths保留KVO依从。覆盖start方法时，需要关注isExecuting和isFinished两个key paths。</p>
-<p>如果你希望实现依赖于其它东西(非operation对象)，你可以覆盖isReady方法，并强制返回NO，直到你等待的依赖得到满足。如果你需要保留默认的依赖管理系统，确保你调用了[super isReady]。当你的operation对象的准备就绪状态发生改变时，生成一个isReady的key path的KVO通知。</p>
-<p>除非你覆盖了 addDependency: 或 removeDependency: 方法，否则你不需要关注dependencies key path</p>
-<p>虽然你也可以生成 NSOperation 的其它KVO通知，但通常你不需要这样做。如果需要取消一个操作，你可以直接调用现有的cancel方法。类似地，你也很少需要修改queue优先级信息。最后，除非你的operation对象可以动态地改变并发状态，你也不需要提供isConcurrent key path的KVO通知。</p>
-<p>自定义一个Operation对象的执行行为</p>
-<p>对Operation对象的配置发生在创建对象之后，将其添加到queue之前。</p>
-<p>配置operation之间的依赖关系</p>
-<p>依赖关系可以顺序地执行相关的operation对象，依赖于其它操作，则必须等到该操作完成之后自己才能开始。你可以创建一对一的依赖关系，也可以创建多个对象之间的依赖图。</p>
-<p>使用 NSOperation 的 addDependency: 方法在两个operation对象之间建立依赖关系。表示当前operation对象将依赖于参数指定的目标operation对象。依赖关系不局限于相同queue中的operations对象，Operation对象会管理自己的依赖，因此完全可以在不同的queue之间的Operation对象创建依赖关系。</p>
-<p>唯一的限制是不能创建环形依赖，这是程序员的错误，所有受影响的operations都无法运行!</p>
-<p>当一个operation对象依赖的所有其它对象都已经执行完成，该operation就变成准备执行状态(如果你自定义了isReady方法，则由你的方法确定是否准备好运行)。如果operation已经在一个queue中，queue就可以在任何时候执行这个operation。如果你需要手动执行该operation，就自己调用operation的start方法。</p>
-<p>配置依赖必须在运行operation和添加operation到queue之前进行，之后添加的依赖关系可能不起作用。</p>
-<p>依赖要求每个operation对象在状态发生变化时必须发出适当的KVO通知。如果你自定义了operation对象的行为，就必须在自定义代码中生成适当的KVO通知，以确保依赖能够正确地执行。</p>
-<p>修改Operation的执行优先级</p>
-<p>对于添加到queue的Operations，执行顺序首先由已入队列的operations是否准备好，然后再根据所有operations的相对优先级确定。是否准备好由对象的依赖关系确定，优先级等级则是operation对象本身的一个属性。默认所有operation都拥有“普通”优先级，不过你可以通过 setQueuePriority: 方法来提升或降低operation对象的优先级。</p>
-<p>优先级只能应用于相同queue中的operations。如果应用有多个operation queue，每个queue的优先级等级是互相独立的。因此不同queue中的低优先级操作仍然可能比高优先级操作更早执行。</p>
-<p>优先级不能替代依赖关系，优先级只是queue对已经准备好的operations确定执行顺序。先满足依赖关系，然后再根据优先级从所有准备好的操作中选择优先级最高的那个执行。</p>
-<p>修改底层线程的优先级</p>
-<p>Mac OS X 10.6之后，我们可以配置operation底层线程的执行优先级，线程直接由内核管理，通常优先级高的线程会给予更多的执行机会。对于operation对象，你指定线程优先级为0.0到1.0之间的某个数值，0.0表示最低优先级，1.0表示最高优先级。默认线程优先级为0.5</p>
-<p>要设置operation的线程优先级，你必须在将operation添加到queue之前，调用 setThreadPriority: 方法进行设置。当queue执行该operation时，默认的start方法会使用你指定的值来修改当前线程的优先级。不过新的线程优先级只在operation的main方法范围内有效。其它所有代码仍然(包括completion block)运行在默认线程优先级。</p>
-<p>如果你创建了并发operation，并覆盖了start方法，你必须自己配置线程优先级。</p>
-<p>设置一个completion block</p>
-<p>在Mac OS X 10.6之后，operation可以在主任务完成之后执行一个completion block。你可以使用这个completion block来执行任何不属于主任务的工作。例如你可以使用这个block来通知相关的client，操作已经执行完成。而并发operation对象则可以使用这个block来产生最终的KVO通知。</p>
-<p>调用 NSOperation 的 setCompletionBlock: 方法来设置一个completion block，你传递的block应该没有参数和返回值。</p>
-<p>实现Operation对象的技巧</p>
-<p>Operation对象的内存管理</p>
-<p>operation对象需要良好的内存管理策略</p>
-<p>创建你自己的Autorelease Pool</p>
-<p>operation是Objective-C对象，你在实现任务的代码中应该创建一个autorelease pool，这样可以保护那些autorelease对象得到尽快地释放。虽然你的自定义代码执行时可能已经有了一个pool，但你不能依赖于这个行为，总是应该自己创建一个。</p>
-<p>拥有自己的autorelease pool还能更加灵活地管理operation的内存。如果operation创建大量的临时对象，则可以考虑创建额外的pool，来清理不再使用的临时对象。在iOS<strong>*</strong>别需要注意，应迟早地清理不再使用的临时对象，避免内存警告。</p>
-<ul>
-<li>(void)main {<br>@try {<br>NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init]; </li>
-</ul>
-<p>// Do the main work of the operation here. </p>
-<p>[pool release];<br>}<br>@catch(…) {<br>// Do not rethrow exceptions.<br>}<br>}<br>避免Per-Thread存储</p>
-<p>虽然多数operation都在线程中执行，但对于非并发operation，通常由operation queue提供线程，这时候queue拥有该线程，而你的应用不应该去动这个线程。特别是不要关联任何数据到不是你创建和拥有的线程。这些线程由queue管理，根据系统和应用的需求创建或销毁。因此使用Per-Thread storage在operations之间传递数据是不可靠的，而且很有可能会失败。</p>
-<p>对于operation对象，你完全没有理由使用Per-Thread Storage，应该在创建对象的时候就给它需要的所有数据。所有输入和输出数据都应该存储在operation对象中，最后再整合到你的应用，或者最终释放掉。</p>
-<p>根据需要保留Operation对象的引用</p>
-<p>由于operation对象异步执行，你不能创建完以后就完全不管。它们也是对象，需要你来分配和释放它们管理的任何资源，特别是如果你需要在operation对象完成后获取其中的数据。</p>
-<p>由于queue总是尽最大可能快速地调度和执行operation，在你添加operation到queue时，可能立即就开始运行，当你稍后向queue请求operation对象的状态时，有可能queue已经执行完了相应的operation并从queue中删除了这个对象。因此你总是应该自己拥有operation对象的引用。</p>
-<p>处理错误和异常</p>
-<p>operation本质上是应用中独立的实体，因此需要自己负责处理所有的错误和异常。NSOperation默认的start方法并没有捕获异常。所以你自己的代码总是应该捕获并抑制异常。你还应该检查错误代码并适当地通知应用。如果你覆盖了start方法，你也必须捕获所有异常，阻止它离开底层线程的范围。</p>
-<p>你需要准备好处理以下错误或异常：</p>
-<p>检查并处理UNIX errno风格的错误代码</p>
-<p>检查方法或函数显式返回的错误代码</p>
-<p>捕获你的代码或系统frameworks抛出的异常</p>
-<p>捕获NSOperation类自己抛出的异常，在以下情况NSOperation会抛出异常：</p>
-<p>operation没有准备好，但是调用了start方法</p>
-<p>operation正在执行或已经完成(可能被取消)，再次调用了start方法。</p>
-<p>当你添加completion block到正在执行或已经完成的operation</p>
-<p>当你试图获取已经取消 NSInvocationOperation 对象的结果</p>
-<p>为Operation对象确定一个适当的范围</p>
-<p>和任何对象一样，NSOperation对象也会消耗内存，执行时也会带来开销。因此如果operation对象只做很少的工作，但是却创建成千上万个小的operation对象，你就会发现更多的时间花在了调度operations而不是执行它们。</p>
-<p>要高效地使用Operations，关键是在Operation执行的工作量和保持计算机繁忙之间，找到最佳的平衡。确保每个Operation都有一定的工作量可以执行。例如100个operations执行100次相同任务，可以考虑换成10个operations，每个执行10次。</p>
-<p>你同样要避免向一个queue中添加过多的operations，或者持续快速地向queue中添加operation，超过queue所能处理的能力。这里可以考虑分批创建operations对象，在一批对象执行完之后，使用completion block告诉应用创建下一批operations对象。</p>
-<p>执行Operations</p>
-<p>应用需要执行Operations来处理相关的工作，你有几种方法来执行Operations对象。</p>
-<p>添加Operations到Operation Queue</p>
-<p>执行Operations最简单的方法是添加到operation queue，后者是 NSOperationQueue 对象。应用负责创建和维护自己使用的所有 NSOperationQueue 对象。</p>
-<p>NSOperationQueue* aQueue = [[NSOperationQueue alloc] init];<br>调用 addOperation: 方法添加一个operation到queue，Mac OS X 10.6之后可以使用 addOperations:waitUntilFinished: 方法一次添加一组operations，或者也可以直接使用 addOperationWithBlock: 方法添加 block 对象到queue。</p>
-<p>[aQueue addOperation:anOp]; // Add a single operation<br>[aQueue addOperations:anArrayOfOps waitUntilFinished:NO]; // Add multiple operations<br>[aQueue addOperationWithBlock:^{<br>/<em> Do something. </em>/<br>}];<br>Operations添加到queue后，通常短时间内就会得到运行。但是如果存在依赖，或者Operations挂起等原因，也可能需要等待。</p>
-<p>注意Operations添加到queue之后，绝对不要再修改Operations对象。因为Operations对象可能会在任何时候运行，因此改变依赖或数据会产生不利的影响。你只能通过 NSOperation 的方法来查看操作的状态，是否正在运行、等待运行、已经完成等。</p>
-<p>虽然 NSOperationQueue 类设计用于并发执行Operations，你也可以强制单个queue一次只能执行一个Operation。setMaxConcurrentOperationCount: 方法可以配置operation queue的最大并发操作数量。设为1就表示queue每次只能执行一个操作。不过operation执行的顺序仍然依赖于其它因素，像操作是否准备好和优先级等。因此串行化的operation queue并不等同于Grand Central Dispatch中的串行dispatch queue。</p>
-<p>手动执行Operations</p>
-<p>手动执行Operation，要求Operation已经准备好，isReady返回YES，此时你才能调用start方法来执行它。isReady方法与Operations依赖是结合在一起的。</p>
-<p>调用start而不是main来手动执行Operation，因为start在执行你的自定义代码之前，会首先执行一些安全检查。而且start还会产生KVO通知，以正确地支持Operations的依赖机制。start还能处理Operations已经被取消的情况，此时会抛出一个异常。</p>
-<p>手动执行Operation对象之前，还需要调用 isConcurrent 方法，如果返回NO，你的代码可以决定在当前线程同步执行这个Operation，或者创建一个独立的线程以异步执行。</p>
-<p>下面方法演示了手动执行Operation，如果这个方法返回NO，表示不能执行，你需要设置一个定时器，稍后再次调用本方法，直到这个方法返回YES，表示已经执行Operation。</p>
-<ul>
-<li>(BOOL)performOperation:(NSOperation*)anOp<br>{<br>BOOL        ranIt = NO; </li>
-</ul>
-<p>if ([anOp isReady] &amp;&amp; ![anOp isCancelled])<br>{<br>if (![anOp isConcurrent])<br>[anOp start];<br>else<br>[NSThread detachNewThreadSelector:@selector(start)<br>toTarget:anOp withObject:nil];<br>ranIt = YES;<br>}<br>else if ([anOp isCancelled])<br>{<br>// If it was canceled before it was started,<br>//  move the operation to the finished state.<br>[self willChangeValueForKey:@”isFinished”];<br>[self willChangeValueForKey:@”isExecuting”];<br>executing = NO;<br>finished = YES;<br>[self didChangeValueForKey:@”isExecuting”];<br>[self didChangeValueForKey:@”isFinished”]; </p>
-<p>// Set ranIt to YES to prevent the operation from<br>// being passed to this method again in the future.<br>ranIt = YES;<br>}<br>return ranIt;<br>}<br>取消Operations</p>
-<p>一旦添加到operation queue，queue就拥有了这个对象并且不能被删除，唯一能做的事情是取消。你可以调用Operation对象的cancel方法取消单个操作，也可以调用operation queue的 cancelAllOperations 方法取消当前queue中的所有操作。</p>
-<p>只有你确定不再需要Operations对象时，才应该取消它。发出取消命令会将Operations对象设置为”Canceled”状态，会阻止它被执行。由于取消也被认为是完成，依赖于它的其它Operations对象会收到适当的KVO通知，并清除依赖状态，然后得到执行。</p>
-<p>因此常见的做法是当发生重大事件时，一次性取消queue中的所有操作，例如应用退出或用户请求取消操作。</p>
-<p>等待Operations完成</p>
-<p>为了最佳的性能，你应该尽量设计你的应用尽可能地异步操作，让应用在操作正在执行时可以去处理其它事情。</p>
-<p>如果创建operation的代码需要处理operation完成后的结果，可以使用 NSOperation 的 waitUntilFinished 方法等待operation完成。通常我们应该避免编写这样的代码，阻塞当前线程可能是一种简便的解决方案，但是它引入了更多的串行代码，限制了整个应用的并发性，同时也降低了用户体验。</p>
-<p>绝对不要在应用主线程中等待一个Operation，只能在第二或次要线程中等待。阻止主线程将导致应用无法响应用户事件，应用也将表现为无响应。</p>
-<p>除了等待单个Operation完成，你也可以同时等待一个queue中的所有操作，使用 NSOperationQueue 的 waitUntilAllOperationsAreFinished 方法。注意在等待一个queue时，应用的其它线程仍然可以往queue中添加Operation，因此可能加长你线程的等待时间。</p>
-<p>挂起和继续Queue</p>
-<p>如果你想临时挂起Operations的执行，可以使用 setSuspended: 方法暂停相应的queue。不过挂起一个queue不会导致正在执行的Operation在任务中途暂停，只是简单地阻止调度新Operation执行。你可以在响应用户请求时，挂起一个queue，来暂停等待中的任务。稍后根据用户的请求，可以再次调用 setSuspended: 方法继续Queue中操作的执行。</p>
-<p>Dispatch Queues</p>
-<p>dispatch queues是执行任务的强大工具，允许你同步或异步地执行任意代码block。原先使用单独线程执行的所有任务都可以替换为使用dispatch queues。而dispatch queues最大的优点在于使用简单，而且更加高效。</p>
-<p>dispatch queues任务的概念就是应用需要执行的一些工作，如计算、创建或修改数据结构、处理数据等等。我们使用函数或block对象来定义任务，并添加到dispatch queue。</p>
-<p>dispatch queue是类似于对象的结构体，管理你提交给它的任务，而且都是先进先出的数据结构。因此queue中的任务总是以添加的顺序开始执行。Grand Central Disaptch提供了几种dispatch queues，不过你也自己创建。</p>
-<p>类型    描述<br>串行    也称为private dispatch queue，每次只执行一个任务，按任务添加顺序执行。当前正在执行的任务在独立的线程中运行（不同任务的线程可能不同），dispatch queue管理了这些线程。通常串行queue主要用于对特定资源的同步访问。<br>你可以创建任意数量的串行queues，虽然每个queue本身每次只能执行一个任务，但是各个queue之间是并发执行的。<br>并发    也称为global dispatch queue，可以并发执行一个或多个任务，但是任务仍然是以添加到queue的顺序启动。每个任务运行于独立的线程中，dispatch queue管理所有线程。同时运行的任务数量随时都会变化，而且依赖于系统条件。<br>你不能创建并发dispatch queues。相反应用只能使用三个已经定义好的全局并发queues。<br>Main dispatch queue    全局可用的串行queue，在应用主线程中执行任务。这个queue与应用的 run loop 交叉执行。由于它运行在应用的主线程，main queue通常用于应用的关键同步点。<br>虽然你不需要创建main dispatch queue，但你必须确保应用适当地回收<br>应用使用dispatch queue，相比线程有很多优点，最直接的优点是简单，不用编写线程创建和管理的代码，让你集中精力编写实际工作的代码。另外系统管理线程更加高效，并且可以动态调控所有线程。</p>
-<p>dispatch queue比线程具有更强的可预测性，例如两个线程访问共享资源，你可能无法控制哪个线程先后访问;但是把两个任务添加到串行queue，则可以确保两个任务对共享资源的访问顺序。同时基于queue的同步也比基于锁的线程同步机制更加高效。</p>
-<p>应用有效地使用dispatch queue，要求尽可能地设计自包含、可以异步执行的任务。</p>
-<p>dispatch queues的几个关键点：</p>
-<p>dispatch queues相对其它dispatch queues并发地执行任务，串行化任务只能在同一个dispatch queue中实现。</p>
-<p>系统决定了同时能够执行的任务数量，应用在100个不同的queues中启动100个任务，并不表示100个任务全部都在并发地执行(除非系统拥有100或更多个核)</p>
-<p>系统在选择执行哪个任务时，会考虑queue的优先级。</p>
-<p>queue中的任务必须在任何时候都准备好运行，注意这点和Operation对象不同。</p>
-<p>private dispatch queue是引用计数的对象。你的代码中需要retain这些queue，另外dispatch source也可能添加到一个queue，从而增加retain的计数。因此你必须确保所有dispatch source都被取消，而且适当地调用release。</p>
-<p>Queue相关的技术</p>
-<p>除了dispatch queue，Grand Central Disaptch还提供几个相关的技术，使用queue来帮助你管理代码。</p>
-<p>技术    描述<br>Dispatch group    用于监控一组block对象完成（你可以同步或异步地监控block）。Group提供了一个非常有用的同步机制，你的代码可以等待其它任务的完成<br>Dispatch semaphore    类似于传统的semaphore（信号量），但是更加高效。只有当调用线程由于信号量不可用，需要阻塞时，Dispatch semaphore才会去调用内核。如果信号量可用，就不会与内核进行交互。使用信号量可以实现对有限资源的访问控制<br>Dispatch source    Dispatch source在特定类型的系统事件发生时，会产生通知。你可以使用dispatch source来监控各种事件，如：进程通知、信号、描述符事件、等等。当事件发生时，dispatch source异步地提交你的任务到指定的dispatch queue，来进行处理。使用Block实现任务<br>Block可以非常容易地定义“自包含”的工作单元，尽管看上去非常类似于函数指针，block实际上由底层数据结构来表示，由编译器负责创建和管理。编译器对你的代码(和所有相关的数据)进行打包，封装为可以存在于堆中的格式，并在你的应用各个地方传递。</p>
-<p>Block最关键的优点能够使用own lexical scope之外的变量，在函数或方法内部定义一个block时，block可以直接读取父scope中的变量。block访问的变量全部被拷贝到block在堆中的数据结构，这样block就能在稍后自由地访问这些变量。当block被添加到dispatch queue中时，这些变量通常是只读格式的。不过同步执行的Block对象，可以使用那些定义为__block的变量，对这些变量的修改会影响到调用scope。</p>
-<p>Block的简单用法：</p>
-<p>int x = 123;<br>int y = 456; </p>
-<p>// Block declaration and assignment<br>void (^aBlock)(int) = ^(int z) {<br>    printf(“%d %d %d\n”, x, y, z);<br>}; </p>
-<p>// Execute the block<br>aBlock(789);   // prints: 123 456 789 </p>
-<p>设计Block时需考虑以下关键指导方针：</p>
-<p>对于使用dispatch queue的异步Block，可以在Block中安全地捕获和使用父函数或方法中的scalar变量。但是Block不应该去捕获大型结构体或其它基于指针的变量，这些变量由Block的调用上下文分配和删除。在你的Block被执行时，这些指针引用的内存可能已经不存在。当然，你自己显式地分配内存(或对象)，然后让Block拥有这些内存的所有权，是安全可行的。</p>
-<p>Dispatch queue对添加的Block会进行复制，在完成执行后自动释放。换句话说，你不需要在添加Block到Queue时显式地复制</p>
-<p>尽管Queue执行小任务比原始线程更加高效，仍然存在创建Block和在Queue中执行的开销。如果Block做的事情太少，可能直接执行比dispatch到queue更加有效。使用性能工具来确认Block的工作是否太少</p>
-<p>绝对不要针对底层线程缓存数据，然后期望在不同Block中能够访问这些数据。如果相同queue中的任务需要共享数据，应该使用dispatch queue的context指针来存储这些数据。</p>
-<p>如果Block创建了大量Objective-C对象，考虑创建自己的autorelease pool，来处理这些对象的内存管理。虽然dispatch queue也有自己的autorelease pool，但不保证在什么时候会回收这些pool。</p>
-<p>创建和管理Dispatch Queue</p>
-<p>获得全局并发Dispatch Queue</p>
-<p>并发dispatch queue可以同时并行地执行多个任务，不过并发queue仍然按先进先出的顺序来启动任务，并发queue会在之前任务完成之前就出列下一个任务并启动执行。并发queue同时执行的任务数量会根据应用和系统动态变化，各种因素包括：可用核数量、其它进程正在执行的工作数量、其它串行dispatch queue中优先任务的数量等。</p>
-<p>系统给每个应用提供三个并发dispatch queue，所有应用全局共享，三个queue的区别是优先级。你不需要显式地创建这些queue，使用 dispatch_get_global_queue 函数来获取这三个queue：</p>
-<p>dispatch_queue_t aQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);<br>除了默认优先级的并发queue，你还可以获得高和低优先级的两个，分别使用 DISPATCH_QUEUE_PRIORITY_HIGH 和 DISPATCH_QUEUE_PRIORITY_LOW 常量来调用上面函数。</p>
-<p>虽然dispatch queue是引用计数的对象，但你不需要retain和release全局并发queue。因为这些queue对应用是全局的，retain和release调用会被忽略。</p>
-<p>你也不需要存储这三个queue的引用，每次都直接调用 dispatch_get_global_queue 获得queue就行了。</p>
-<p>创建串行Dispatch Queue</p>
-<p>应用的任务需要按特定顺序执行时，就需要使用串行Dispatch Queue，串行queue每次只能执行一个任务。你可以使用串行queue来替代锁，保护共享资源或可变的数据结构。和锁不一样的是，串行queue确保任务按可预测的顺序执行。而且只要你异步地提交任务到串行queue，就永远不会产生死锁。</p>
-<p>你必须显式地创建和管理所有你使用的串行queue，应用可以创建任意数量的串行queue，但不要为了同时执行更多任务而创建更多的串行queue。如果你需要并发地执行大量任务，应该把任务提交到全局并发Queue。</p>
-<p>创建串行queue时，你需要明确自己的目的，如保护共享资源，或同步应用的某些关键行为。</p>
-<p>dispatch_queue_create 函数创建串行queue，两个参数分别是queue名和一组queue属性。调试器和性能工具会显示queue的名字，便于你跟踪任务的执行。</p>
-<p>dispatch_queue_t queue;<br>queue = dispatch_queue_create(“com.example.MyQueue”, NULL);<br>运行时获得公共Queue</p>
-<p>Grand Central Disaptch提供函数，让应用访问几个公共dispatch queue：</p>
-<p>使用 dispatch_get_current_queue 函数作为调试用途，或者测试当前queue的标识。在block对象中调用这个函数会返回block提交到的queue(这个时候queue应该正在执行中)。在block对象之外调用这个函数会返回应用的默认并发queue。</p>
-<p>使用 dispatch_get_main_queue 函数获得应用主线程关联的串行dispatch queue。Cocoa 应用、调用了 dispatch_main 函数或配置了run loop(CFRunLoopRef 类型 或一个 NSRunLoop 对象)的应用，会自动创建这个queue。</p>
-<p>使用 dispatch_get_global_queue 来获得共享的并发queue</p>
-<p>Dispatch Queue的内存管理</p>
-<p>Dispatch Queue和其它dispatch对象都是引用计数的数据类型。当你创建一个串行dispatch queue时，初始引用计数为1，你可以使用 dispatch_retain 和 dispatch_release 函数来增加和减少引用计数。当引用计数到达0时，系统会异步地销毁这个queue。</p>
-<p>对dispatch对象(如queue)retain和release是很重要的，确保它们被使用时能够保留在内存中。和内存托管的Cocoa对象一样，通用的规则是如果你使用一个传递给你代码中的queue，你应该在使用前retain，使用完之后release。</p>
-<p>你不需要retain或release全局dispatch queue，包括全局并发 dispatch queue和main dispatch queue。</p>
-<p>即使你实现的是自动垃圾收集的应用，也需要retain和release你的dispatch queue和其它dispatch对象。Grand Central Disaptch不支持垃圾收集模型来回收内存。</p>
-<p>在Queue中存储自定义上下文信息</p>
-<p>所有dispatch对象(包括dispatch queue)都允许你关联custom context data。使用 dispatch_set_context 和 dispatch_get_context 函数来设置和获取对象的上下文数据。系统不会使用你的上下文数据，所以需要你自己在适当的时候分配和销毁这些数据。</p>
-<p>对于Queue，你可以使用上下文数据来存储一个指针，指向Objective-C对象或其它数据结构，协助标识这个queue或代码的其它用途。你可以使用queue的finalizer函数来销毁(或解除关联)上下文数据。</p>
-<p>为Queue提供一个清理函数</p>
-<p>在创建串行dispatch queue之后，可以附加一个finalizer函数，在queue被销毁之前执行自定义的清理操作。使用 dispatch_set_finalizer_f 函数为queue指定一个清理函数，当queue的引用计数到达0时，就会执行该清理函数。你可以使用清理函数来解除queue关联的上下文数据，而且只有上下文指针不为NULL时才会调用这个清理函数。</p>
-<p>下面例子演示了自定义finalizer函数的使用，你需要自己提供 myInitializeDataContextFunction 和 myCleanUpDataContextFunction 函数，用于初始化和清理上下文数据。</p>
-<p>void myFinalizerFunction(void <em>context)<br>{<br>    MyDataContext</em> theData = (MyDataContext*)context; </p>
-<pre><code><span class="comment">// Clean up the contents of the structure </span>
-<span class="function">myCleanUpDataContextFunction</span>(theData); 
-
-<span class="comment">// Now release the structure itself. </span>
-<span class="function">free</span>(theData); 
-</code></pre><p>} </p>
-<p>dispatch_queue_t createMyQueue()<br>{<br>    MyDataContext<em>  data = (MyDataContext</em>) malloc(sizeof(MyDataContext));<br>    myInitializeDataContextFunction(data); </p>
-<pre><code><span class="comment">// Create the queue and set the context data. </span>
-dispatch_queue_t serialQueue <span class="subst">=</span> dispatch_queue_create(<span class="string">"com.example.CriticalTaskQueue"</span>, <span class="built_in">NULL</span>); 
-<span class="keyword">if</span> (serialQueue) 
-{ 
-    dispatch_set_context(serialQueue, <span class="built_in">data</span>); 
-    dispatch_set_finalizer_f(serialQueue, <span class="subst">&amp;</span>myFinalizerFunction); 
-} 
-
-<span class="keyword">return</span> serialQueue; 
-</code></pre><p>}<br>添加任务到Queue</p>
-<p>要执行一个任务，你需要将它dispatch到一个适当的dispatch queue，你可以同步或异步地dispatch一个任务，也可以单个或按组来dispatch。一旦进入到queue，queue会负责尽快地执行你的任务。</p>
-<p>添加单个任务到Queue</p>
-<p>你可以异步或同步地添加一个任务到Queue，尽可能地使用 dispatch_async 或 dispatch_async_f 函数异步地dispatch任务。因为添加任务到Queue中时，无法确定这些代码什么时候能够执行。因此异步地添加block或函数，可以让你立即调度这些代码的执行，然后调用线程可以继续去做其它事情。</p>
-<p>特别是应用主线程一定要异步地dispatch任务，这样才能及时地响应用户事件。</p>
-<p>少数时候你可能希望同步地dispatch任务，以避免竞争条件或其它同步错误。使用 dispatch_sync 和 dispatch_sync_f 函数同步地添加任务到Queue，这两个函数会阻塞，直到相应任务完成执行。</p>
-<p>绝对不要在任务中调用 dispatch_sync 或 dispatch_sync_f 函数，并同步dispatch新任务到当前正在执行的queue。对于串行queue这一点特别重要，因为这样做肯定会导致死锁;而并发queue也应该避免这样做。</p>
-<p>dispatch_queue_t myCustomQueue;<br>myCustomQueue = dispatch_queue_create(“com.example.MyCustomQueue”, NULL); </p>
-<p>dispatch_async(myCustomQueue, ^{<br>    printf(“Do some work here.\n”);<br>}); </p>
-<p>printf(“The first block may or may not have run.\n”); </p>
-<p>dispatch_sync(myCustomQueue, ^{<br>    printf(“Do some more work here.\n”);<br>});<br>printf(“Both blocks have completed.\n”);<br>任务完成时执行Completion Block</p>
-<p>dispatch到queue中的任务，通常与创建任务的代码独立运行。在任务完成时，应用可能希望得到通知并使用任务完成的结果数据。在传统的异步编程模型中，你可能会使用回调机制，不过dispatch queue允许你使用Completion Block。</p>
-<p>Completion Block是你dispatch到queue的另一段代码，在原始任务完成时自动执行。调用代码在启动任务时通过参数提供Completion Block。任务代码只需要在完成工作时提交指定的Block或函数到指定的queue。</p>
-<p>下面代码使用block实现了平均数，最后两个参数允许调用方指定一个queue和报告结果的block。在平均数函数完成计算后，会传递结果到指定的block，并dispatch到指定的queue。为了防止queue被过早地释放，必须首先retain这个queue，然后在dispatch这个Completion Block之后，再release这个queue。</p>
-<p>void average_async(int *data, size_t len,<br>   dispatch_queue_t queue, void (^block)(int))<br>{<br>   // Retain the queue provided by the user to make<br>   // sure it does not disappear before the completion<br>   // block can be called.<br>   dispatch_retain(queue); </p>
-<p>   // Do the work on the default concurrent queue and then<br>   // call the user-provided block with the results.<br>   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{<br>      int avg = average(data, len);<br>      dispatch_async(queue, ^{ block(avg);}); </p>
-<pre><code>// <span class="operator"><span class="keyword">Release</span> the <span class="keyword">user</span>-provided queue <span class="keyword">when</span> done 
-dispatch_release(queue);</span> 
-</code></pre><p>   });<br>}<br>并发地执行Loop Iteration</p>
-<p>如果你使用循环执行固定次数的迭代，并发dispatch queue可能会提高性能。例如下面for循环：</p>
-<p>for (i = 0; i &lt; count; i++) {<br>   printf(“%u\n”,i);<br>}<br>如果每次迭代执行的任务与其它迭代独立无关，而且循环迭代执行顺序也无关紧要的话，你可以调用 dispatch_apply 或 dispatch_apply_f 函数来替换循环。这两个函数为每次循环迭代将指定的block或函数提交到queue。当dispatch到并发queue时，就有可能同时执行多个循环迭代。</p>
-<p>调用 dispatch_apply 或 dispatch_apply_f 时你可以指定串行或并发queue。并发queue允许同时执行多个循环迭代，而串行queue就没太大必要使用了。</p>
-<p>和普通for循环一样，dispatch_apply 和 dispatch_apply_f 函数也是在所有迭代完成之后才会返回。因此在queue上下文执行的代码中再次调用这两个函数时，必须非常小心。如果你传递的参数是串行queue，而且正是执行当前代码的Queue，就会产生死锁。</p>
-<p>另外这两个函数还会阻塞当前线程，因此在主线程中调用这两个函数同样必须小心，可能会阻止事件处理循环并无法响应用户事件。所以如果循环代码需要一定的时间执行，你可以考虑在另一个线程中调用这两个函数。</p>
-<p>下面代码使用 dispatch_apply 替换了for循环，你传递的block必须包含一个参数，用来标识当前循环迭代。第一次迭代这个参数值为0，第二次时为1，最后一次值为count - 1。</p>
-<p>dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0); </p>
-<p>dispatch_apply(count, queue, ^(size_t i) {<br>   printf(“%u\n”,i);<br>});<br>循环迭代执行的工作量需要仔细平衡，太多的话会降低响应性;太少则会影响整体性能，因为调度的开销大于实际执行代码。</p>
-<p>在主线程中执行任务</p>
-<p>Grand Central Disaptch提供一个特殊dispatch queue，可以在应用的主线程中执行任务。应用主线程设置了run loop(由CFRunLoopRef 类型或 NSRunLoop 对象管理)，就会自动创建这个queue，并且自动drain。非Cocoa应用如果不显式地设置run loop，就必须显式地调用dispatch_main 函数来显式地drain这个dispatch queue。否则虽然你可以添加任务到queue，但任务永远不会被执行。</p>
-<p>调用 dispatch_get_main_queue 函数获得应用主线程的dispatch queue。添加到这个queue的任务由主线程串行化执行，因此你可以在应用的某些地方使用这个queue作为同步点。</p>
-<p>任务中使用Objective-C对象</p>
-<p>Grand Central Disaptch支持Cocoa内存管理机制，因此可以在提交到queue的block中自由地使用Objective-C对象。每个dispatch queue维护自己的autorelease pool确保释放autorelease对象，但是queue不保证这些对象实际释放的时间。在自动垃圾收集的应用中，Grand Central Disaptch会在垃圾收集系统中注册自己创建的每个线程。</p>
-<p>如果应用消耗大量内存，并且创建大量autorelease对象，你需要创建自己的autorelease pool，用来及时地释放不再使用的对象。</p>
-<p>挂起和继续queue</p>
-<p>我们可以暂停一个queue以阻止它执行block对象，使用 dispatch_suspend 函数挂起一个dispatch queue;使用 dispatch_resume 函数继续dispatch queue。调用 dispatch_suspend 会增加queue的引用计数，调用 dispatch_resume 则减少queue的引用计数。当引用计数大于0时，queue就保持挂起状态。因此你必须对应地调用suspend和resume函数。</p>
-<p>挂起和继续是异步的，而且只在执行block之间生效。挂起一个queue不会导致正在执行的block停止。</p>
-<p>使用Dispatch Semaphore控制有限资源的使用</p>
-<p>如果提交到dispatch queue中的任务需要访问某些有限资源，可以使用dispatch semaphore来控制同时访问这个资源的任务数量。dispatch semaphore和普通的信号量类似，唯一的区别是当资源可用时，需要更少的时间来获得dispatch semaphore。</p>
-<p>使用dispatch semaphore的过程如下：</p>
-<p>使用 dispatch_semaphore_create 函数创建semaphore，指定正数值表示资源的可用数量。</p>
-<p>在每个任务中，调用 dispatch_semaphore_wait 来等待Semaphore</p>
-<p>当上面调用返回时，获得资源并开始工作</p>
-<p>使用完资源后，调用 dispatch_semaphore_signal 函数释放和signal这个semaphore</p>
-<p>// Create the semaphore, specifying the initial pool size<br>dispatch_semaphore_t fd_sema = dispatch_semaphore_create(getdtablesize() / 2); </p>
-<p>// Wait for a free file descriptor<br>dispatch_semaphore_wait(fd_sema, DISPATCH_TIME_FOREVER);<br>fd = open(“/etc/services”, O_RDONLY); </p>
-<p>// Release the file descriptor when done<br>close(fd);<br>dispatch_semaphore_signal(fd_sema);<br>等待queue中的一组任务</p>
-<p>Dispatch group用来阻塞一个线程，直到一个或多个任务完成执行。有时候你必须等待任务完成的结果，然后才能继续后面的处理。dispatch group也可以替代线程join。</p>
-<p>基本的流程是设置一个组，dispatch任务到queue，然后等待结果。你需要使用 dispatch_group_async 函数，会关联任务到相关的组和queue。使用 dispatch_group_wait 等待一组任务完成。</p>
-<p>dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);<br>dispatch_group_t group = dispatch_group_create(); </p>
-<p>// Add a task to the group<br>dispatch_group_async(group, queue, ^{<br>   // Some asynchronous work<br>}); </p>
-<p>// Do some other work while the tasks execute. </p>
-<p>// When you cannot make any more forward progress,<br>// wait on the group to block the current thread.<br>dispatch_group_wait(group, DISPATCH_TIME_FOREVER); </p>
-<p>// Release the group when it is no longer needed.<br>dispatch_release(group);<br>Dispatch Queue和线程安全性</p>
-<p>使用Dispatch Queue实现应用并发时，也需要注意线程安全性：</p>
-<p>Dispatch queue本身是线程安全的。换句话说，你可以在应用的任意线程中提交任务到dispatch queue，不需要使用锁或其它同步机制。</p>
-<p>不要在执行任务代码中调用 dispatch_sync 函数调度相同的queue，这样做会死锁这个queue。如果你需要dispatch到当前queue，需要使用 dispatch_async 函数异步调度</p>
-<p>避免在提交到dispatch queue的任务中获得锁，虽然在任务中使用锁是安全的，但在请求锁时，如果锁不可用，可能会完全阻塞串行queue。类似的，并发queue等待锁也可能阻止其它任务的执行。如果代码需要同步，就使用串行dispatch queue。</p>
-<p>虽然可以获得运行任务的底层线程的信息，最好不要这样做。</p>
-<p>Dispatch Sources</p>
-<p>现代系统通常提供异步接口，允许应用向系统提交请求，然后在系统处理请求时应用可以继续处理自己的事情。Grand Central Dispatch正是基于这个基本行为而设计，允许你提交请求，并通过block和dispatch queue报告结果。</p>
-<p>dispatch source是基础数据类型，协调特定底层系统事件的处理。Grand Central Dispatch支持以下dispatch source：</p>
-<p>Timer dispatch source：定期产生通知</p>
-<p>Signal dispatch source：UNIX信号到达时产生通知</p>
-<p>Descriptor dispatch source：各种文件和socket操作的通知</p>
-<p>数据可读</p>
-<p>数据可写</p>
-<p>文件在文件系统中被删除、移动、重命名</p>
-<p>文件元数据信息改变</p>
-<p>Process dispatch source：进程相关的事件通知</p>
-<p>当进程退出时</p>
-<p>当进程发起fork或exec等调用</p>
-<p>信号被递送到进程</p>
-<p>Mach port dispatch source：Mach相关事件的通知</p>
-<p>Custom dispatch source：你自己定义并自己触发</p>
-<p>Dispatch source替代了异步回调函数，来处理系统相关的事件。当你配置一个dispatch source时，你指定要监测的事件、dispatch queue、以及处理事件的代码(block或函数)。当事件发生时，dispatch source会提交你的block或函数到指定的queue去执行</p>
-<p>和手工提交到queue的任务不同，dispatch source为应用提供连续的事件源。除非你显式地取消，dispatch source会一直保留与dispatch queue的关联。只要相应的事件发生，就会提交关联的代码到dispatch queue去执行。</p>
-<p>为了防止事件积压到dispatch queue，dispatch source实现了事件合并机制。如果新事件在上一个事件处理器出列并执行之前到达，dispatch source会将新旧事件的数据合并。根据事件类型的不同，合并操作可能会替换旧事件，或者更新旧事件的信息。</p>
-<p>创建Dispatch Source</p>
-<p>创建dispatch source需要同时创建事件源和dispatch source本身。事件源是处理事件所需要的native数据结构，例如基于描述符的dispatch source，你需要打开描述符;基于进程的事件，你需要获得目标程序的进程ID。</p>
-<p>然后可以如下创建相应的dispatch source：</p>
-<p>使用 dispatch_source_create 函数创建dispatch source</p>
-<p>配置dispatch source：</p>
-<p>为dispatch source设置一个事件处理器</p>
-<p>对于定时器源，使用 dispatch_source_set_timer 函数设置定时器信息</p>
-<p>为dispatch source赋予一个取消处理器(可选)调用 dispatch_resume 函数开始处理事件由于dispatch source必须进行额外的配置才能被使用，dispatch_source_create 函数返回的dispatch source将处于挂起状态。此时dispatch source会接收事件，但是不会进行处理。这时候你可以安装事件处理器，并执行额外的配置。</p>
-<p>编写和安装一个事件处理器</p>
-<p>你需要定义一个事件处理器来处理事件，可以是函数或block对象，并使用 dispatch_source_set_event_handler 或 dispatch_source_set_event_handler_f 安装事件处理器。事件到达时，dispatch source会提交你的事件处理器到指定的dispatch queue，由queue执行事件处理器。</p>
-<p>事件处理器的代码负责处理所有到达的事件。如果事件处理器已经在queue中并等待处理已经到达的事件，如果此时又来了一个新事件，dispatch source会合并这两个事件。事件处理器通常只能看到最新事件的信息，不过某些类型的dispatch source也能获得已经发生以及合并的事件信息。</p>
-<p>如果事件处理器已经开始执行，一个或多个新事件到达，dispatch source会保留这些事件，直到前面的事件处理器完成执行。然后以新事件再次提交处理器到queue。</p>
-<p>函数事件处理器有一个context指针指向dispatch source对象，没有返回值。Block事件处理器没有参数，也没有返回值。</p>
-<p>// Block-based event handler<br>void (^dispatch_block_t)(void)  </p>
-<p>// Function-based event handler<br>void (<em>dispatch_function_t)(void </em>)<br>在事件处理器中，你可以从dispatch source中获得事件的信息，函数处理器可以直接使用参数指针，Block则必须自己捕获到dispatch source指针，一般block定义时会自动捕获到外部定义的所有变量。</p>
-<p>dispatch_source_t source = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ,<br>                                 myDescriptor, 0, myQueue);<br>dispatch_source_set_event_handler(source, ^{<br>   // Get some data from the source variable, which is captured<br>   // from the parent context.<br>   size_t estimated = dispatch_source_get_data(source); </p>
-<p>   // Continue reading the descriptor…<br>});<br>dispatch_resume(source);<br>Block捕获外部变量允许更大的灵活性和动态性。当然，在Block中这些变量默认是只读的，虽然可以使用__block来修改捕获的变量，但是你最好不要在事件处理器中这样做。因为Dispatch source异步执行事件处理器，当事件处理器修改原始外部变量时，有可能这些变量已经不存在了。</p>
-<p>下面是事件处理器能够获得的事件信息：</p>
-<p>函数    描述<br>dispatch_source_get_handle    这个函数返回dispatch source管理的底层系统数据类型。</p>
-<p>对于描述符dispatch source，函数返回一个int，表示关联的描述符</p>
-<p>对于信号dispatch source，函数返回一个int，表示最新事件的信号数值</p>
-<p>对于进程dispatch source，函数返回一个pid_t数据结构，表示被监控的进程</p>
-<p>对于Mach port dispatch source，函数返回一个 mach_port_t 数据结构</p>
-<p>对于其它dispatch source，函数返回的值未定义<br>dispatch_source_get_data    这个函数返回事件关联的所有未决数据。</p>
-<p>对于从文件中读取数据的描述符dispatch source，这个函数返回可以读取的字节数</p>
-<p>对于向文件中写入数据的描述符dispatch source，如果可以写入，则返回正数值</p>
-<p>对于监控文件系统活动的描述符dispatch source，函数返回一个常量，表示发生的事件类型，参考 dispatch_source_vnode_flags_t 枚举类型</p>
-<p>对于进程dispatch source，函数返回一个常量，表示发生的事件类型，参考 dispatch_source_proc_flags_t 枚举类型</p>
-<p>对于Mach port dispatch source，函数返回一个常量，表示发生的事件类型，参考 dispatch_source_machport_flags_t 枚举类型</p>
-<p>对于自定义dispatch source，函数返回从现有数据创建的新数据，以及传递给 dispatch_source_merge_data 函数的新数据。<br>dispatch_source_get_mask    这个函数返回用来创建dispatch source的事件标志</p>
-<p>对于进程dispatch source，函数返回dispatch source接收到的事件掩码，参考 dispatch_source_proc_flags_t 枚举类型</p>
-<p>对于发送权利的Mach port dispatch source，函数返回期望事件的掩码，参考 dispatch_source_mach_send_flags_t 枚举类型</p>
-<p>对于自定义 “或” 的dispatch source，函数返回用来合并数据值的掩码。<br>安装一个取消处理器</p>
-<p>取消处理器在dispatch soruce释放之前执行清理工作。多数类型的dispatch source不需要取消处理器，除非你对dispatch source有自定义行为需要在释放时执行。但是使用描述符或Mach port的dispatch source必须设置取消处理器，用来关闭描述符或释放Mach port。否则可能导致微妙的bug，这些结构体会被系统其它部分或你的应用在不经意间重用。</p>
-<p>你可以在任何时候安装取消处理器，但通常我们在创建dispatch source时就会安装取消处理器。使用 dispatch_source_set_cancel_handler 或 dispatch_source_set_cancel_handler_f 函数来设置取消处理器。</p>
-<p>下面取消处理器关闭描述符：</p>
-<p>dispatch_source_set_cancel_handler(mySource, ^{<br>   close(fd); // Close a file descriptor opened earlier.<br>});<br>修改目标Queue</p>
-<p>在创建dispatch source时可以指定一个queue，用来执行事件处理器和取消处理器。不过你也可以使用 dispatch_set_target_queue 函数在任何时候修改目标queue。修改queue可以改变执行dispatch source事件的优先级。</p>
-<p>修改dispatch source的目标queue是异步操作，dispatch source会尽可能快地完成这个修改。如果事件处理器已经进入queue并等待处理，它会继续在原来的Queue中执行。随后到达的所有事件的处理器都会在后面修改的queue中执行。</p>
-<p>关联自定义数据到dispatch source</p>
-<p>和Grand Central Dispatch的其它类型一样，你可以使用 dispatch_set_context 函数关联自定义数据到dispatch source。使用context指针存储事件处理器需要的任何数据。如果你在context指针中存储了数据，你就应该安装一个取消处理器，在dispatch source不再需要时释放这些context自定义数据。</p>
-<p>如果你使用block实现事件处理器，你也可以捕获本地变量，并在Block中使用。虽然这样也可以代替context指针，但是你应该明智地使用Block捕获变量。因为dispatch source长时间存在于应用中，Block捕获指针变量时必须非常小心，因为指针指向的数据可能会被释放，因此需要复制数据或retain。不管使用哪种方法，你都应该提供一个取消处理器，在最后释放这些数据。</p>
-<p>Dispatch Source的内存管理</p>
-<p>Dispatch Source也是引用计数的数据类型，初始计数为1，可以使用 dispatch_retain 和 dispatch_release 函数来增加和减少引用计数。引用计数到达0时，系统自动释放dispatch source数据结构。</p>
-<p>dispatch source的所有权可以由dispatch source内部或外部进行管理。外部所有权时，另一个对象拥有dispatch source，并负责在不需要时释放它。内部所有权时，dispatch source自己拥有自己，并负责在适当的时候释放自己。虽然外部所有权很常用，当你希望创建自主dispatch source，并让它自己管理自己的行为时，可以使用内部所有权。例如dispatch source应用单一全局事件时，可以让它自己处理该事件，并立即退出。</p>
-<p>Dispatch Source示例</p>
-<p>创建一个定时器</p>
-<p>定时器dispatch source定时产生事件，可以用来发起定时执行的任务，如游戏或其它图形应用，可以使用定时器来更新屏幕或动画。你也可以设置定时器，并在固定间隔事件中检查服务器的新信息。</p>
-<p>所有定时器dispatch source都是间隔定时器，一旦创建，会按你指定的间隔定期递送事件。你需要为定时器dispatch source指定一个期望的定时器事件精度，也就是leeway值，让系统能够灵活地管理电源并唤醒内核。例如系统可以使用leeway值来提前或延迟触发定时器，使其更好地与其它系统事件结合。创建自己的定时器时，你应该尽量指定一个leeway值。</p>
-<p>就算你指定leeway值为0，也不要期望定时器能够按照精确的纳秒来触发事件。系统会尽可能地满足你的需求，但是无法保证完全精确的触发时间。</p>
-<p>当计算机睡眠时，定时器dispatch source会被挂起，稍后系统唤醒时，定时器dispatch source也会自动唤醒。根据你提供的配置，暂停定时器可能会影响定时器下一次的触发。如果定时器dispatch source使用 dispatch_time 函数或 DISPATCH_TIME_NOW 常量设置，定时器dispatch source会使用系统默认时钟来确定何时触发，但是默认时钟在计算机睡眠时不会继续。</p>
-<p>如果你使用 dispatch_walltime 函数来设置定时器dispatch source，则定时器会根据挂钟时间来跟踪，这种定时器比较适合触发间隔相对比较大的场合，可以防止定时器触发间隔出现太大的误差。</p>
-<p>下面是定时器dispatch source的一个例子，每30秒触发一次，leeway值为1，因为间隔相对较大，使用 dispatch_walltime 来创建定时器。定时器会立即触发第一次，随后每30秒触发一次。 MyPeriodicTask 和 MyStoreTimer 是自定义函数，用于实现定时器的行为，并存储定时器到应用的数据结构。</p>
-<p>dispatch_source_t CreateDispatchTimer(uint64_t interval,<br>              uint64_t leeway,<br>              dispatch_queue_t queue,<br>              dispatch_block_t block)<br>{<br>   dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER,<br>                                                     0, 0, queue);<br>   if (timer)<br>   {<br>      dispatch_source_set_timer(timer, dispatch_walltime(NULL, 0), interval, leeway);<br>      dispatch_source_set_event_handler(timer, block);<br>      dispatch_resume(timer);<br>   }<br>   return timer;<br>} </p>
-<p>void MyCreateTimer()<br>{<br>   dispatch_source_t aTimer = CreateDispatchTimer(30ull <em> NSEC_PER_SEC,<br>                               1ull </em> NSEC_PER_SEC,<br>                               dispatch_get_main_queue(),<br>                               ^{ MyPeriodicTask(); }); </p>
-<p>   // Store it somewhere for later use.<br>    if (aTimer)<br>    {<br>        MyStoreTimer(aTimer);<br>    }<br>}<br>虽然定时器dispatch source是接收时间事件的主要方法，你还可以使用其它选择。如果想在指定时间间隔后执行一个block，可以使用 dispatch_after 或 dispatch_after_f 函数。这两个函数非常类似于dispatch_async，但是只允许你指定一个时间值，时间一到就自动提交block到queue中执行，时间值可以指定为相对或绝对时间。</p>
-<p>从描述符中读取数据</p>
-<p>要从文件或socket中读取数据，需要打开文件或socket，并创建一个 DISPATCH_SOURCE_TYPE_READ 类型的dispatch source。你指定的事件处理器必须能够读取和处理描述符中的内容。对于文件，需要读取文件数据，并为应用创建适当的数据结构;对于网络socket，需要处理最新接收到的网络数据。</p>
-<p>读取数据时，你总是应该配置描述符使用非阻塞操作，虽然你可以使用 dispatch_source_get_data 函数查看当前有多少数据可读，但在你调用它和实际读取数据之间，可用的数据数量可能会发生变化。如果底层文件被截断，或发生网络错误，从描述符中读取会阻塞当前线程，停止在事件处理器中间并阻止dispatch queue去执行其它任务。对于串行queue，这样还可能会死锁，即使是并发queue，也会减少queue能够执行的任务数量。</p>
-<p>下面例子配置dispatch source从文件中读取数据，事件处理器读取指定文件的全部内容到缓冲区，并调用一个自定义函数来处理这些数据。调用方可以使用返回的dispatch source在读取操作完成之后，来取消这个事件。为了确保dispatch queue不会阻塞，这里使用了fcntl函数，配置文件描述符执行非阻塞操作。dispatch source安装了取消处理器，确保最后关闭了文件描述符。</p>
-<p>dispatch_source_t ProcessContentsOfFile(const char* filename)<br>{<br>   // Prepare the file for reading.<br>   int fd = open(filename, O_RDONLY);<br>   if (fd == -1)<br>      return NULL;<br>   fcntl(fd, F_SETFL, O_NONBLOCK);  // Avoid blocking the read operation </p>
-<p>   dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);<br>   dispatch_source_t readSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ,<br>                                   fd, 0, queue);<br>   if (!readSource)<br>   {<br>      close(fd);<br>      return NULL;<br>   } </p>
-<p>   // Install the event handler<br>   dispatch_source_set_event_handler(readSource, ^{<br>      size_t estimated = dispatch_source_get_data(readSource) + 1;<br>      // Read the data into a text buffer.<br>      char<em> buffer = (char</em>)malloc(estimated);<br>      if (buffer)<br>      {<br>         ssize_t actual = read(fd, buffer, (estimated));<br>         Boolean done = MyProcessFileData(buffer, actual);  // Process the data. </p>
-<pre><code>     // <span class="keyword">Release</span> the <span class="keyword">buffer</span> <span class="keyword">when</span> done. 
-     free(<span class="keyword">buffer</span>); 
-
-     // <span class="keyword">If</span> there <span class="keyword">is</span> no more data, cancel the source. 
-     <span class="keyword">if</span> (done) 
-        dispatch_source_cancel(readSource); 
-  } 
-}); 
-</code></pre><p>   // Install the cancellation handler<br>   dispatch_source_set_cancel_handler(readSource, ^{close(fd);}); </p>
-<p>   // Start reading the file.<br>   dispatch_resume(readSource);<br>   return readSource;<br>}<br>在这个例子中，自定义的 MyProcessFileData 函数确定读取到足够的数据，返回YES告诉dispatch source读取已经完成，可以取消任务。通常读取描述符的dispatch source在还有数据可读时，会重复调度事件处理器。如果socket连接关闭或到达文件末尾，dispatch source自动停止调度事件处理器。如果你自己确定不再需要dispatch source，也可以手动取消它。</p>
-<p>向描述符写入数据</p>
-<p>向文件或socket写入数据非常类似于读取数据，配置描述符为写入操作后，创建一个 DISPATCH_SOURCE_TYPE_WRITE 类型的dispatch source，创建好之后，系统会调用事件处理器，让它开始向文件或socket写入数据。当你完成写入后，使用 dispatch_source_cancel 函数取消dispatch source。</p>
-<p>写入数据也应该配置文件描述符使用非阻塞操作，虽然 dispatch_source_get_data 函数可以查看当前有多少可用写入空间，但这个值只是建议性的，而且在你执行写入操作时可能会发生变化。如果发生错误，写入数据到阻塞描述符，也会使事件处理器停止在执行中途，并阻止dispatch queue执行其它任务。串行queue会产生死锁，并发queue则会减少能够执行的任务数量。</p>
-<p>下面是使用dispatch source写入数据到文件的例子，创建文件后，函数传递文件描述符到事件处理器。MyGetData函数负责提供要写入的数据，在数据写入到文件之后，事件处理器取消dispatch source，阻止再次调用。此时dispatch source的拥有者需负责释放dispatch source。</p>
-<p>dispatch_source_t WriteDataToFile(const char* filename)<br>{<br>    int fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC,<br>                      (S_IRUSR | S_IWUSR | S_ISUID | S_ISGID));<br>    if (fd == -1)<br>        return NULL;<br>    fcntl(fd, F_SETFL); // Block during the write. </p>
-<pre><code>dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>); 
-dispatch_<span class="built_in">source</span>_t writeSource = dispatch_<span class="built_in">source</span>_create(DISPATCH_SOURCE_TYPE_WRITE, 
-                        fd, <span class="number">0</span>, queue); 
-<span class="keyword">if</span> (!writeSource) 
-{ 
-    close(fd); 
-    <span class="built_in">return</span> NULL; 
-} 
-
-dispatch_<span class="built_in">source</span>_<span class="built_in">set</span>_event_handler(writeSource, ^{ 
-    size_t bufferSize = MyGetDataSize(); 
-    void* buffer = malloc(bufferSize); 
-
-    size_t actual = MyGetData(buffer, bufferSize); 
-    write(fd, buffer, actual); 
-
-    free(buffer); 
-
-    // Cancel and release the dispatch <span class="built_in">source</span> when done. 
-    dispatch_<span class="built_in">source</span>_cancel(writeSource); 
-}); 
-
-dispatch_<span class="built_in">source</span>_<span class="built_in">set</span>_cancel_handler(writeSource, ^{close(fd);}); 
-dispatch_resume(writeSource); 
-<span class="built_in">return</span> (writeSource); 
-</code></pre><p>}<br>监控文件系统对象</p>
-<p>如果需要监控文件系统对象的变化，可以设置一个 DISPATCH_SOURCE_TYPE_VNODE 类型的dispatch source，你可以从这个dispatch source中接收文件删除、写入、重命名等通知。你还可以得到文件的特定元数据信息变化通知。</p>
-<p>在dispatch source正在处理事件时，dispatch source中指定的文件描述符必须保持打开状态。</p>
-<p>下面例子监控一个文件的文件名变化，并在文件名变化时执行一些操作(自定义的 MyUpdateFileName 函数)。由于文件描述符专门为dispatch source打开，dispatch source安装了取消处理器来关闭文件描述符。这个例子中的文件描述符关联到底层的文件系统对象，因此同一个dispatch source可以用来检测多次文件名变化。</p>
-<p>dispatch_source_t MonitorNameChangesToFile(const char* filename)<br>{<br>   int fd = open(filename, O_EVTONLY);<br>   if (fd == -1)<br>      return NULL; </p>
-<p>   dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);<br>   dispatch_source_t source = dispatch_source_create(DISPATCH_SOURCE_TYPE_VNODE,<br>                fd, DISPATCH_VNODE_RENAME, queue);<br>   if (source)<br>   {<br>      // Copy the filename for later use.<br>      int length = strlen(filename);<br>      char<em> newString = (char</em>)malloc(length + 1);<br>      newString = strcpy(newString, filename);<br>      dispatch_set_context(source, newString); </p>
-<pre><code>// <span class="operator"><span class="keyword">Install</span> the <span class="keyword">event</span> <span class="keyword">handler</span> <span class="keyword">to</span> process the name <span class="keyword">change</span> 
-dispatch_source_set_event_handler(source, ^{ 
-      const <span class="built_in">char</span>*  oldFilename = (<span class="built_in">char</span>*)dispatch_get_context(source);</span> 
-      MyUpdateFileName(oldFilename, fd); 
-}); 
-
-// <span class="operator"><span class="keyword">Install</span> a cancellation <span class="keyword">handler</span> <span class="keyword">to</span> free the <span class="keyword">descriptor</span> 
-// <span class="keyword">and</span> the stored <span class="keyword">string</span>. 
-dispatch_source_set_cancel_handler(source, ^{ 
-    <span class="built_in">char</span>* fileStr = (<span class="built_in">char</span>*)dispatch_get_context(source);</span> 
-    free(fileStr); 
-    close(fd); 
-}); 
-
-// <span class="operator"><span class="keyword">Start</span> processing <span class="keyword">events</span>. 
-dispatch_resume(source);</span> 
-</code></pre><p>   }<br>   else<br>      close(fd); </p>
-<p>   return source;<br>}<br>监测信号</p>
-<p>应用可以接收许多不同类型的信号，如不可恢复的错误(非法指令)、或重要信息的通知(如子进程退出)。传统编程中，应用使用 sigaction 函数安装信号处理器函数，信号到达时同步处理信号。如果你只是想信号到达时得到通知，并不想实际地处理该信号，可以使用信号dispatch source来异步处理信号。</p>
-<p>信号dispatch source不能替代 sigaction 函数提供的同步信号处理机制。同步信号处理器可以捕获一个信号，并阻止它中止应用。而信号dispatch source只允许你监测信号的到达。此外，你不能使用信号dispatch source获取所有类型的信号，如SIGILL, SIGBUS, SIGSEGV信号。</p>
-<p>由于信号dispatch source在dispatch queue中异步执行，它没有同步信号处理器的一些限制。例如信号dispatch source的事件处理器可以调用任何函数。灵活性增大的代价是，信号到达和dispatch source事件处理器被调用的延迟可能会增大。</p>
-<p>下面例子配置信号dispatch source来处理SIGHUP信号，事件处理器调用 MyProcessSIGHUP 函数，用来处理信号。</p>
-<p>void InstallSignalHandler()<br>{<br>   // Make sure the signal does not terminate the application.<br>   signal(SIGHUP, SIG_IGN); </p>
-<p>   dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);<br>   dispatch_source_t source = dispatch_source_create(DISPATCH_SOURCE_TYPE_SIGNAL, SIGHUP, 0, queue); </p>
-<p>   if (source)<br>   {<br>      dispatch_source_set_event_handler(source, ^{<br>         MyProcessSIGHUP();<br>      }); </p>
-<pre><code><span class="comment">// Start processing signals </span>
-dispatch_resume<span class="comment">(source)</span>; 
-</code></pre><p>   }<br>}<br>监控进程</p>
-<p>进程dispatch source可以监控特定进程的行为，并适当地响应。父进程可以使用dispatch source来监控自己创建的所有子进程，例如监控子进程的死亡;类似地，子进程也可以使用dispatch source来监控父进程，例如在父进程退出时自己也退出。</p>
-<p>下面例子安装了一个进程dispatch source，监控父进程的终止。当父进程退出时，dispatch source设置一些内部状态信息，告知子进程自己应该退出。MySetAppExitFlag 函数应该设置一个适当的标志，允许子进程终止。由于dispatch source自主运行，因此自己拥有自己，在程序关闭时会取消并释放自己。</p>
-<p>void MonitorParentProcess()<br>{<br>   pid_t parentPID = getppid(); </p>
-<p>   dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);<br>   dispatch_source_t source = dispatch_source_create(DISPATCH_SOURCE_TYPE_PROC,<br>                                                      parentPID, DISPATCH_PROC_EXIT, queue);<br>   if (source)<br>   {<br>      dispatch_source_set_event_handler(source, ^{<br>         MySetAppExitFlag();<br>         dispatch_source_cancel(source);<br>         dispatch_release(source);<br>      });<br>      dispatch_resume(source);<br>   }<br>}<br>取消一个Dispatch Source</p>
-<p>除非你显式地调用 dispatch_source_cancel 函数，dispatch source将一直保持活动，取消一个dispatch source会停止递送新事件，并且不能撤销。因此你通常在取消dispatch source后立即释放它：</p>
-<p>void RemoveDispatchSource(dispatch_source_t mySource)<br>{<br>   dispatch_source_cancel(mySource);<br>   dispatch_release(mySource);<br>} </p>
-<p>取消一个dispatch source是异步操作，调用 dispatch_source_cancel 之后，不会再有新的事件被处理，但是正在被dispatch source处理的事件会继续被处理完成。在处理完最后的事件之后，dispatch source会执行自己的取消处理器。</p>
-<p>取消处理器是你最后的执行机会，在那里执行内存或资源的释放工作。例如描述符或mach port类型的dispatch source，必须提供取消处理器，用来关闭描述符或mach port</p>
-<p>挂起和继续Dispatch Source</p>
-<p>你可以使用 dispatch_suspend 和 dispatch_resume 临时地挂起和继续dispatch source的事件递送。这两个函数分别增加和减少dispatch 对象的挂起计数。因此，你必须每次 dispatch_suspend 调用之后，都需要相应的 dispatch_resume 才能继续事件递送。</p>
-<p>挂起一个dispatch source期间，发生的任何事件都会被累积，直到dispatch source继续。但是不会递送所有事件，而是先合并到单一事件，然后再一次递送。例如你监控一个文件的文件名变化，就只会递送最后一次的变化事件。</p>
-<p>Migrating Away from Threads</p>
-<p>从现有的线程代码迁移到Grand Central Dispatch和Operation对象有许多方法，尽管可能不是所有线程代码都能够执行迁移，但是迁移可能提升性能，并简化你的代码。</p>
-<p>使用dispatch queue和Operaiton queue相比线程拥有许多优点：</p>
-<p>应用不再需要存储线程栈到内存空间</p>
-<p>消除了创建和配置线程的代码</p>
-<p>消除了管理和调度线程工作的代码</p>
-<p>简化了你要编写的代码</p>
-<p>使用Dispatch Queue替代线程</p>
-<p>首先考虑应用可能使用线程的几种方式：</p>
-<p>单一任务线程：创建一个线程执行单一任务，任务完成时释放线程</p>
-<p>工作线程(Worker)：创建一个或多个工作线程执行特定的任务，定期地分配任务给每个线程</p>
-<p>线程池：创建一个通用的线程池，并为每个线程设置run loop，当你需要执行一个任务时，从池中抓取一个线程，并分配任务给它。如果没有空闲线程可用，任务进入等待队列。</p>
-<p>虽然这些看上去是完全不同的技术，但实际上只是相同原理的变种。应用都是使用线程来执行某些任务，区别在于管理线程和任务排队的代码。使用dispatch queue和operation queue，你可以消除所有线程、及线程通信的代码，集中精力编写处理任务的代码。</p>
-<p>如果你使用了上面的线程模型，你应该已经非常了解应用需要执行的任务类型，只需要封装任务到Operation对象或Block对象，然后dispatch到适当的queue，就一切搞定!</p>
-<p>对于那些不使用锁的任务，你可以直接使用以下方法来进行迁移：</p>
-<p>单一任务线程，封装任务到block或operation对象，并提交到并发queue</p>
-<p>工作线程，首先你需要确定使用串行queue还是并发queue，如果工作线程需要同步特定任务的执行，就应该使用串行queue。如果工作线程只是执行任意任务，任务之间并无关联，就应该使用并发queue</p>
-<p>线程池，封装任务到block或operation对象，并提交到并发queue中执行</p>
-<p>当然，上面只是简单的情况。如果任务会争夺共享资源，理想的解决方案当然是消除或最小化共享资源的争夺。如果有办法重构代码，消除任务彼此对共享资源的依赖，这是最理想的。</p>
-<p>如果做不到消除共享资源依赖，你仍然可以使用queue，因为queue能够提供可预测的代码执行顺序。可预测意味着你不需要锁或其它重量级的同步机制，就可以实现代码的同步执行。</p>
-<p>你可以使用queue来取代锁执行以下任务：</p>
-<p>如果任务必须按特定顺序执行，提交到串行dispatch queue;如果你想使用Operation queue，就使用Operation对象依赖来确保这些对象的执行顺序。</p>
-<p>如果你已经使用锁来保护共享资源，创建一个串行queue来执行任务并修改该资源。串行queue可以替换现有的锁，直接作为同步机制使用。</p>
-<p>如果你使用线程join来等待后台任务完成，考虑使用dispatch group;也可以使用一个 NSBlockOperation 对象，或者Operation对象依赖，同样可以达到group-completion的行为。</p>
-<p>如果你使用“生产者-消费者”模型来管理有限资源池，考虑使用 dispatch queue 来简化“生产者-消费者”</p>
-<p>如果你使用线程来读取和写入描述符，或者监控文件操作，使用dispatch source</p>
-<p>记住queue不是替代线程的万能药!queue提供的异步编程模型适合于延迟无关紧要的场合。虽然queue提供配置任务执行优先级的方法，但更高的优先级也不能确保任务一定能在特定时间得到执行。因此线程仍然是实现最小延迟的适当选择，例如音频和视频playback等场合。</p>
-<p>消除基于锁的代码</p>
-<p>在线程代码中，锁是传统的多个线程之间同步资源的访问机制。但是锁的开销本身比较大，线程还需等待锁的释放。</p>
-<p>使用queue替代基于锁的线程代码，消除了锁带来的开销，并且简化了代码编写。你可以将任务放到串行queue，来控制任务对共享资源的访问。queue的开销要远远小于锁，因为将任务放入queue不需要陷入内核来获得mutex</p>
-<p>将任务放入queue时，你做的主要决定是同步还是异步，异步提交任务到queue让当前线程继续运行;同步提交任务则阻塞当前线程，直到任务执行完成。两种机制各有各的用途，不过通常异步优先于同步。</p>
-<p>实现异步锁</p>
-<p>异步锁可以保护共享资源，而又不阻塞任何修改资源的代码。当代码的部分工作需要修改一个数据结构时，可以使用异步锁。使用传统的线程，你的实现方式是：获得共享资源的锁，做必要的修改，释放锁，继续任务的其它部分工作。但是使用dispatch queue，调用代码可以异步修改，无需等待这些修改操作完成。</p>
-<p>下面是异步锁实现的一个例子，受保护的资源定义了自己的串行dispatch queue。调用代码提交一个block到这个queue，在block中执行对资源的修改。由于queue串行的执行所有block，对这个资源的修改可以确保按顺序进行;而且由于任务是异步执行的，调用线程不会阻塞。</p>
-<p>dispatch_async(obj-&gt;serial_queue, ^{</p>
-<p>// Critical section</p>
-<p>});</p>
-<p>同步执行临界区</p>
-<p>如果当前代码必须等到指定任务完成，你可以使用 dispatch_sync 函数同步的提交任务，这个函数将任务添加到dispatch queue，并阻塞当前线程直到任务完成执行。dispatch queue本身可以是串行或并发queue，你可以根据具体的需要来选择使用。由于 dispatch_sync 函数会阻塞当前线程，你只应该在确实需要的时候才使用。</p>
-<p>下面是使用 dispatch_sync 实现临界区的例子：</p>
-<p>dispatch_sync(my_queue, ^{</p>
-<p>// Critical section</p>
-<p>});</p>
-<p>如果你已经使用串行queue保护一个共享资源，同步提交到串行queue，并不能比异步提交提供更多的保护。同步提交的唯一理由是，阻止当前代码在临界区完成之前继续执行。如果当前代码不需要等待临界区完成，或者可以简单的提交接下来的任务到相同的串行queue，就应该使用异步提交。</p>
-<p>改进循环代码</p>
-<p>如果循环每次迭代执行的工作互相独立，可以考虑使用 dispatch_apply 或 dispatch_apply_f 函数来重新实现循环。这两个函数将循环的每次迭代提交到dispatch queue进行处理。结合并发queue使用时，可以并发地执行迭代以提高性能。</p>
-<p>dispatch_apply 和 dispatch_apply_f 是同步函数，会阻塞当前线程直到所有循环迭代执行完成。当提交到并发queue时，循环迭代的执行顺序是不确定的。因此你用来执行循环迭代的Block对象(或函数)必须可重入(reentrant)。</p>
-<p>下面例子使用dispatch来替换循环，你传递给 dispatch_apply 或 dispatch_apply_f 的Block或函数必须有一个整数参数，用来标识当前的循环迭代：</p>
-<p>queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</p>
-<p>dispatch_apply(count, queue, ^(size_t i) {</p>
-<p>printf(“%u\n”, i);</p>
-<p>});</p>
-<p>你需要明智地使用这项技术，因为dispatch queue的开销虽然非常小，但仍然存在，你的循环代码必须拥有足够的工作量，才能忽略掉dispatch queue的这些开销。</p>
-<p>提升每次循环迭代工作量最简单的办法是striding(跨步)，重写block代码执行多个循环迭代。从而减少了 dispatch_apply 函数指定的count值。</p>
-<p>int stride = 137;</p>
-<p>dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</p>
-<p>dispatch_apply(count / stride, queue, ^(size_t idx){</p>
-<p>size_t j = idx * stride;</p>
-<p>size_t j_stop = j + stride;</p>
-<p>do {</p>
-<p>printf(“%u\n”, (unsigned int)j++);</p>
-<p>}while (j &lt; j_stop);</p>
-<p>});</p>
-<p>// 执行剩余的循环迭代</p>
-<p>size_t i;</p>
-<p>for (i = count - (count % stride); i &lt; count; i++)</p>
-<p>printf(“%u\n”, (unsigned int)i);</p>
-<p>如果循环迭代次数非常多，使用stride可以提升性能。</p>
-<p>替换线程Join</p>
-<p>线程join允许你生成多个线程，然后让当前线程等待所有线程完成。线程创建子线程时指定为joinable，如果父线程在子线程完成之前不能继续处理，就可以join子线程。join会阻塞父线程直到子线程完成任务并退出，这时候父线程可以获得子线程的结果状态，并继续自己的工作。父线程可以一次性join多个子线程。</p>
-<p>Dispatch Group提供了类似于线程join的语义，但拥有更多优点。dispatch group可以让线程阻塞直到一个或多个任务完成。和线程join不一样的是，dispatch goup同时等待所有子任务完成。而且由于dispatch group使用dispatch queue来执行任务，更加高效。</p>
-<p>以下步骤可以使用dispatch group替换线程join：</p>
-<p>使用 dispatch_group_create 函数创建一个新的dispatch group</p>
-<p>使用 dispatch_group_async 或 dispatch_group_async_f 函数添加任务到Group，这些是你要等待完成的任务</p>
-<p>如果当前线程不能继续处理任何工作，调用 dispatch_group_wait 函数等待这个group，会阻塞当前线程直到group中的所有任务执行完成。</p>
-<p>如果你使用Operation对象来实现任务，可以使用依赖来实现线程join。不过这时候不是让父线程等待所有任务完成，而是将父代码移到一个Operation对象，然后设置父Operation对象依赖于所有子Operation对象。这样父Operation对象就会等到所有子Operation执行完成后才开始执行。</p>
-<p>修改“生产者-消费者”实现</p>
-<p>生产者-消费者 模型可以管理有限数量动态生产的资源。生产者生成新资源，消费者等待并消耗这些资源。实现生产者-消费者模型的典型机制是条件或信号量。</p>
-<p>使用条件(Condition)时，生产者线程通常如下：</p>
-<p>锁住与condition关联的mutex(使用pthread_mutex_lock)</p>
-<p>生产资源(或工作)</p>
-<p>Signal条件变量，通知有资源(或工作)可以消费(使用pthread_cond_signal)</p>
-<p>解锁mutex(使用pthread_mutex_unlock)</p>
-<p>对应的消费者线程则如下：</p>
-<p>锁住condition关联的mutex(使用pthread_mutex_lock)</p>
-<p>设置一个while循环[list=1]</p>
-<p>检查是否有资源(或工作)</p>
-<p>如果没有资源(或工作)，调用pthread_cond_wait阻塞当前线程，直到相应的condition触发</p>
-<p>获得生产者提供的资源(或工作)解锁mutex(使用pthread_mutex_unlock)处理资源(或工作)使用dispatch queue，你可以简化生产者-消费者为一个调用：</p>
-<p>dispatch_async(queue, ^{</p>
-<p>// Process a work item.</p>
-<p>});</p>
-<p>当生产者有工作需要做时，只需要将工作添加到queue，并让queue去处理该工作。唯一需要确定的是queue的类型，如果生产者生成的任务需要按特定顺序执行，就使用串行queue;否则使用并发Queue，让系统尽可能多地同时执行任务。</p>
-<p>替换Semaphore代码</p>
-<p>使用信号量可以限制对共享资源的访问，你应该考虑使用dispatch semaphore来替换普通信号量。传统的信号量需要陷入内核，而dispatch semaphore可以在用户空间快速地测试状态，只有测试失败调用线程需要阻塞时才会陷入内核。这样dispatch semaphore拥有比传统semaphore快得多的性能。两者的行为是一致的。</p>
-<p>替换Run-Loop代码</p>
-<p>如果你使用run loop来管理一个或多个线程执行的工作，你会发现使用queue来实现和维护任务会简单许多。设置自定义run loop需要同时设置底层线程和run loop本身。run-loop代码则需要设置一个或多个run loop source，并编写回调来处理这些source事件到达。你可以创建一个串行queue，并dispatch任务到queue中，这样一行代码就能够替换原有的run-loop创建代码：</p>
-<p>dispatch_queue_t myNewRunLoop = dispatch_queue_create(“com.apple.MyQueue”, NULL);</p>
-<p>由于queue自动执行添加进来的任务，不需要编写额外的代码来管理queue。你也不需要创建和配置线程，更不需要创建或附加任何run-loop source。此外，你可以通过简单地添加任务就能让queue执行其它类型的任务，而run loop要实现这一点，必须修改现有run loop source，或者创建一个新的run loop source。</p>
-<p>run loop的一个常用配置是处理网络socket异步到达的数据，现在你可以附加dispatch source到需要的queue中，来实现这个行为。dispatch source还能提供更多处理数据的选项，支持更多类型的系统事件处理。</p>
-<p>与POSIX线程的兼容性</p>
-<p>Grand Central Dispatch管理了任务和运行线程之间的关系，通常你应该避免在任务代码中使用POSIX线程函数，如果一定要使用，请小心。</p>
-<p>应用不能删除或mutate不是自己创建的数据结构。使用dispatch queue执行的block对象不能调用以下函数：</p>
-<p>pthread_detach</p>
-<p>pthread_cancel</p>
-<p>pthread_join</p>
-<p>pthread_kill</p>
-<p>pthread_exit</p>
-<p>任务运行时修改线程状态是可以的，但你必须还原线程原来的状态。只要你记得还原线程的状态，下面函数是安全的：</p>
-<p>pthread_setcancelstate</p>
-<p>pthread_setcanceltype</p>
-<p>pthread_setschedparam</p>
-<p>pthread_sigmask</p>
-<p>pthread_setspecific</p>
-<p>特定block的执行线程可以在多次调用间会发生变化，因此应用不应该依赖于以下函数返回的信息：</p>
-<p>pthread_self</p>
-<p>pthread_getschedparam</p>
-<p>pthread_get_stacksize_np</p>
-<p>pthread_get_stackaddr_np</p>
-<p>pthread_mach_thread_np</p>
-<p>pthread_from_mach_thread_np</p>
-<p>pthread_getspecific</p>
-<p>Block必须捕获和禁止任何语言级的异常，Block执行期间的其它错误也应该由block处理，或者通知应用</p>
-
-            
+            iOS Concurrency Programming Guide
+iOS 和 Mac OS 传统的并发编程模型是线程，不过线程模型伸缩性不强，而且编写正确的线程代码也不容易。Mac OS 和 iOS 采取 asynchronous design approach 来解决并发的问题。
+引入的异步技术有两个：
+Grand Central Dispatch：系统管理线程，你不需要编写线程代码。只需定义想要执行的任务，然后添加到适当的dispatch queue。Grand Central Dispatch会负责创建线程和调度你的任务。系统直接提供线程管理，比应用实现更加高效。
+Operation Queue：Objective-C对象，类似于dispatch queue。你定义想要执行的任务，并添加任务到operation queue，后者负责调度和执行这些任务。和Grand Central Dispatch一样，Operation Queue也管理了线程，更加高效。
+Dispatch Queue
+基于C的执行自定义任务机制。dispatch queue按先进先出的顺序，串行或并发地执行任务。serial dispaptch queue一次只能执行一个任务，直接当前任务完成才开始出列并启动下一个任务。而concurrent dispatch queue则尽可能多地启动任务并发执行。
+优
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/01/18/iOS-Concurrentcy-Programming/#more" rel="contents">
+              閱讀全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -965,10 +372,10 @@ dispatch_resume<span class="comment">(source)</span>;
           </div>
 
           <div class="site-state-item site-state-categories">
-            
+            <a href="/categories">
               <span class="site-state-item-count">5</span>
               <span class="site-state-item-name">分類</span>
-              
+              </a>
           </div>
 
           <div class="site-state-item site-state-tags">
@@ -1030,7 +437,7 @@ dispatch_resume<span class="comment">(source)</span>;
 <div class="theme-info">
   主題 -
   <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
-    NexT
+    NexT.Mist
   </a>
 </div>
 
@@ -1049,11 +456,28 @@ dispatch_resume<span class="comment">(source)</span>;
 
   
     
-    
 
   
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"dashen1009"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+    
+     
 
 
+    
   
 
   
