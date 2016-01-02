@@ -232,6 +232,113 @@
             
               
                 
+                <a class="post-title-link" href="/2015/12/29/WebKit解析/" itemprop="url">
+                  解析WebKit
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-29T17:14:43+08:00" content="2015-12-29">
+              2015-12-29
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/iOS开发/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS开发</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/12/29/WebKit解析/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/12/29/WebKit解析/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+            前言在iOS8之前，在APP内使用UIWebView内存嵌web应用，会有一些严重的性能效果，尤其是比较复杂的Web应用。对用户体验也产生了一定影响,不管是对开发者还是用户说，都希望能有一个更好的方案来代替UIWebView,在iOS中自带Safari浏览器，打开web应用，表现比UIWebView要优秀很多。很高兴的是，在iOS8的到来，apple发布了webkit，在性能和速度方面接近了原生的Safari。下面介绍下iOS中Webkit的一些新特性:1.平滑滚动: Apple在这方面做了很大的努力，之前，滚动的性能表现极差。现在，Webkit利用CoreAnimation和硬件加速提供了非常好的性能优化，尤其是当你滚动页面的时候。2.手势: WebKit可以支持触摸板的手势，例如可以滑动返回，挤压缩放等(在iOS上好像没有多大意义哈)。3.KVO: 可以监听网页加载的进度，进度，标题和URL可以通过WKWebView的属性观察。所以，你可以在任意假定的时刻确定WebView的状态，来更新UI。4.原生交互:这是一个最显著的特征。当初iOS7发布的时候，JavascriptCore可以使JS与OC之间交流，但是它主要是集中在桥接这两种语言的缺口。在iOS8中，提供了两个新的API:用户脚本和脚本消息，用户脚本可以是你注入JS代码到Web页面中，然后在页面指定地方运行。脚本消息能够
+            ...
+          </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/12/29/WebKit解析/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2015/12/22/ProducterAndCustomerMode/" itemprop="url">
                   生产者与消费模式
                 </a>
@@ -1188,143 +1295,6 @@ GCD对象和ARC当你构建你的应用使用OC语言编译时，所有的dispat
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/09/23/associated-object/" itemprop="url">
-                  Associated Objects实现用Block代替UIAlertView代理方法
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-09-23T12:05:34+08:00" content="2015-09-23">
-              2015-09-23
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/iOS开发/" itemprop="url" rel="index">
-                    <span itemprop="name">iOS开发</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/09/23/associated-object/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/09/23/associated-object/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-            前言之前在一个项目中，有多个地方要用到UIAlertView，每次都要遵循UIAlertView协议，实现代理方法，使得代码过于分散。在iOS8以后，官方提供了UIAlertController类，通过闭包终于可以甩掉之前的代理方法了，但是在iOS8一下，同样想实现这样的功能，首先想到的是通过创建一个category，但是在category中并不能添加属性。在官方文档中有看到 objc_setAssociatedObject 和 objc_getAssociatedObject运行时方法可以动态关联对象,那么这样就没问题了。
-1.AssociatedObject API简介objc_setAssociatedObject
-void objc_setAssociatedObject(id object, void *key, id value, objc_AssociationPolicy policy)设置一个关联值对于一个给定对象使用给定的key和关联策略
-
-
-
-参数
-描述
-
-
-
-
-object
-关联的对象
-
-
-key
-关联的key
-
-
-value
-关联对象关联的key对于的value
-
-
-policy
-关联策略
-
-
-
-关联策略类似于定于属性时的修饰(strong,weak,nonatomic)
-1234567enum &#123;   OBJC_ASSOCIATION_ASSI
-            ...
-          </span>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/09/23/associated-object/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1371,7 +1341,7 @@ policy
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-count">22</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1453,7 +1423,7 @@ policy
         <div class="copyright" >
   
   &copy;  2014 - 
-  <span itemprop="copyrightYear">2015</span>
+  <span itemprop="copyrightYear">2016</span>
   <span class="with-love">
     <i class="icon-next-heart fa fa-heart"></i>
   </span>

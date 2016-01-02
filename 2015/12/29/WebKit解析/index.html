@@ -1,0 +1,776 @@
+<!doctype html>
+<html class="theme-next   use-motion ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="大神的iOS开发博客" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="前言在iOS8之前，在APP内使用UIWebView内存嵌web应用，会有一些严重的性能效果，尤其是比较复杂的Web应用。对用户体验也产生了一定影响,不管是对开发者还是用户说，都希望能有一个更好的方案来代替UIWebView,在iOS中自带Safari浏览器，打开web应用，表现比UIWebView要优秀很多。很高兴的是，在iOS8的到来，apple发布了webkit，在性能和速度方面接近了原生的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="解析WebKit">
+<meta property="og:url" content="http://linfeng1009.gitcafe.io/2015/12/29/WebKit解析/index.html">
+<meta property="og:site_name" content="大神的iOS开发博客">
+<meta property="og:description" content="前言在iOS8之前，在APP内使用UIWebView内存嵌web应用，会有一些严重的性能效果，尤其是比较复杂的Web应用。对用户体验也产生了一定影响,不管是对开发者还是用户说，都希望能有一个更好的方案来代替UIWebView,在iOS中自带Safari浏览器，打开web应用，表现比UIWebView要优秀很多。很高兴的是，在iOS8的到来，apple发布了webkit，在性能和速度方面接近了原生的">
+<meta property="og:image" content="http://7xkpsz.com1.z0.glb.clouddn.com/layout.png">
+<meta property="og:image" content="http://7xkpsz.com1.z0.glb.clouddn.com/Simulator%20Screen%20Shot%20Jan%202%2C%202016%2C%2017.34.24.png">
+<meta property="og:image" content="http://7xkpsz.com1.z0.glb.clouddn.com/Simulator%20Screen%20Shot%20Jan%202%2C%202016%2C%2017.45.04.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="解析WebKit">
+<meta name="twitter:description" content="前言在iOS8之前，在APP内使用UIWebView内存嵌web应用，会有一些严重的性能效果，尤其是比较复杂的Web应用。对用户体验也产生了一定影响,不管是对开发者还是用户说，都希望能有一个更好的方案来代替UIWebView,在iOS中自带Safari浏览器，打开web应用，表现比UIWebView要优秀很多。很高兴的是，在iOS8的到来，apple发布了webkit，在性能和速度方面接近了原生的">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'post',
+    motion: true
+  };
+</script>
+
+  <title> 解析WebKit | 大神的iOS开发博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?7c3a425add5fae9a1970c9b53a04242a";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">大神的iOS开发博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">知识来源于分解</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-projects">
+          <a href="/projects" rel="section">
+            
+              <i class="menu-item-icon fa fa-file fa-fw"></i> <br />
+            
+            项目
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-heartbeat fa-fw"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                解析WebKit
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-29T17:14:43+08:00" content="2015-12-29">
+              2015-12-29
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/iOS开发/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS开发</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/12/29/WebKit解析/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/12/29/WebKit解析/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><h1 id="前言">前言</h1><p>在iOS8之前，在APP内使用UIWebView内存嵌web应用，会有一些严重的性能效果，尤其是比较复杂的Web应用。对用户体验也产生了一定影响,不管是对开发者还是用户说，都希望能有一个更好的方案来代替UIWebView,在iOS中自带Safari浏览器，打开web应用，表现比UIWebView要优秀很多。很高兴的是，在iOS8的到来，apple发布了webkit，在性能和速度方面接近了原生的Safari。下面介绍下iOS中Webkit的一些新特性:<br>1.平滑滚动: Apple在这方面做了很大的努力，之前，滚动的性能表现极差。现在，Webkit利用CoreAnimation和硬件加速提供了非常好的性能优化，尤其是当你滚动页面的时候。<br>2.手势: WebKit可以支持触摸板的手势，例如可以滑动返回，挤压缩放等(在iOS上好像没有多大意义哈)。<br>3.KVO: 可以监听网页加载的进度，进度，标题和URL可以通过WKWebView的属性观察。所以，你可以在任意假定的时刻确定WebView的状态，来更新UI。<br>4.原生交互:这是一个最显著的特征。当初iOS7发布的时候，JavascriptCore可以使JS与OC之间交流，但是它主要是集中在桥接这两种语言的缺口。在iOS8中，提供了两个新的API:用户脚本和脚本消息，用户脚本可以是你注入JS代码到Web页面中，然后在页面指定地方运行。脚本消息能够是原生的代码去接收从用户脚本注入Web页面的回调—有点NSNotifications通知的思想，只是它来自于web页面。</p>
+<h1 id="介绍WKWebView">介绍WKWebView</h1><p>实现一个简单的网页展示Demo来介绍WKWebView的使用。包括如何实例化配置，怎样加载URL和监听加载进度。<br>具体你要实现以下功能：</p>
+<p>1.通过URL加载网页<br>2.显示网页加载进度<br>3.根据访问的历史状态，可以向前或向后操作更新页面<br>4.取消加载网页<br>5.重新加载网页<br>6.自适应布局(运行不同设备上要适配 如:iPhone和iPad)</p>
+<p>新建一个工程WebKitDemo,布局界面如下:<br><img src="http://7xkpsz.com1.z0.glb.clouddn.com/layout.png" alt=""></p>
+<h2 id="基本显示">基本显示</h2><p>在ViewController.m中添加一个WKWebView的webView属性, 然后初始化webView添加到当前的view上并设置自动布局约束。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">- (WKWebView *)webViewBaiscUse</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">self</span><span class="variable">.inputURLField</span><span class="variable">.text</span> = <span class="string">@"https://www.baidu.com"</span>;</span><br><span class="line">    <span class="keyword">return</span> [[WKWebView alloc] initWithFrame:<span class="built_in">CGRectZero</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (WKWebView *)webView</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(!_webView)</span><br><span class="line">    &#123;</span><br><span class="line">        _webView = [<span class="keyword">self</span> webViewBaiscUse];</span><br><span class="line"><span class="comment">//        _webView = [self webViewWithUserScript];</span></span><br><span class="line"><span class="comment">//        _webView = [self webViewWithScriptMessage];</span></span><br><span class="line">        _webView<span class="variable">.translatesAutoresizingMaskIntoConstraints</span> = <span class="literal">NO</span>;</span><br><span class="line">        _webView<span class="variable">.navigationDelegate</span> = <span class="keyword">self</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> _webView;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)viewDidLoad &#123;</span><br><span class="line">    [<span class="keyword">super</span> viewDidLoad];</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">self</span><span class="variable">.forwardButton</span><span class="variable">.enabled</span> = <span class="literal">NO</span>;</span><br><span class="line">    <span class="keyword">self</span><span class="variable">.backwardButton</span><span class="variable">.enabled</span> = <span class="literal">NO</span>;</span><br><span class="line">    </span><br><span class="line"><span class="comment">//    self.inputURLField.text = @"http://www.raywenderlich.com/u/funkyboy";  // default page</span></span><br><span class="line">    <span class="keyword">self</span><span class="variable">.inputURLField</span><span class="variable">.delegate</span> = <span class="keyword">self</span>;</span><br><span class="line">    <span class="keyword">self</span><span class="variable">.barBackGroundView</span><span class="variable">.frame</span> = <span class="built_in">CGRectMake</span>(<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="built_in">CGRectGetWidth</span>(<span class="keyword">self</span><span class="variable">.view</span><span class="variable">.bounds</span>), <span class="number">30.0</span>);</span><br><span class="line">    [<span class="keyword">self</span><span class="variable">.view</span> addSubview:<span class="keyword">self</span><span class="variable">.webView</span>];</span><br><span class="line">    [<span class="keyword">self</span><span class="variable">.view</span> insertSubview:<span class="keyword">self</span><span class="variable">.webView</span> belowSubview:<span class="keyword">self</span><span class="variable">.progressView</span>];</span><br><span class="line">    </span><br><span class="line">    [<span class="keyword">self</span><span class="variable">.view</span> addConstraint:[<span class="built_in">NSLayoutConstraint</span> constraintWithItem:<span class="keyword">self</span><span class="variable">.webView</span> attribute:<span class="built_in">NSLayoutAttributeWidth</span> relatedBy:<span class="built_in">NSLayoutRelationEqual</span> toItem:<span class="keyword">self</span><span class="variable">.view</span> attribute:<span class="built_in">NSLayoutAttributeWidth</span> multiplier:<span class="number">1.0</span> constant:<span class="number">0.0</span>]];</span><br><span class="line">    </span><br><span class="line">    [<span class="keyword">self</span><span class="variable">.view</span> addConstraint:[<span class="built_in">NSLayoutConstraint</span> constraintWithItem:<span class="keyword">self</span><span class="variable">.webView</span> attribute:<span class="built_in">NSLayoutAttributeHeight</span> relatedBy:<span class="built_in">NSLayoutRelationEqual</span> toItem:<span class="keyword">self</span><span class="variable">.view</span> attribute:<span class="built_in">NSLayoutAttributeHeight</span> multiplier:<span class="number">1.0</span> constant:-<span class="number">44.0</span>]];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// load the default page</span></span><br><span class="line">    [<span class="keyword">self</span> loadReuqest];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)loadReuqest</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">NSURL</span> *url = [<span class="built_in">NSURL</span> URLWithString:<span class="keyword">self</span><span class="variable">.inputURLField</span><span class="variable">.text</span>];</span><br><span class="line">    <span class="built_in">NSURLRequest</span> *request = [<span class="built_in">NSURLRequest</span> requestWithURL:url];</span><br><span class="line">    [<span class="keyword">self</span><span class="variable">.webView</span> loadRequest:request];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译运行，效果如下:</p>
+<p><img src="http://7xkpsz.com1.z0.glb.clouddn.com/Simulator%20Screen%20Shot%20Jan%202%2C%202016%2C%2017.34.24.png" alt=""></p>
+<h2 id="页面加载进度">页面加载进度</h2><p>WkWebView支持KVO，你可以监听loading和estimatedProgress属性来实现页面的加载进度，这里我们用一个进度条控件来显示当前的进度。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">    <span class="comment">// observer the webview loading and estimatedprogress property</span></span><br><span class="line">    [<span class="keyword">self</span><span class="variable">.webView</span> addObserver:<span class="keyword">self</span> forKeyPath:<span class="string">@"loading"</span> options:<span class="built_in">NSKeyValueObservingOptionNew</span> context:<span class="literal">nil</span>];</span><br><span class="line">    [<span class="keyword">self</span><span class="variable">.webView</span> addObserver:<span class="keyword">self</span> forKeyPath:<span class="string">@"estimatedProgress"</span> options:<span class="built_in">NSKeyValueObservingOptionNew</span> context:<span class="literal">nil</span>];</span><br><span class="line">    </span><br><span class="line">- (<span class="keyword">void</span>)observeValueForKeyPath:(<span class="built_in">NSString</span> *)keyPath ofObject:(<span class="keyword">id</span>)object change:(<span class="built_in">NSDictionary</span>&lt;<span class="built_in">NSString</span> *,<span class="keyword">id</span>&gt; *)change context:(<span class="keyword">void</span> *)context</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>([keyPath isEqualToString:<span class="string">@"loading"</span>])</span><br><span class="line">    &#123;</span><br><span class="line">        [<span class="built_in">UIApplication</span> sharedApplication]<span class="variable">.networkActivityIndicatorVisible</span> = <span class="keyword">self</span><span class="variable">.webView</span><span class="variable">.loading</span>;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">self</span><span class="variable">.webView</span><span class="variable">.loading</span> == <span class="literal">false</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">self</span><span class="variable">.inputURLField</span><span class="variable">.text</span> = [<span class="keyword">self</span><span class="variable">.webView</span><span class="variable">.URL</span> absoluteString];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>([keyPath isEqualToString:<span class="string">@"estimatedProgress"</span>])</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">self</span><span class="variable">.progressView</span><span class="variable">.hidden</span> = <span class="keyword">self</span><span class="variable">.webView</span><span class="variable">.estimatedProgress</span> == <span class="number">1</span>;</span><br><span class="line">        [<span class="keyword">self</span><span class="variable">.progressView</span> setProgress:<span class="keyword">self</span><span class="variable">.webView</span><span class="variable">.estimatedProgress</span> animated:<span class="literal">YES</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译运行，效果如下:</p>
+<p><img src="http://7xkpsz.com1.z0.glb.clouddn.com/Simulator%20Screen%20Shot%20Jan%202%2C%202016%2C%2017.45.04.png" alt=""></p>
+<h2 id="前进后退操作">前进后退操作</h2><p>WKWebView提供goForward和goBack实例方法来实现前进和后退操作。</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">-</span> (IBAction)<span class="tag">handleForward</span>:(id)<span class="tag">sender</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="attr_selector">[self.webView goForward]</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="tag">-</span> (IBAction)<span class="tag">handleBack</span>:(id)<span class="tag">sender</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="attr_selector">[self.webView goBack]</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="取消和重新加载">取消和重新加载</h2><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">IBAction</span>)handleRefresh:(<span class="keyword">id</span>)sender</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">self</span><span class="variable">.webView</span><span class="variable">.loading</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        [<span class="keyword">self</span><span class="variable">.webView</span> stopLoading];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">NSURLRequest</span> *request = [<span class="built_in">NSURLRequest</span> requestWithURL:<span class="keyword">self</span><span class="variable">.webView</span><span class="variable">.URL</span>];</span><br><span class="line">        [<span class="keyword">self</span><span class="variable">.webView</span> loadRequest:request];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="协议方法">协议方法</h1><p>可以通过navigationDelegate属性设置WKWebView的代理对象。协议方法会在不同情况下调用对应的方法来处理相关的事物。</p>
+<ul>
+<li>-(void)webView:(WKWebView <em>)webView didCommitNavigation:(null_unspecified WKNavigation </em>)navigation; // 开始加载时调用</li>
+<li>-(void)webView:(WKWebView <em>)webView didFailProvisionalNavigation:(null_unspecified WKNavigation </em>)navigation withError:(NSError *)error; // 加载URL出错的时调用</li>
+<li>-(void)webView:(WKWebView <em>)webView didFinishNavigation:(null_unspecified WKNavigation </em>)navigation; // 加载完成时调用</li>
+<li>-(void)webView:(WKWebView <em>)webView didReceiveServerRedirectForProvisionalNavigation:(null_unspecified WKNavigation </em>)navigation; // 服务器重定向时调用</li>
+<li>-(void)webView:(WKWebView <em>)webView didFailNavigation:(null_unspecified WKNavigation </em>)navigation withError:(NSError *)error; // 加载网页出错时调用</li>
+</ul>
+<h1 id="用户脚本">用户脚本</h1><p>可以通过自定义的js脚本来注入当前加载的页面中，Demo中是将网页上的作者个人信息屏蔽处。注入js脚本可以通过WKUserScript的实例来加载js文件,然后WKWebView的addUserScript来添加。</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">- (WKWebView *)webViewWithUserScript</span><br><span class="line">&#123;</span><br><span class="line">    self.inputURLField.text = @<span class="string">"http://www.raywenderlich.com/u/funkyboy"</span>;</span><br><span class="line">    </span><br><span class="line">    WKWebViewConfiguration *conf = [[WKWebViewConfiguration alloc] init];</span><br><span class="line">    NSString *jsPath = [[NSBundle mainBundle] <span class="string">pathForResource:</span>@<span class="string">"hideBio"</span> <span class="string">ofType:</span>@<span class="string">"js"</span>];</span><br><span class="line">    NSString *hideBioJS = [NSString <span class="string">stringWithContentsOfFile:</span>jsPath <span class="string">encoding:</span>NSUTF8StringEncoding <span class="string">error:</span>nil];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// inject user script</span></span><br><span class="line">    WKUserScript *hideBioUserScript = [[WKUserScript alloc] <span class="string">initWithSource:</span>hideBioJS <span class="string">injectionTime:</span>WKUserScriptInjectionTimeAtDocumentStart <span class="string">forMainFrameOnly:</span>NO];</span><br><span class="line">    [conf.userContentController <span class="string">addUserScript:</span>hideBioUserScript];</span><br><span class="line">    </span><br><span class="line">    WKWebView *webView = [[WKWebView alloc] <span class="string">initWithFrame:</span>CGRectZero <span class="string">configuration:</span>conf];</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> webView;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="脚本方法">脚本方法</h1><p>接收当前js的回调方法，由WKScriptMessageHandler协议中的userContentController:(WKUserContentController <em>)userContentController didReceiveScriptMessage:(WKScriptMessage </em>)message方法来接收js的回调处理。</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">- (WKWebView *)webViewWithScriptMessage</span><br><span class="line">&#123;</span><br><span class="line">    self.inputURLField.text = @<span class="string">"http://www.raywenderlich.com/about"</span>;</span><br><span class="line">    </span><br><span class="line">    WKWebViewConfiguration *conf = [[WKWebViewConfiguration alloc] init];</span><br><span class="line">    NSString *scriptURL = [[NSBundle mainBundle] <span class="string">pathForResource:</span>@<span class="string">"fetchAuthors"</span> <span class="string">ofType:</span>@<span class="string">"js"</span>];</span><br><span class="line">    NSString *jsScript = [NSString <span class="string">stringWithContentsOfFile:</span>scriptURL <span class="string">encoding:</span>NSUTF8StringEncoding <span class="string">error:</span>nil];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// inject user script</span></span><br><span class="line">    WKUserScript *fetchAuthorsScript = [[WKUserScript alloc] <span class="string">initWithSource:</span>jsScript <span class="string">injectionTime:</span>WKUserScriptInjectionTimeAtDocumentStart <span class="string">forMainFrameOnly:</span>NO];</span><br><span class="line">    [conf.userContentController <span class="string">addUserScript:</span>fetchAuthorsScript];</span><br><span class="line">   </span><br><span class="line">    <span class="comment">// inject script message</span></span><br><span class="line">    [conf.userContentController <span class="string">addScriptMessageHandler:</span>self <span class="string">name:</span>kMessageHandler];</span><br><span class="line">    </span><br><span class="line">    WKWebView *webView = [[WKWebView alloc] <span class="string">initWithFrame:</span>CGRectZero <span class="string">configuration:</span>conf];</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> webView;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="总结">总结</h1><p>详细的内容可以去Demo中查看,在<a href="https://github.com/ludaye123/WKWebViewDemo" target="_blank" rel="external">这里下载</a>。如果什么问题，你可以在下方留下你的疑问，我会尽快回复你。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag">#iOS</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/12/22/ProducterAndCustomerMode/" rel="next" title="生产者与消费模式">
+                <i class="fa fa-chevron-left"></i> 生产者与消费模式
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2015/12/29/WebKit解析/"
+     data-title="解析WebKit"
+     data-content=""
+     data-url="http://linfeng1009.gitcafe.io/2015/12/29/WebKit解析/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+  <p>热评文章</p>
+  <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
+
+
+        
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2015/12/29/WebKit解析/"
+           data-title="解析WebKit" data-url="http://linfeng1009.gitcafe.io/2015/12/29/WebKit解析/">
+      </div>
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="大神" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">大神</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">擅长Objective-C开发，喜欢在Mac上开发iOS应用，常混迹于各大iOS开发论坛。</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">22</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">5</span>
+              <span class="site-state-item-name">分类</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            
+              <span class="site-state-item-count">11</span>
+              <span class="site-state-item-name">标签</span>
+              
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/ludaye123" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/2502328960/profile?rightmod=1&wvr=6&mod=personinfo&is_all=1" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+            <p class="site-author-name">Links</p>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.cocoachina.com" target="_blank">CocoaChina</a>
+              </span>
+            
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#介绍WKWebView"><span class="nav-number">2.</span> <span class="nav-text">介绍WKWebView</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本显示"><span class="nav-number">2.1.</span> <span class="nav-text">基本显示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#页面加载进度"><span class="nav-number">2.2.</span> <span class="nav-text">页面加载进度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#前进后退操作"><span class="nav-number">2.3.</span> <span class="nav-text">前进后退操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#取消和重新加载"><span class="nav-number">2.4.</span> <span class="nav-text">取消和重新加载</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#协议方法"><span class="nav-number">3.</span> <span class="nav-text">协议方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#用户脚本"><span class="nav-number">4.</span> <span class="nav-text">用户脚本</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#脚本方法"><span class="nav-number">5.</span> <span class="nav-text">脚本方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">大神 </span>
+
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+
+      <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1255886342'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s4.cnzz.com/z_stat.php%3Fid%3D1255886342%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+  </a>
+  
+</div>
+ 
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"dashen1009"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+    
+     
+
+
+    
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+</body>
+</html>

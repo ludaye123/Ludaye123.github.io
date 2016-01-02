@@ -209,6 +209,148 @@
 
     
     
+      
+      
+
+      
+    
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/09/23/associated-object/" itemprop="url">
+                  Associated Objects实现用Block代替UIAlertView代理方法
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-09-23T12:05:34+08:00" content="2015-09-23">
+              2015-09-23
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/iOS开发/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS开发</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/09/23/associated-object/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/09/23/associated-object/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+            前言之前在一个项目中，有多个地方要用到UIAlertView，每次都要遵循UIAlertView协议，实现代理方法，使得代码过于分散。在iOS8以后，官方提供了UIAlertController类，通过闭包终于可以甩掉之前的代理方法了，但是在iOS8一下，同样想实现这样的功能，首先想到的是通过创建一个category，但是在category中并不能添加属性。在官方文档中有看到 objc_setAssociatedObject 和 objc_getAssociatedObject运行时方法可以动态关联对象,那么这样就没问题了。
+1.AssociatedObject API简介objc_setAssociatedObject
+void objc_setAssociatedObject(id object, void *key, id value, objc_AssociationPolicy policy)设置一个关联值对于一个给定对象使用给定的key和关联策略
+
+
+
+参数
+描述
+
+
+
+
+object
+关联的对象
+
+
+key
+关联的key
+
+
+value
+关联对象关联的key对于的value
+
+
+policy
+关联策略
+
+
+
+关联策略类似于定于属性时的修饰(strong,weak,nonatomic)
+1234567enum &#123;   OBJC_ASSOCIATION_ASSI
+            ...
+          </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/09/23/associated-object/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
 
     
       
@@ -1243,115 +1385,6 @@ More info: Deployment
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/02/12/corelocation-basic-use/" itemprop="url">
-                  CoreLocation 基本使用
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-02-12T17:59:43+08:00" content="2015-02-12">
-              2015-02-12
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index">
-                    <span itemprop="name">iOS</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/02/12/corelocation-basic-use/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/02/12/corelocation-basic-use/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-            1.导入头文件1#import &lt;CoreLocation/CoreLocation.h&gt;
-2.定义一个属性1@property (nonatomic, strong) CLLocationManager *locationManager;
-3.设置Get方法123456789101112131415161718192021- (CLLocationManager *)locationManager&#123;    if(!_locationManager)    &#123;        _locationManager = [[CLLocationManager alloc] init];        _locationManager.delegate = self;        _locationManager.distanceFilter = 100.0; 	// 定位距离过滤        /*        extern const CLLocationAccuracy kCLLocationAccuracyBestForNavigation    // 导航定位最好的精确度		extern const CLLocationAccuracy kCLLocationAccuracyBest;				// 定位最好的精确度		extern const C
-            ...
-          </span>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/02/12/corelocation-basic-use/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1398,7 +1431,7 @@ More info: Deployment
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-count">22</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1480,7 +1513,7 @@ More info: Deployment
         <div class="copyright" >
   
   &copy;  2014 - 
-  <span itemprop="copyrightYear">2015</span>
+  <span itemprop="copyrightYear">2016</span>
   <span class="with-love">
     <i class="icon-next-heart fa fa-heart"></i>
   </span>
