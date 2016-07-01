@@ -209,15 +209,119 @@
 
     
     
+
+    
       
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/01/27/thread-summary-gcd/" itemprop="url">
+                  iOS多线程总结之GCD
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-01-27T21:01:31+08:00" content="2016-01-27">
+              2016-01-27
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/01/27/thread-summary-gcd/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/01/27/thread-summary-gcd/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
       
-        
-        
-        
       
 
       
-    
+        
+          <span itemprop="articleBody">
+            
+            Grand Central Dispatch (GCD)1.GCD概述GCD由语言特征、运行时库和系统提供的增强功能组成，综合提升多核硬件支持代码在iOS和OS X中并发执行。
+GCD对象和ARC当你使用OC语言构建应用编译时，所有的dispatch对象也是OC对象。同样的，在ARC的环境中，dispatch对象和任何其他OC对象一样会自动的retain 和 release。在MRC环境中时，使用dispatch_retain和dispatch_release函数(和OC语义相同)来保留或者释放派发对象，但是你不能使用Core Foundation的保留和释放函数。
+
+2.创建和管理队列在GCD中，有两种队列，串行队列和并发队列，串行队列中根据FIFO的方式执行任务，但同时只能执行一个任务。并发队列也会根据FIFO的方式执行任务，但是同时可以执行多个任务。
+1.dispatch_queue_t dispatch_get_main_queue(void);返回一个主队列，主队列通过系统自动创建并且和你的应用的主线程关联。
+2.dispatch_queue_t dispatch_get_global_queue(long identifier, unsigned long flags);返回一个全局的并发队列，任务提交到这个队列中会被安排与其他任务并发执行。
+3.dispatch_qu
+            ...
+          </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/01/27/thread-summary-gcd/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
 
     
       
@@ -1170,119 +1274,6 @@ Object
           </span>
           <div class="post-more-link text-center">
             <a class="btn" href="/2015/10/08/stack-view/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/09/29/thread-summary-gcd/" itemprop="url">
-                  iOS多线程总结之GCD
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-09-29T17:07:00+08:00" content="2015-09-29">
-              2015-09-29
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index">
-                    <span itemprop="name">iOS</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/09/29/thread-summary-gcd/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/09/29/thread-summary-gcd/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-            Grand Central Dispatch (GCD)1.GCD概述GCD由语言特征、运行时库和系统提供的增强功能组成，综合提升多核硬件支持代码在iOS和OS X中并发执行。
-GCD对象和ARC当你构建你的应用使用OC语言编译时，所有的dispatch对象也是OC对象。同样的，在ARC的环境中，dispatch对象和任何其他OC对象一样会自动的retain 和 release。在MRC环境中时，使用dispatch_retain和dispatch_release函数(和OC语义相同)来保留或者释放派发对象。你不能使用Core Foundation的保留和释放函数。
-2.创建和管理队列
-在GCD中，有两种队列，串行队列和并发队列，串行队列中根据FIFO的方式执行任务，但同时只能执行一个任务。并发队列也会根据FIFO的方式执行任务，但是同时可以执行多个任务。
-1.dispatch_queue_t dispatch_get_main_queue(void);返回一个主队列，主队列通过系统自动创建并且和你的应用的主线程相关联。
-2.dispatch_queue_t dispatch_get_global_queue( long identifier, unsigned long flags);返回一个全局的并发队列，任务提交到这个队列中会被安排与其他任务并发执行。
-3.dispatch_
-            ...
-          </span>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/09/29/thread-summary-gcd/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>

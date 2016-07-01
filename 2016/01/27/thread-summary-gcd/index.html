@@ -54,17 +54,17 @@
 
 
 <meta name="description" content="Grand Central Dispatch (GCD)1.GCD概述GCD由语言特征、运行时库和系统提供的增强功能组成，综合提升多核硬件支持代码在iOS和OS X中并发执行。
-GCD对象和ARC当你构建你的应用使用OC语言编译时，所有的dispatch对象也是OC对象。同样的，在ARC的环境中，dispatch对象和任何其他OC对象一样会自动的retain 和 release。在MRC环境中时，">
+GCD对象和ARC当你使用OC语言构建应用编译时，所有的dispatch对象也是OC对象。同样的，在ARC的环境中，dispatch对象和任何其他OC对象一样会自动的retain 和 release。在MRC环境中时，使用">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS多线程总结之GCD">
-<meta property="og:url" content="http://linfeng1009.gitcafe.io/2015/09/29/thread-summary-gcd/index.html">
+<meta property="og:url" content="http://linfeng1009.gitcafe.io/2016/01/27/thread-summary-gcd/index.html">
 <meta property="og:site_name" content="大神的iOS开发博客">
 <meta property="og:description" content="Grand Central Dispatch (GCD)1.GCD概述GCD由语言特征、运行时库和系统提供的增强功能组成，综合提升多核硬件支持代码在iOS和OS X中并发执行。
-GCD对象和ARC当你构建你的应用使用OC语言编译时，所有的dispatch对象也是OC对象。同样的，在ARC的环境中，dispatch对象和任何其他OC对象一样会自动的retain 和 release。在MRC环境中时，">
+GCD对象和ARC当你使用OC语言构建应用编译时，所有的dispatch对象也是OC对象。同样的，在ARC的环境中，dispatch对象和任何其他OC对象一样会自动的retain 和 release。在MRC环境中时，使用">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS多线程总结之GCD">
 <meta name="twitter:description" content="Grand Central Dispatch (GCD)1.GCD概述GCD由语言特征、运行时库和系统提供的增强功能组成，综合提升多核硬件支持代码在iOS和OS X中并发执行。
-GCD对象和ARC当你构建你的应用使用OC语言编译时，所有的dispatch对象也是OC对象。同样的，在ARC的环境中，dispatch对象和任何其他OC对象一样会自动的retain 和 release。在MRC环境中时，">
+GCD对象和ARC当你使用OC语言构建应用编译时，所有的dispatch对象也是OC对象。同样的，在ARC的环境中，dispatch对象和任何其他OC对象一样会自动的retain 和 release。在MRC环境中时，使用">
 
 
 
@@ -235,8 +235,8 @@ GCD对象和ARC当你构建你的应用使用OC语言编译时，所有的dispat
         <div class="post-meta">
           <span class="post-time">
             发表于
-            <time itemprop="dateCreated" datetime="2015-09-29T17:07:00+08:00" content="2015-09-29">
-              2015-09-29
+            <time itemprop="dateCreated" datetime="2016-01-27T21:01:31+08:00" content="2016-01-27">
+              2016-01-27
             </time>
           </span>
 
@@ -261,8 +261,8 @@ GCD对象和ARC当你构建你的应用使用OC语言编译时，所有的dispat
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2015/09/29/thread-summary-gcd/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/09/29/thread-summary-gcd/" itemprop="commentsCount"></span>
+                <a href="/2016/01/27/thread-summary-gcd/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/01/27/thread-summary-gcd/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -282,14 +282,15 @@ GCD对象和ARC当你构建你的应用使用OC语言编译时，所有的dispat
 
       
         <span itemprop="articleBody"><h2 id="Grand_Central_Dispatch_(GCD)">Grand Central Dispatch (GCD)</h2><h3 id="1-GCD概述">1.GCD概述</h3><p>GCD由语言特征、运行时库和系统提供的增强功能组成，综合提升多核硬件支持代码在iOS和OS X中并发执行。</p>
-<h4 id="GCD对象和ARC">GCD对象和ARC</h4><p>当你构建你的应用使用OC语言编译时，所有的<code>dispatch</code>对象也是OC对象。同样的，在ARC的环境中，<code>dispatch</code>对象和任何其他OC对象一样会自动的<code>retain</code> 和 <code>release</code>。在MRC环境中时，使用<code>dispatch_retain</code>和<code>dispatch_release</code>函数(和OC语义相同)来保留或者释放派发对象。你不能使用<code>Core Foundation</code>的保留和释放函数。</p>
-<h3 id="2-创建和管理队列">2.创建和管理队列</h3><hr>
-<p>在GCD中，有两种队列，串行队列和并发队列，串行队列中根据FIFO的方式执行任务，但同时只能执行一个任务。并发队列也会根据FIFO的方式执行任务，但是同时可以执行多个任务。</p>
-<p>1.<code>dispatch_queue_t dispatch_get_main_queue(void);</code><br>返回一个主队列，主队列通过系统自动创建并且和你的应用的主线程相关联。</p>
-<p>2.<code>dispatch_queue_t dispatch_get_global_queue( long identifier, unsigned long flags);</code><br>返回一个全局的并发队列，任务提交到这个队列中会被安排与其他任务并发执行。</p>
+<h4 id="GCD对象和ARC">GCD对象和ARC</h4><p>当你使用OC语言构建应用编译时，所有的<code>dispatch</code>对象也是OC对象。同样的，在ARC的环境中，<code>dispatch</code>对象和任何其他OC对象一样会自动的<code>retain</code> 和 <code>release</code>。在MRC环境中时，使用<code>dispatch_retain</code>和<code>dispatch_release</code>函数(和OC语义相同)来保留或者释放派发对象，但是你不能使用<code>Core Foundation</code>的保留和释放函数。</p>
+<hr>
+<h3 id="2-创建和管理队列">2.创建和管理队列</h3><p>在GCD中，有两种队列，串行队列和并发队列，串行队列中根据FIFO的方式执行任务，但同时只能执行一个任务。并发队列也会根据FIFO的方式执行任务，但是同时可以执行多个任务。</p>
+<p>1.<code>dispatch_queue_t dispatch_get_main_queue(void);</code><br>返回一个主队列，主队列通过系统自动创建并且和你的应用的主线程关联。</p>
+<p>2.<code>dispatch_queue_t dispatch_get_global_queue(long identifier, unsigned long flags);</code><br>返回一个全局的并发队列，任务提交到这个队列中会被安排与其他任务并发执行。</p>
 <p>3.<code>dispatch_queue_t dispatch_queue_create( const char *label, dispatch_queue_attr_t attr);</code><br>创建一个新的调度队列，label参数为对列贴上一个唯一的标示符，官方推荐名为反向的域名(com.example.myqueue), attr参数指定为<code>DISPATCH_QUEUE_SERIAL</code>或者<code>NULL</code>创建一个串行队列，指定为<code>DISPATCH_QUEUE_CONCURRENT</code>创建一个并发队列。</p>
 <p>4.<code>dispatch_queue_t dispatch_get_current_queue(void);</code><br>返回当前的队列，这个函数被定义永远都不会返回为NULL。当在提交的block上下文的外部调用时，这个函数会返回主队列如果是在主线程中调用。如果在其他任意的线程中调用，这个函数会返回默认的并发队列。</p>
 <p>5.<code>const char * dispatch_queue_get_label(dispatch_queue_t queue);</code>获取指定代理的唯一标示，返回可能为空</p>
+<hr>
 <h3 id="3-等候任务调度">3.等候任务调度</h3><p>GCD提供和管理FIFO队列，你的应用可以block对象的形式提交任务。block提交到调度队列在一个系统全面管理的线程池上执行。不能保证线程执行一个任务。GCD提供3种类型的队列:<br>主队列: 在你应用的主线程上顺序执行任务<br>并发队列: 任务按照先入先出的方式移除队列，并发执行并且能够以任意顺序完成<br>串行队列: 按照先入先出的方式同时只能执行一个任务<br>主队列是自动创建的通过系统并且和你应用的主线程关联。你的应用使用下面三个方法的其中一个去调用提交到主队列的block</p>
 <p>调用<code>dispatch_main</code><br>调用<code>UIApplicationMain</code>(iOS) 或 <code>NSApplicationMain</code>(OS X)<br>使用<code>CFRunLoopRef</code>在主线程 </p>
 <p>使用并发队列同时执行多个任务。GCD自动创建四个并发调度队列，并且在应用中是全局的，它们之间的区别仅在于优先级。你的应用请求这些队列使用<code>dispatch_get_global_queue</code>函数。因为这些并发队列在你用中是全局的，所以一你不需要保留或者释放，保留或者释放方法的调用对于它们是可以忽略的。</p>
@@ -310,6 +311,7 @@ dispatch_async_f(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <spa
 <p>6.<code>void dispatch_once( dispatch_once_t *predicate, dispatch_block_t block);</code><br>在整个应用生命周期内仅仅执行一次block任务，通常实现单例模式</p>
 <p>eg:</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</span><br><span class="line">       </span><br><span class="line"><span class="built_in">NSString</span> *url = <span class="string">@"http://tao.goulew.com/users/upfile/201504/201504081150270big.jpg"</span>;</span><br><span class="line">        <span class="built_in">NSData</span> *data = [[<span class="built_in">NSData</span> alloc] initWithContentsOfURL:[<span class="built_in">NSURL</span> URLWithString:url]];</span><br><span class="line">        <span class="built_in">UIImage</span> *image = [<span class="built_in">UIImage</span> imageWithData:data];</span><br><span class="line">        <span class="built_in">dispatch_async</span>(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">           </span><br><span class="line">            <span class="keyword">if</span>(image)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">self</span><span class="variable">.imageView</span><span class="variable">.image</span> = image;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure>
+<hr>
 <h3 id="4-使用调度组">4.使用调度组</h3><p>调度组: 在应用中向调度队列中添加多个任务block，使用调度组可以追踪当所有的任务完成时，即便它们处于不同的队列中。<br>1.<code>void dispatch_group_async( dispatch_group_t group, dispatch_queue_t queue, dispatch_block_t block);</code><br>提交一个block到调度队列并且使这个block与指定的调度组相关联</p>
 <p>2.<code>dispatch_group_t dispatch_group_create( void);</code><br>创建一个调度组</p>
 <p>3.<code>void dispatch_group_notify( dispatch_group_t group, dispatch_queue_t queue, dispatch_block_t block);</code><br>调度一个block对象提交到队列中当之前提交的block对象已经完成时</p>
@@ -331,17 +333,13 @@ dispatch_async_f(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <spa
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/09/23/associated-object/" rel="next" title="Associated Objects实现用Block代替UIAlertView代理方法">
-                <i class="fa fa-chevron-left"></i> Associated Objects实现用Block代替UIAlertView代理方法
+              <a href="/2015/12/29/WebKit解析/" rel="next" title="解析WebKit">
+                <i class="fa fa-chevron-left"></i> 解析WebKit
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2015/10/08/stack-view/" rel="prev" title="UIStackView Tutorial:介绍堆栈视图(译)">
-                UIStackView Tutorial:介绍堆栈视图(译) <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -356,10 +354,10 @@ dispatch_async_f(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <spa
 
     <div class="post-spread">
       
-        <div class="ds-share flat" data-thread-key="2015/09/29/thread-summary-gcd/"
+        <div class="ds-share flat" data-thread-key="2016/01/27/thread-summary-gcd/"
      data-title="iOS多线程总结之GCD"
      data-content=""
-     data-url="http://linfeng1009.gitcafe.io/2015/09/29/thread-summary-gcd/">
+     data-url="http://linfeng1009.gitcafe.io/2016/01/27/thread-summary-gcd/">
   <div class="ds-share-inline">
     <ul  class="ds-share-icons-16">
 
@@ -390,8 +388,8 @@ dispatch_async_f(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <spa
         
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2015/09/29/thread-summary-gcd/"
-           data-title="iOS多线程总结之GCD" data-url="http://linfeng1009.gitcafe.io/2015/09/29/thread-summary-gcd/">
+      <div class="ds-thread" data-thread-key="2016/01/27/thread-summary-gcd/"
+           data-title="iOS多线程总结之GCD" data-url="http://linfeng1009.gitcafe.io/2016/01/27/thread-summary-gcd/">
       </div>
     
   </div>
