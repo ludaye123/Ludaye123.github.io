@@ -1,393 +1,410 @@
-<!DOCTYPE html>
-<html>
+
+ <!DOCTYPE HTML>
+<html lang="zh-Hans">
 <head>
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    
-    <title>大神的iOS开发博客 | 知识来源于分解</title>
-    <meta name="renderer" content="webkit">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="MobileOptimized" content="320">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
-    <meta name="description" content="我们都在为自己的梦想奋斗中.....">
-
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="大神的iOS开发博客 | 知识来源于分解">
-    <meta name="twitter:description" content="我们都在为自己的梦想奋斗中.....">
-
-    <meta property="og:type" content="article">
-    <meta property="og:title" content="大神的iOS开发博客 | 知识来源于分解">
-    <meta property="og:description" content="我们都在为自己的梦想奋斗中.....">
-
+  <meta charset="UTF-8">
+  
+    <title>大神的iOS开发博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="大神">
     
-    <link rel="stylesheet" href="/css/vno.css" type="text/css">
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" type="text/css">
-
+    <meta name="description" content="我们都在为自己的梦想奋斗中.....">
     
-    <link rel="icon" href="/images/favicon.png">
     
-
-    <meta name="generator" content="hexo"/>
     
-
-    <link rel="canonical" href="http://linfeng1009.gitcafe.io"/>
-
     
-
-    <meta name="baidu-site-verification" content="m1n9RLGcrV" />
+    <link rel="alternate" href="/atom.xml" title="大神的iOS开发博客" type="application/atom+xml">
     
-<script type="text/javascript">
-#申请的百度统计代码
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "//hm.baidu.com/hm.js?7c3a425add5fae9a1970c9b53a04242a";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
-
-
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
 </head>
 
-<body class="home-template no-js">
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="大神的iOS开发博客" title="大神的iOS开发博客"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="大神的iOS开发博客">大神的iOS开发博客</a></h1>
+				<h2 class="blog-motto">知识来源于分解</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜單">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					
+						<li><a href="/">主页|Home</a></li>
+					
+						<li><a href="/archives">归档|Archives</a></li>
+					
+						<li><a href="/projects">项目|Projects</a></li>
+					
+						<li><a href="/about">关于|About</a></li>
+					
+						<li><a href="/resumes">简历|Resume</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:linfeng1009.gitcafe.io">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
 
-    <span class="mobile btn-mobile-menu">
-        <i class="fa fa-list btn-mobile-menu__icon"></i>
-        <i class="fa fa-angle-up btn-mobile-close__icon hidden"></i>
-    </span>
+    </header>
+    <div id="container">
+      <div id="main">
 
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2015/09/23/associated-object/" title="Associated Objects实现用Block代替UIAlertView代理方法" itemprop="url">
+  
+    <h1 itemprop="name">Associated Objects实现用Block代替UIAlertView代理方法</h1>
     
-<header class="panel-cover " style="background-image: url(/images/background-cover.jpg)">
-  <div class="panel-main">
-    <div class="panel-main__inner panel-inverted">
-    <div class="panel-main__content">
-
-        <a href="/" title="前往 大神的iOS开发博客 的主页"><img src="/images/logo2.jpg" width="80" alt="大神的iOS开发博客 logo" class="panel-cover__logo logo" /></a>
-        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage for 大神的iOS开发博客">大神的iOS开发博客</a></h1>
+     
+           <p itemprop="description" >前言之前在一个项目中，有多个地方要用到UIAlertView，每次都要遵循UIAlertView协议，实现代理方法，使得代码过于分散。在iOS8以后，官方提供了UIAlertController类，通过闭包终于可以甩掉之前的代理方法了，但是在iOS8一下，同样想实现这样的功能，首</p>
         
-        <span class="panel-cover__subtitle panel-subtitle">知识来源于分解</span>
+    
+    <time datetime="2015-09-23T04:05:34.000Z" itemprop="datePublished">2015-09-23</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2015/09/22/thread-summary-nsoperate/" title="iOS多线程总结之NSOperation 和 NSOperationQueue" itemprop="url">
+  
+    <h1 itemprop="name">iOS多线程总结之NSOperation 和 NSOperationQueue</h1>
+    
+     
+           <p itemprop="description" >NSOperation1.NSOperation概述NSOperation类是一个抽象类，你用来封装代码和数据与单一任务关联。因为它是抽象的，不能直接使用这个类，但可以直接子类化或者是使用系统定义好的子类(NSInvocationOperation or NSBlockOpera</p>
         
-        <hr class="panel-cover__divider" />
-        <p class="panel-cover__description">我们都在为自己的梦想奋斗中.....</p>
-        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+    
+    <time datetime="2015-09-22T05:11:32.000Z" itemprop="datePublished">2015-09-22</time>
+  </a>
+</section>
 
-        <div class="navigation-wrapper">
-          <div>
-          <nav class="cover-navigation cover-navigation--primary">
-            <ul class="navigation">
-              <li class="navigation__item"><a href="/#blog" title="访问博客" class="blog-button">文章归档</a></li>
-            
-              <li class="navigation__item"><a href="/projects">项目作品</a></li>
-            
-              <li class="navigation__item"><a href="/about">关于我</a></li>
-            
-            </ul>
-          </nav>
-          </div>
-          <div>
-          <nav class="cover-navigation navigation--social">
-  <ul class="navigation">
-
-  <!-- Weibo-->
+  <section class="post" itemscope itemprop="blogPost">
   
-  <li class="navigation__item">
-    <a href="http://weibo.com/2502328960/profile?topnav=1&amp;wvr=6" title="我的微博" target="_blank">
-      <i class='social fa fa-weibo'></i>
-      <span class="label">Weibo</span>
-    </a>
-  </li> 
-
-
-  <!-- Github -->
+    <a href="/2015/09/16/thread-summary-nsthread/" title="iOS多线程总结之NSThread" itemprop="url">
   
-  <li class="navigation__item">
-    <a href="https://github.com/ludaye123" title="查看我的GitHub主页" target="_blank">
-      <i class='social fa fa-github'></i>
-      <span class="label">Github</span>
-    </a>
-  </li>
-
-
-<!-- Stack Overflow -->
+    <h1 itemprop="name">iOS多线程总结之NSThread</h1>
+    
+     
+           <p itemprop="description" >iOS开发中，实现线程的方式总体有三种1.NSThread2.NSOperate 和 NSOperateQueue3.GCD还有一种更加底层的API,用pthread来实现
+NSThread一个NSThread对象控制一条线程的执行。用这个类当你想要让一个OC方法运行在它自己的执</p>
         
+    
+    <time datetime="2015-09-16T01:54:02.000Z" itemprop="datePublished">2015-09-16</time>
+  </a>
+</section>
 
-  <!-- Google Plus -->
+  <section class="post" itemscope itemprop="blogPost">
   
-
-<!-- Facebook -->
-
+    <a href="/2015/08/20/create-pods/" title="制作pod库并提交到Cocoapods" itemprop="url">
   
-<!-- Twitter -->
+    <h1 itemprop="name">制作pod库并提交到Cocoapods</h1>
+    
+     
+           <p itemprop="description" >摘自:玉令天下
+简介2014年5月20日，CocoaPods不再接受向CocoaPods/Specs的pull request，官方的说法是为了安全考虑，防止每个人的pod被其他人修改，于是CocoaPods团队开发了trunk服务，这样每个人都是其发布的pod的owner，没有</p>
+        
+    
+    <time datetime="2015-08-20T05:35:14.000Z" itemprop="datePublished">2015-08-20</time>
+  </a>
+</section>
 
+  <section class="post" itemscope itemprop="blogPost">
   
-
-
-  <li class="navigation__item">
-    <a href="mailto:1057105719@qq.com" title="邮件联系我" target="_blank">
-      <i class='social fa fa-envelope'></i>
-      <span class="label">Email</span>
-    </a>
-  </li>
-
-
-  </ul>
-</nav>
-
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-
-    <div class="panel-cover--overlay cover-blue"></div>
-  </div>
-</header>
-
-    <div class="content-wrapper">
-        <div class="content-wrapper__inner">
-            <div class="main-post-list">
-    
-  <ol class="post-list">
+    <a href="/2015/08/18/modified-by-helensong/" title="iOS开发常用正则表达式" itemprop="url">
   
+    <h1 itemprop="name">iOS开发常用正则表达式</h1>
     
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2015/09/23/associated-object/" title="link to post.title">Associated Objects实现用Block代替UIAlertView代理方法</a></h2>
-      <p class="excerpt">
-    
-      前言之前在一个项目中，有多个地方要用到UIAlertView，每次都要遵循UIAlertView协议，实现代理方法，使得代码过于分散。在iOS8以后，官方提供了UIAlertController类，通过闭包终于可以甩掉之前的代理方法了，但是在iOS8一下，同样想实现这样的功能，首先想到的是通过创建一个category，但是在category中并不能添加属性。在官方文档中有看到 objc_setAssociatedObject 和 objc_getAssociatedObject运行时方法可以动态
-    &hellip;
-      </p>
-      <div class="post-list__meta"><time datetime="2015-09-23T04:05:34.000Z" class="post-list__meta--date date">2015-09-23</time> &#8226; <span class="post-list__meta--tags tags">于&nbsp;
-  <a class="tag-link" href="/tags/iOS/">iOS</a>
-</span><a class="btn-border-small" href="/2015/09/23/associated-object/">继续阅读</a></div>
-      <hr class="post-list__divider" />
-    </li>
-  
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2015/09/22/thread-summary-nsoperate/" title="link to post.title">iOS多线程总结之NSOperation 和 NSOperationQueue</a></h2>
-      <p class="excerpt">
-    
-      NSOperation1.NSOperation概述NSOperation类是一个抽象类，你用来封装代码和数据与单一任务关联。因为它是抽象的，不能直接使用这个类，但可以直接子类化或者是使用系统定义好的子类(NSInvocationOperation or NSBlockOperation)去执行实际任务。尽管是抽象的，NSOperation基本实现包括了重要的逻辑确保安全执行你的任务。这些内建的逻辑允许你集中精力在实际实现的任务中，而不是粘合代码来确保它和系统其他的对象正常运行。
-一个操作对象是
-    &hellip;
-      </p>
-      <div class="post-list__meta"><time datetime="2015-09-22T05:11:32.000Z" class="post-list__meta--date date">2015-09-22</time> &#8226; <span class="post-list__meta--tags tags">于&nbsp;
-  <a class="tag-link" href="/tags/iOS多线程/">iOS多线程</a>
-</span><a class="btn-border-small" href="/2015/09/22/thread-summary-nsoperate/">继续阅读</a></div>
-      <hr class="post-list__divider" />
-    </li>
-  
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2015/09/16/thread-summary-nsthread/" title="link to post.title">iOS多线程总结之NSThread</a></h2>
-      <p class="excerpt">
-    
-      iOS开发中，实现线程的方式总体有三种1.NSThread2.NSOperate 和 NSOperateQueue3.GCD还有一种更加底层的API,用pthread来实现
-NSThread一个NSThread对象控制一条线程的执行。用这个类当你想要让一个OC方法运行在它自己的执行线程中。线程特别有用 当你需要执行一个漫长的任务时,但是又不想阻塞应用中其他部分的执行。另外,你能够用线程去避免阻塞应用的主线程,处理用户界面和相关的事件操作。线程也能别用来把一个大的任务分解成多个小得任务,从而引领性
-    &hellip;
-      </p>
-      <div class="post-list__meta"><time datetime="2015-09-16T01:54:02.000Z" class="post-list__meta--date date">2015-09-16</time> &#8226; <span class="post-list__meta--tags tags">于&nbsp;
-  <a class="tag-link" href="/tags/iOS多线程/">iOS多线程</a>
-</span><a class="btn-border-small" href="/2015/09/16/thread-summary-nsthread/">继续阅读</a></div>
-      <hr class="post-list__divider" />
-    </li>
-  
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2015/08/20/create-pods/" title="link to post.title">制作pod库并提交到Cocoapods</a></h2>
-      <p class="excerpt">
-    
-      摘自:玉令天下
-简介2014年5月20日，CocoaPods不再接受向CocoaPods/Specs的pull request，官方的说法是为了安全考虑，防止每个人的pod被其他人修改，于是CocoaPods团队开发了trunk服务，这样每个人都是其发布的pod的owner，没有权限的人无法修改，这样更安全。更改后的提交架构是这样的：(来自官方图片)
-
-以前的podspec文件都是ruby格式，而trunk为我们带来了更轻便的json格式，你后你可以用json来配置你的pod了。不用担心过去我们
-    &hellip;
-      </p>
-      <div class="post-list__meta"><time datetime="2015-08-20T05:35:14.000Z" class="post-list__meta--date date">2015-08-20</time> &#8226; <span class="post-list__meta--tags tags">于&nbsp;
-  <a class="tag-link" href="/tags/Cocoapods/">Cocoapods</a>
-</span><a class="btn-border-small" href="/2015/08/20/create-pods/">继续阅读</a></div>
-      <hr class="post-list__divider" />
-    </li>
-  
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2015/08/18/modified-by-helensong/" title="link to post.title">iOS开发常用正则表达式</a></h2>
-      <p class="excerpt">
-    
-      在之前项目开发中，遇到过一些输入内容的判断，判断手机号码是否合法等等。记录下iOS开发中常用的正则表达式。
+     
+           <p itemprop="description" >在之前项目开发中，遇到过一些输入内容的判断，判断手机号码是否合法等等。记录下iOS开发中常用的正则表达式。
 手机号码
-1)移动：134[0-8],135,136,137,138,139,150,151,157,158,159,182,187,1882)联通：130,131,132,152,155,156,185,1863)电信：133,1349,153,180,189NSString * MOBILE = @”^1(3[0-9]|5[0-35-9]|8[025-9])\d{8}$”;
-中国移动：
-    &hellip;
-      </p>
-      <div class="post-list__meta"><time datetime="2015-08-18T07:54:03.000Z" class="post-list__meta--date date">2015-08-18</time> &#8226; <span class="post-list__meta--tags tags">于&nbsp;
-  <a class="tag-link" href="/tags/iOS/">iOS</a>
-</span><a class="btn-border-small" href="/2015/08/18/modified-by-helensong/">继续阅读</a></div>
-      <hr class="post-list__divider" />
-    </li>
+1)移动：134[0-8],135,136,137,138,139,150,151,157,158,159,182,187,1882)联通：130,131,132</p>
+        
+    
+    <time datetime="2015-08-18T07:54:03.000Z" itemprop="datePublished">2015-08-18</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
   
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2015/07/09/deepcopy-vs-shallowcopy/" title="link to post.title">深复制VS浅复制</a></h2>
-      <p class="excerpt">
-    
-      苹果官方内存管理原则：1.谁创建谁负责release：如果使用 alloc、new、copy、mutablecopy来创建对象，那么必须要调用release或者autorelease来释放对象。2.谁retain谁负责release：只要你对对象使用了retain方法，那么必须要调用release或者autorelease来释放对象。
-深复制 VS 浅复制 (deep copy VS shallow copy)
-深复制：通过复制操作后，返回一个新的副本对象，对此副本对象的任何操作不会影响到原对象
-    &hellip;
-      </p>
-      <div class="post-list__meta"><time datetime="2015-07-09T06:26:48.000Z" class="post-list__meta--date date">2015-07-09</time> &#8226; <span class="post-list__meta--tags tags">于&nbsp;
-  <a class="tag-link" href="/tags/iOS/">iOS</a>
-</span><a class="btn-border-small" href="/2015/07/09/deepcopy-vs-shallowcopy/">继续阅读</a></div>
-      <hr class="post-list__divider" />
-    </li>
+    <a href="/2015/07/09/deepcopy-vs-shallowcopy/" title="深复制VS浅复制" itemprop="url">
   
+    <h1 itemprop="name">深复制VS浅复制</h1>
     
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2015/07/07/xcode-update-plugin-problem/" title="link to post.title">Xcode升级插件失效修复方法</a></h2>
-      <p class="excerpt">
+     
+           <p itemprop="description" >苹果官方内存管理原则：1.谁创建谁负责release：如果使用 alloc、new、copy、mutablecopy来创建对象，那么必须要调用release或者autorelease来释放对象。2.谁retain谁负责release：只要你对对象使用了retain方法，那么必须要</p>
+        
     
-      1.打开终端，输入以下代码获取到DVTPlugInCompatibilityUUID1`defaults read /Applications/Xcode.app/Contents/Info DVTPlugInCompatibilityUUID`
-2.然后输入如下命令   【最后一项是获取到的DVTPlugInCompatibilityUUID】
-1find ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins -name 
-    &hellip;
-      </p>
-      <div class="post-list__meta"><time datetime="2015-07-07T09:50:23.000Z" class="post-list__meta--date date">2015-07-07</time> &#8226; <span class="post-list__meta--tags tags">于&nbsp;
-  <a class="tag-link" href="/tags/Xcode/">Xcode</a>
-</span><a class="btn-border-small" href="/2015/07/07/xcode-update-plugin-problem/">继续阅读</a></div>
-      <hr class="post-list__divider" />
-    </li>
+    <time datetime="2015-07-09T06:26:48.000Z" itemprop="datePublished">2015-07-09</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
   
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2015/06/08/quart2d/" title="link to post.title">利用Quart2D给图片添加水印以及截取圆形图片</a></h2>
-      <p class="excerpt">
-    
-      一、添加水印为了不让图片被别人滥用，造成侵权，一般都会给图片加上水印。在iOS里面添加水印可以通过[CoreGraphics]框架提供的方法来操作。一般思路：        1.开启一个跟原图大小一致的context        2.将水印文字设置添加在原图上的位置并绘制在当前的context        3.从当前的context获取新的图片        4.关闭当前的context    代码实现：
-+ (UIImage *)imageNamed:(NSString *)name wa
-    &hellip;
-      </p>
-      <div class="post-list__meta"><time datetime="2015-06-08T10:34:33.000Z" class="post-list__meta--date date">2015-06-08</time> &#8226; <span class="post-list__meta--tags tags">于&nbsp;
-  <a class="tag-link" href="/tags/Quart2D/">Quart2D</a>
-</span><a class="btn-border-small" href="/2015/06/08/quart2d/">继续阅读</a></div>
-      <hr class="post-list__divider" />
-    </li>
+    <a href="/2015/07/07/xcode-update-plugin-problem/" title="Xcode升级插件失效修复方法" itemprop="url">
   
+    <h1 itemprop="name">Xcode升级插件失效修复方法</h1>
     
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2015/05/18/nslog/" title="link to post.title">NSLog高效打印调试信息</a></h2>
-      <p class="excerpt">
+     
+           <p itemprop="description" >1.打开终端，输入以下代码获取到DVTPlugInCompatibilityUUID1`defaults read /Applications/Xcode.app/Contents/Info DVTPlugInCompatibilityUUID`
+2.然后输入如下命令   【最后</p>
+        
     
-      打印当前的方法以及行号NSMutableArray *someObject = [NSMutableArray array];NSLog(@”%s:%d someObject=%@”, func, LINE, someObject);[someObject addObject:@”foo”];NSLog(@”%s:%d someObject=%@”, func, LINE, someObject);
-表1 预处理的宏
+    <time datetime="2015-07-07T09:50:23.000Z" itemprop="datePublished">2015-07-07</time>
+  </a>
+</section>
 
-
-
-宏
-格式说明符
-描述 
-
-
-
-
-func
-%s
-当前被调用的方法 
-
-
-
-    &hellip;
-      </p>
-      <div class="post-list__meta"><time datetime="2015-05-18T09:50:01.000Z" class="post-list__meta--date date">2015-05-18</time> &#8226; <span class="post-list__meta--tags tags">于&nbsp;
-  <a class="tag-link" href="/tags/iOS/">iOS</a>
-</span><a class="btn-border-small" href="/2015/05/18/nslog/">继续阅读</a></div>
-      <hr class="post-list__divider" />
-    </li>
+  <section class="post" itemscope itemprop="blogPost">
   
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2015/04/10/hello-world/" title="link to post.title">Hello World</a></h2>
-      <p class="excerpt">
-    
-      Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick StartCreate a new post1$ hexo new &quot;My New Post&quot;
-M
-    &hellip;
-      </p>
-      <div class="post-list__meta"><time datetime="2015-04-10T08:22:09.000Z" class="post-list__meta--date date">2015-04-10</time> &#8226; <span class="post-list__meta--tags tags">于&nbsp;</span><a class="btn-border-small" href="/2015/04/10/hello-world/">继续阅读</a></div>
-      <hr class="post-list__divider" />
-    </li>
+    <a href="/2015/06/08/quart2d/" title="利用Quart2D给图片添加水印以及截取圆形图片" itemprop="url">
   
+    <h1 itemprop="name">利用Quart2D给图片添加水印以及截取圆形图片</h1>
     
-  </ol>
+     
+           <p itemprop="description" >一、添加水印为了不让图片被别人滥用，造成侵权，一般都会给图片加上水印。在iOS里面添加水印可以通过[CoreGraphics]框架提供的方法来操作。一般思路：        1.开启一个跟原图大小一致的context        2.将水印文字设置添加在原图上的位置并绘制在当前</p>
+        
+    
+    <time datetime="2015-06-08T10:34:33.000Z" itemprop="datePublished">2015-06-08</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2015/05/18/nslog/" title="NSLog高效打印调试信息" itemprop="url">
+  
+    <h1 itemprop="name">NSLog高效打印调试信息</h1>
+    
+     
+           <p itemprop="description" >打印当前的方法以及行号NSMutableArray *someObject = [NSMutableArray array];NSLog(@”%s:%d someObject=%@”, func, LINE, someObject);[someObject addObject:@</p>
+        
+    
+    <time datetime="2015-05-18T09:50:01.000Z" itemprop="datePublished">2015-05-18</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2015/04/10/hello-world/" title="Hello World" itemprop="url">
+  
+    <h1 itemprop="name">Hello World</h1>
+    
+     
+           <p itemprop="description" >Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the </p>
+        
+    
+    <time datetime="2015-04-10T08:22:09.000Z" itemprop="datePublished">2015-04-10</time>
+  </a>
+</section>
 
 
-  <nav class="pagination" role="navigation">
-    
-      <a class="older-posts pagination__older btn btn-small btn-tertiary" href="/#blog">Prev</a>
-    
-    
-      <a class="older-posts pagination__older btn btn-small btn-tertiary" href="/page/3/">Next</a>
-    
+  <nav id="page-nav" class="clearfix">
+    <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
   </nav>
 
+</div>
+      <div class="openaside"><a class="navbutton" href="#" title="顯示側邊欄"></a></div>
 
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隱藏側邊欄"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分類</p>
+		<ul>
+		
+			<li><a href="/categories/Git/" title="Git">Git<sup>1</sup></a></li>
+		
+			<li><a href="/categories/Swift/" title="Swift">Swift<sup>1</sup></a></li>
+		
+			<li><a href="/categories/iOS/" title="iOS">iOS<sup>8</sup></a></li>
+		
+			<li><a href="/categories/iOS开发/" title="iOS开发">iOS开发<sup>9</sup></a></li>
+		
+			<li><a href="/categories/iOS翻译/" title="iOS翻译">iOS翻译<sup>1</sup></a></li>
+		
+		</ul>
 </div>
 
 
+  
+<div class="tagslist">
+	<p class="asidetitle">標簽</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Cocoapods/" title="Cocoapods">Cocoapods<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Git/" title="Git">Git<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Quart2D/" title="Quart2D">Quart2D<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Xcode/" title="Xcode">Xcode<sup>1</sup></a></li>
+		
+			<li><a href="/tags/iOS/" title="iOS">iOS<sup>9</sup></a></li>
+		
+			<li><a href="/tags/iOS-Swift/" title="iOS,Swift">iOS,Swift<sup>1</sup></a></li>
+		
+			<li><a href="/tags/iOS9/" title="iOS9">iOS9<sup>1</sup></a></li>
+		
+			<li><a href="/tags/iOS多线程/" title="iOS多线程">iOS多线程<sup>3</sup></a></li>
+		
+			<li><a href="/tags/iOS定位/" title="iOS定位">iOS定位<sup>1</sup></a></li>
+		
+			<li><a href="/tags/内存管理/" title="内存管理">内存管理<sup>1</sup></a></li>
+		
+			<li><a href="/tags/多线程/" title="多线程">多线程<sup>1</sup></a></li>
+		
+		</ul>
+</div>
 
-            <footer class="footer">
-    <span class="footer__copyright">
-        本站点采用<a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>
-    </span>
-    <span class="footer__copyright">
-        基于 <a href="http://hexo.io">Hexo</a> 搭建，感谢 <a href="https://gitcafe.com/">GitCafe</a> 提供免费的托管服务
-    </span>
-    <span class="footer__copyright">
-        &copy; 2016 - 本站由 <a href="/">@大神</a> 创建,
-        使用<a href="https://github.com/lenbo-ma/hexo-theme-vno">hexo-theme-vno</a>主题,
-        修改自<a href="http://github.com/onevcat/vno" target="_blank">Vno</a>
-    </span>
 
-   <script>
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "//hm.baidu.com/hm.js?7c3a425add5fae9a1970c9b53a04242a";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
+  
+  <div class="archiveslist">
+    <p class="asidetitle"><a href="/archives">歸檔</a></p>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a><span class="archive-list-count">1</span></li></ul>
+  </div>
 
 
-    <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1255886342'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s4.cnzz.com/z_stat.php%3Fid%3D1255886342%26online%3D1%26show%3Dline' type='text/javascript'%3E%3C/script%3E"));</script>
-
-</footer>
-
-        </div>
+  
+  <div class="tagcloudlist">
+    <p class="asidetitle">標簽雲</p>
+    <div class="tagcloudlist clearfix">
+       <a href="/tags/Cocoapods/" style="font-size: 10px;">Cocoapods</a><a href="/tags/Git/" style="font-size: 10px;">Git</a><a href="/tags/Quart2D/" style="font-size: 10px;">Quart2D</a><a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a><a href="/tags/iOS/" style="font-size: 20px;">iOS</a><a href="/tags/iOS-Swift/" style="font-size: 10px;">iOS,Swift</a><a href="/tags/iOS9/" style="font-size: 10px;">iOS9</a><a href="/tags/iOS多线程/" style="font-size: 15px;">iOS多线程</a><a href="/tags/iOS定位/" style="font-size: 10px;">iOS定位</a><a href="/tags/内存管理/" style="font-size: 10px;">内存管理</a><a href="/tags/多线程/" style="font-size: 10px;">多线程</a>
     </div>
+  </div>
 
-    <script src="http://cdn.bootcss.com/jquery/2.1.4/jquery.min.js" type="text/javascript"></script>
-    <script src="/js/main.js" type="text/javascript"></script>
 
-     
-<script>
-	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  <div class="linkslist">
+  <p class="asidetitle">友情鏈接</p>
+    <ul>
+      <li><a href="http://www.cocoachina.com" target="_blank" title="Hexo">CocoaChina</a></li>
+      <li><a href="http://swift.gg/archives/" target="_blank" title="Hexo">SwiftGG</a></li>
+      <li><a href="https://wsgzao.github.io/post/hexo-jacman/" target="_blank" title="Hexo">Jacman</a></li>
+    </ul>
+</div>
 
-	ga('create', 'UA-42596364-1', 'auto');
-	ga('send', 'pageview');
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 訂閱</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hi,I&#39;m DS. <br/>
+			.......</p>
+	</section>
+	 
+	<div class="social-font clearfix">
+		
+		<a href="http://weibo.com/2502328960" target="_blank" title="weibo"></a>
+		
+		
+		
+		<a href="https://github.com/ludaye123" target="_blank" title="github"></a>
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2016 
+		
+		<a href="http://linfeng1009.gitcafe.io" target="_blank" title="大神">大神</a>
+		
+		<br />
+		<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1255886342'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s4.cnzz.com/z_stat.php%3Fid%3D1255886342%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script>
+
+		<script>
+			var _hmt = _hmt || [];
+			(function() {
+			  var hm = document.createElement("script");
+			  hm.src = "//hm.baidu.com/hm.js?7c3a425add5fae9a1970c9b53a04242a";
+			  var s = document.getElementsByTagName("script")[0]; 
+			  s.parentNode.insertBefore(hm, s);
+			})();
+		</script>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
 </script>
 
-</body>
-</html>
+
+
+
+
+
+
+  </body>
+ </html>

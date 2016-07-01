@@ -1,345 +1,262 @@
-<!DOCTYPE html>
-<html>
+
+  <!DOCTYPE HTML>
+<html lang="zh-Hans">
 <head>
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    
-    <title>大神的iOS开发博客 | 知识来源于分解</title>
-    <meta name="renderer" content="webkit">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="MobileOptimized" content="320">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
-    <meta name="description" content="我们都在为自己的梦想奋斗中.....">
-
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="大神的iOS开发博客 | 知识来源于分解">
-    <meta name="twitter:description" content="我们都在为自己的梦想奋斗中.....">
-
-    <meta property="og:type" content="article">
-    <meta property="og:title" content="大神的iOS开发博客 | 知识来源于分解">
-    <meta property="og:description" content="我们都在为自己的梦想奋斗中.....">
-
+  <meta charset="UTF-8">
+  
+    <title>Category: iOS | 大神的iOS开发博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="大神">
     
-    <link rel="stylesheet" href="/css/vno.css" type="text/css">
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" type="text/css">
-
+    <meta name="description" content="我们都在为自己的梦想奋斗中.....">
     
-    <link rel="icon" href="/images/favicon.png">
     
-
-    <meta name="generator" content="hexo"/>
     
-
-    <link rel="canonical" href="http://linfeng1009.gitcafe.io"/>
-
     
-
-    <meta name="baidu-site-verification" content="m1n9RLGcrV" />
+    <link rel="alternate" href="/atom.xml" title="大神的iOS开发博客" type="application/atom+xml">
     
-<script type="text/javascript">
-#申请的百度统计代码
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "//hm.baidu.com/hm.js?7c3a425add5fae9a1970c9b53a04242a";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
-
-
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
 </head>
 
-<body class="home-template no-js">
-
-    <span class="mobile btn-mobile-menu">
-        <i class="fa fa-list btn-mobile-menu__icon"></i>
-        <i class="fa fa-angle-up btn-mobile-close__icon hidden"></i>
-    </span>
-
-    
-<header class="panel-cover panel-cover--collapsed" style="background-image: url(/images/background-cover.jpg)">
-  <div class="panel-main">
-    <div class="panel-main__inner panel-inverted">
-    <div class="panel-main__content">
-
-        <a href="/" title="前往 大神的iOS开发博客 的主页"><img src="/images/logo2.jpg" width="80" alt="大神的iOS开发博客 logo" class="panel-cover__logo logo" /></a>
-        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage for 大神的iOS开发博客">大神的iOS开发博客</a></h1>
-        
-        <span class="panel-cover__subtitle panel-subtitle">知识来源于分解</span>
-        
-        <hr class="panel-cover__divider" />
-        <p class="panel-cover__description">我们都在为自己的梦想奋斗中.....</p>
-        <hr class="panel-cover__divider panel-cover__divider--secondary" />
-
-        <div class="navigation-wrapper">
-          <div>
-          <nav class="cover-navigation cover-navigation--primary">
-            <ul class="navigation">
-              <li class="navigation__item"><a href="/#blog" title="访问博客" class="blog-button">文章归档</a></li>
-            
-              <li class="navigation__item"><a href="/projects">项目作品</a></li>
-            
-              <li class="navigation__item"><a href="/about">关于我</a></li>
-            
-            </ul>
-          </nav>
-          </div>
-          <div>
-          <nav class="cover-navigation navigation--social">
-  <ul class="navigation">
-
-  <!-- Weibo-->
-  
-  <li class="navigation__item">
-    <a href="http://weibo.com/2502328960/profile?topnav=1&amp;wvr=6" title="我的微博" target="_blank">
-      <i class='social fa fa-weibo'></i>
-      <span class="label">Weibo</span>
-    </a>
-  </li> 
-
-
-  <!-- Github -->
-  
-  <li class="navigation__item">
-    <a href="https://github.com/ludaye123" title="查看我的GitHub主页" target="_blank">
-      <i class='social fa fa-github'></i>
-      <span class="label">Github</span>
-    </a>
-  </li>
-
-
-<!-- Stack Overflow -->
-        
-
-  <!-- Google Plus -->
-  
-
-<!-- Facebook -->
-
-  
-<!-- Twitter -->
-
-  
-
-
-  <li class="navigation__item">
-    <a href="mailto:1057105719@qq.com" title="邮件联系我" target="_blank">
-      <i class='social fa fa-envelope'></i>
-      <span class="label">Email</span>
-    </a>
-  </li>
-
-
-  </ul>
-</nav>
-
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-
-    <div class="panel-cover--overlay cover-blue"></div>
-  </div>
-</header>
-
-    <div class="content-wrapper">
-        <div class="content-wrapper__inner">
-            <div class="main-post-list">
-    
-  <ol class="post-list">
-  
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2016/01/27/thread-summary-gcd/" title="link to post.title">iOS多线程总结之GCD</a></h2>
-      <p class="excerpt">
-    
-      Grand Central Dispatch (GCD)1.GCD概述GCD由语言特征、运行时库和系统提供的增强功能组成，综合提升多核硬件支持代码在iOS和OS X中并发执行。
-GCD对象和ARC当你使用OC语言构建应用编译时，所有的dispatch对象也是OC对象。同样的，在ARC的环境中，dispatch对象和任何其他OC对象一样会自动的retain 和 release。在MRC环境中时，使用dispatch_retain和dispatch_release函数(和OC语义相同)来保留或者释放
-    &hellip;
-      </p>
-      <div class="post-list__meta"><time datetime="2016-01-27T13:01:31.000Z" class="post-list__meta--date date">2016-01-27</time> &#8226; <span class="post-list__meta--tags tags">于&nbsp;
-  <a class="tag-link" href="/tags/iOS多线程/">iOS多线程</a>
-</span><a class="btn-border-small" href="/2016/01/27/thread-summary-gcd/">继续阅读</a></div>
-      <hr class="post-list__divider" />
-    </li>
-  
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2015/11/10/memory-arc/" title="link to post.title">iOS开发-ARC理解</a></h2>
-      <p class="excerpt">
-    
-      ARC是一个编译器的特征,提供自动管理对Objective-C对象的分配内存,而不是总是思索什么时候retain和什么时候release操作，ARC会让你把更多地精力集中在编码上。
-ARC概述
-ARC可以让你没必要记住什么时候使用retain,release和autorelease方法,ARC会预估对象的生命周期并且在编译时自动插入合适的内存管理方法，也会生成合适的dealloc方法。一个完整正确实现的Person类可能是这样的：
-12345678910@interface Person : N
-    &hellip;
-      </p>
-      <div class="post-list__meta"><time datetime="2015-11-10T08:32:36.000Z" class="post-list__meta--date date">2015-11-10</time> &#8226; <span class="post-list__meta--tags tags">于&nbsp;
-  <a class="tag-link" href="/tags/内存管理/">内存管理</a>
-</span><a class="btn-border-small" href="/2015/11/10/memory-arc/">继续阅读</a></div>
-      <hr class="post-list__divider" />
-    </li>
-  
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2015/10/20/3D-Touch实践/" title="link to post.title">3D Touch实践——Quick Action</a></h2>
-      <p class="excerpt">
-    
-      3D Touch简介随着iOS9以及iPhone 6s和iPhone 6s plus的发布，苹果添加一种立体的用户界面:用户在主屏幕上不需要打开APP，按压图标就可以快速访问APP提供的一些功能。在APP内，用户按压界面就可以预览更多地内容，获得加速访问的特征。
-主屏幕Quick Action
-快速选项(Quick Action)可以让用户预见并加速与APP交互，iOS9SDK提供的官方API可以使你定义静态或者动态的快速选项，以及检测当前设备快速选项的可用性。
-1.定义静态快速选项选项在APP
-    &hellip;
-      </p>
-      <div class="post-list__meta"><time datetime="2015-10-20T07:17:25.000Z" class="post-list__meta--date date">2015-10-20</time> &#8226; <span class="post-list__meta--tags tags">于&nbsp;
-  <a class="tag-link" href="/tags/iOS/">iOS</a>
-</span><a class="btn-border-small" href="/2015/10/20/3D-Touch实践/">继续阅读</a></div>
-      <hr class="post-list__divider" />
-    </li>
-  
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2015/10/19/object-parse/" title="link to post.title">Objective-C 对象解析</a></h2>
-      <p class="excerpt">
-    
-      Apple开源库: 点击这里，当前版本为最新版本:objc4-647.tar.gz
-
-Object
-在Objective-C中，除了一些基本类型外，基本上都可以称之为对象。首先从类的实例进行分析：打开刚刚下载源码的工程：找到objc_private.h这个文件，在文件的上面部分可以看到Class和id的定义
-12typedef struct objc_class *Class;typedef struct objc_object *id;
-可以看到Class和id分为objc_class和obj
-    &hellip;
-      </p>
-      <div class="post-list__meta"><time datetime="2015-10-19T08:31:02.000Z" class="post-list__meta--date date">2015-10-19</time> &#8226; <span class="post-list__meta--tags tags">于&nbsp;
-  <a class="tag-link" href="/tags/iOS/">iOS</a>
-</span><a class="btn-border-small" href="/2015/10/19/object-parse/">继续阅读</a></div>
-      <hr class="post-list__divider" />
-    </li>
-  
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2015/09/22/thread-summary-nsoperate/" title="link to post.title">iOS多线程总结之NSOperation 和 NSOperationQueue</a></h2>
-      <p class="excerpt">
-    
-      NSOperation1.NSOperation概述NSOperation类是一个抽象类，你用来封装代码和数据与单一任务关联。因为它是抽象的，不能直接使用这个类，但可以直接子类化或者是使用系统定义好的子类(NSInvocationOperation or NSBlockOperation)去执行实际任务。尽管是抽象的，NSOperation基本实现包括了重要的逻辑确保安全执行你的任务。这些内建的逻辑允许你集中精力在实际实现的任务中，而不是粘合代码来确保它和系统其他的对象正常运行。
-一个操作对象是
-    &hellip;
-      </p>
-      <div class="post-list__meta"><time datetime="2015-09-22T05:11:32.000Z" class="post-list__meta--date date">2015-09-22</time> &#8226; <span class="post-list__meta--tags tags">于&nbsp;
-  <a class="tag-link" href="/tags/iOS多线程/">iOS多线程</a>
-</span><a class="btn-border-small" href="/2015/09/22/thread-summary-nsoperate/">继续阅读</a></div>
-      <hr class="post-list__divider" />
-    </li>
-  
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2015/09/16/thread-summary-nsthread/" title="link to post.title">iOS多线程总结之NSThread</a></h2>
-      <p class="excerpt">
-    
-      iOS开发中，实现线程的方式总体有三种1.NSThread2.NSOperate 和 NSOperateQueue3.GCD还有一种更加底层的API,用pthread来实现
-NSThread一个NSThread对象控制一条线程的执行。用这个类当你想要让一个OC方法运行在它自己的执行线程中。线程特别有用 当你需要执行一个漫长的任务时,但是又不想阻塞应用中其他部分的执行。另外,你能够用线程去避免阻塞应用的主线程,处理用户界面和相关的事件操作。线程也能别用来把一个大的任务分解成多个小得任务,从而引领性
-    &hellip;
-      </p>
-      <div class="post-list__meta"><time datetime="2015-09-16T01:54:02.000Z" class="post-list__meta--date date">2015-09-16</time> &#8226; <span class="post-list__meta--tags tags">于&nbsp;
-  <a class="tag-link" href="/tags/iOS多线程/">iOS多线程</a>
-</span><a class="btn-border-small" href="/2015/09/16/thread-summary-nsthread/">继续阅读</a></div>
-      <hr class="post-list__divider" />
-    </li>
-  
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2015/08/20/create-pods/" title="link to post.title">制作pod库并提交到Cocoapods</a></h2>
-      <p class="excerpt">
-    
-      摘自:玉令天下
-简介2014年5月20日，CocoaPods不再接受向CocoaPods/Specs的pull request，官方的说法是为了安全考虑，防止每个人的pod被其他人修改，于是CocoaPods团队开发了trunk服务，这样每个人都是其发布的pod的owner，没有权限的人无法修改，这样更安全。更改后的提交架构是这样的：(来自官方图片)
-
-以前的podspec文件都是ruby格式，而trunk为我们带来了更轻便的json格式，你后你可以用json来配置你的pod了。不用担心过去我们
-    &hellip;
-      </p>
-      <div class="post-list__meta"><time datetime="2015-08-20T05:35:14.000Z" class="post-list__meta--date date">2015-08-20</time> &#8226; <span class="post-list__meta--tags tags">于&nbsp;
-  <a class="tag-link" href="/tags/Cocoapods/">Cocoapods</a>
-</span><a class="btn-border-small" href="/2015/08/20/create-pods/">继续阅读</a></div>
-      <hr class="post-list__divider" />
-    </li>
-  
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2015/02/12/corelocation-basic-use/" title="link to post.title">CoreLocation 基本使用</a></h2>
-      <p class="excerpt">
-    
-      1.导入头文件1#import &amp;lt;CoreLocation/CoreLocation.h&amp;gt;
-2.定义一个属性1@property (nonatomic, strong) CLLocationManager *locationManager;
-3.设置Get方法123456789101112131415161718192021- (CLLocationManager *)locationManager&amp;#123;    if(!_locationManager)    &amp;#123;  
-    &hellip;
-      </p>
-      <div class="post-list__meta"><time datetime="2015-02-12T09:59:43.000Z" class="post-list__meta--date date">2015-02-12</time> &#8226; <span class="post-list__meta--tags tags">于&nbsp;
-  <a class="tag-link" href="/tags/iOS定位/">iOS定位</a>
-</span><a class="btn-border-small" href="/2015/02/12/corelocation-basic-use/">继续阅读</a></div>
-      <hr class="post-list__divider" />
-    </li>
-  
-    
-  </ol>
-
-
-
+    <body>
+      <header>
+        <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="大神的iOS开发博客" title="大神的iOS开发博客"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="大神的iOS开发博客">大神的iOS开发博客</a></h1>
+				<h2 class="blog-motto">知识来源于分解</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜單">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					
+						<li><a href="/">主页|Home</a></li>
+					
+						<li><a href="/archives">归档|Archives</a></li>
+					
+						<li><a href="/projects">项目|Projects</a></li>
+					
+						<li><a href="/about">关于|About</a></li>
+					
+						<li><a href="/resumes">简历|Resume</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:linfeng1009.gitcafe.io">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
 </div>
 
+      </header>
+      <div id="container">
+        
+
+<div class="archive-title" >
+  <h2 class="category-icon">iOS</h2>
+  
+</div>
+<div id="main" class="archive-part clearfix">
+  <div id="archive-page">
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2016/01/27/thread-summary-gcd/" title="iOS多线程总结之GCD" itemprop="url">
+  
+    <h1 itemprop="name">iOS多线程总结之GCD</h1>
+    
+    <time datetime="2016-01-27T13:01:31.000Z" itemprop="datePublished">2016-01-27</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2015/11/10/memory-arc/" title="iOS开发-ARC理解" itemprop="url">
+  
+    <h1 itemprop="name">iOS开发-ARC理解</h1>
+    
+    <time datetime="2015-11-10T08:32:36.000Z" itemprop="datePublished">2015-11-10</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2015/10/20/3D-Touch实践/" title="3D Touch实践——Quick Action" itemprop="url">
+  
+    <h1 itemprop="name">3D Touch实践——Quick Action</h1>
+    
+    <time datetime="2015-10-20T07:17:25.000Z" itemprop="datePublished">2015-10-20</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2015/10/19/object-parse/" title="Objective-C 对象解析" itemprop="url">
+  
+    <h1 itemprop="name">Objective-C 对象解析</h1>
+    
+    <time datetime="2015-10-19T08:31:02.000Z" itemprop="datePublished">2015-10-19</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2015/09/22/thread-summary-nsoperate/" title="iOS多线程总结之NSOperation 和 NSOperationQueue" itemprop="url">
+  
+    <h1 itemprop="name">iOS多线程总结之NSOperation 和 NSOperationQueue</h1>
+    
+    <time datetime="2015-09-22T05:11:32.000Z" itemprop="datePublished">2015-09-22</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2015/09/16/thread-summary-nsthread/" title="iOS多线程总结之NSThread" itemprop="url">
+  
+    <h1 itemprop="name">iOS多线程总结之NSThread</h1>
+    
+    <time datetime="2015-09-16T01:54:02.000Z" itemprop="datePublished">2015-09-16</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2015/08/20/create-pods/" title="制作pod库并提交到Cocoapods" itemprop="url">
+  
+    <h1 itemprop="name">制作pod库并提交到Cocoapods</h1>
+    
+    <time datetime="2015-08-20T05:35:14.000Z" itemprop="datePublished">2015-08-20</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2015/02/12/corelocation-basic-use/" title="CoreLocation 基本使用" itemprop="url">
+  
+    <h1 itemprop="name">CoreLocation 基本使用</h1>
+    
+    <time datetime="2015-02-12T09:59:43.000Z" itemprop="datePublished">2015-02-12</time>
+  </a>
+</section>
 
 
-            <footer class="footer">
-    <span class="footer__copyright">
-        本站点采用<a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>
-    </span>
-    <span class="footer__copyright">
-        基于 <a href="http://hexo.io">Hexo</a> 搭建，感谢 <a href="https://gitcafe.com/">GitCafe</a> 提供免费的托管服务
-    </span>
-    <span class="footer__copyright">
-        &copy; 2016 - 本站由 <a href="/">@大神</a> 创建,
-        使用<a href="https://github.com/lenbo-ma/hexo-theme-vno">hexo-theme-vno</a>主题,
-        修改自<a href="http://github.com/onevcat/vno" target="_blank">Vno</a>
-    </span>
+  </div>
+</div>
 
-   <script>
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "//hm.baidu.com/hm.js?7c3a425add5fae9a1970c9b53a04242a";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
+      </div>
+      <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hi,I&#39;m DS. <br/>
+			.......</p>
+	</section>
+	 
+	<div class="social-font clearfix">
+		
+		<a href="http://weibo.com/2502328960" target="_blank" title="weibo"></a>
+		
+		
+		
+		<a href="https://github.com/ludaye123" target="_blank" title="github"></a>
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2016 
+		
+		<a href="http://linfeng1009.gitcafe.io" target="_blank" title="大神">大神</a>
+		
+		<br />
+		<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1255886342'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s4.cnzz.com/z_stat.php%3Fid%3D1255886342%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script>
 
-
-    <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1255886342'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s4.cnzz.com/z_stat.php%3Fid%3D1255886342%26online%3D1%26show%3Dline' type='text/javascript'%3E%3C/script%3E"));</script>
-
+		<script>
+			var _hmt = _hmt || [];
+			(function() {
+			  var hm = document.createElement("script");
+			  hm.src = "//hm.baidu.com/hm.js?7c3a425add5fae9a1970c9b53a04242a";
+			  var s = document.getElementsByTagName("script")[0]; 
+			  s.parentNode.insertBefore(hm, s);
+			})();
+		</script>
+		
+		</p>
+</div>
 </footer>
-
-        </div>
-    </div>
-
-    <script src="http://cdn.bootcss.com/jquery/2.1.4/jquery.min.js" type="text/javascript"></script>
-    <script src="/js/main.js" type="text/javascript"></script>
-
-     
-<script>
-	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-	ga('create', 'UA-42596364-1', 'auto');
-	ga('send', 'pageview');
+      <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
 </script>
 
-</body>
-</html>
+
+
+
+
+
+
+    </body>
+   </html>
