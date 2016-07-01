@@ -1,284 +1,170 @@
-<!doctype html>
-<html class="theme-next   use-motion ">
+<!DOCTYPE html>
+<html>
 <head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    
+    <title>iOS多线程总结之NSOperation 和 NSOperationQueue | 大神的iOS开发博客</title>
+    <meta name="renderer" content="webkit">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
+    <meta name="description" content="我们都在为自己的梦想奋斗中.....">
 
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="iOS多线程总结之NSOperation 和 NSOperationQueue | 大神的iOS开发博客">
+    <meta name="twitter:description" content="我们都在为自己的梦想奋斗中.....">
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="iOS多线程总结之NSOperation 和 NSOperationQueue | 大神的iOS开发博客">
+    <meta property="og:description" content="我们都在为自己的梦想奋斗中.....">
 
+    
+    <meta name="author" content="大神">
+    
+    <link rel="stylesheet" href="/css/vno.css" type="text/css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" type="text/css">
 
+    
+    <link rel="icon" href="/images/favicon.png">
+    
 
+    <meta name="generator" content="hexo"/>
+    
 
+    <link rel="canonical" href="http://linfeng1009.gitcafe.io/2015/09/22/thread-summary-nsoperate/"/>
 
+    
 
-
-
-
-
-
-
-  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
-
-
-
-
-  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
-
-
-
-<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="iOS多线程," />
-
-
-
-
-
-  <link rel="alternate" href="/atom.xml" title="大神的iOS开发博客" type="application/atom+xml" />
-
-
-
-
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
-
-
-
-
-
-
-<meta name="description" content="NSOperation1.NSOperation概述NSOperation类是一个抽象类，你用来封装代码和数据与单一任务关联。因为它是抽象的，不能直接使用这个类，但可以直接子类化或者是使用系统定义好的子类(NSInvocationOperation or NSBlockOperation)去执行实际任务。尽管是抽象的，NSOperation基本实现包括了重要的逻辑确保安全执行你的任务。这些内建的逻">
-<meta property="og:type" content="article">
-<meta property="og:title" content="iOS多线程总结之NSOperation 和 NSOperationQueue">
-<meta property="og:url" content="http://linfeng1009.gitcafe.io/2015/09/22/thread-summary-nsoperate/index.html">
-<meta property="og:site_name" content="大神的iOS开发博客">
-<meta property="og:description" content="NSOperation1.NSOperation概述NSOperation类是一个抽象类，你用来封装代码和数据与单一任务关联。因为它是抽象的，不能直接使用这个类，但可以直接子类化或者是使用系统定义好的子类(NSInvocationOperation or NSBlockOperation)去执行实际任务。尽管是抽象的，NSOperation基本实现包括了重要的逻辑确保安全执行你的任务。这些内建的逻">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="iOS多线程总结之NSOperation 和 NSOperationQueue">
-<meta name="twitter:description" content="NSOperation1.NSOperation概述NSOperation类是一个抽象类，你用来封装代码和数据与单一任务关联。因为它是抽象的，不能直接使用这个类，但可以直接子类化或者是使用系统定义好的子类(NSInvocationOperation or NSBlockOperation)去执行实际任务。尽管是抽象的，NSOperation基本实现包括了重要的逻辑确保安全执行你的任务。这些内建的逻">
-
-
-
-<script type="text/javascript" id="hexo.configuration">
-  var CONFIG = {
-    scheme: '',
-    sidebar: 'post',
-    motion: true
-  };
+    <meta name="baidu-site-verification" content="m1n9RLGcrV" />
+    
+<script type="text/javascript">
+#申请的百度统计代码
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?7c3a425add5fae9a1970c9b53a04242a";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
 </script>
 
-  <title> iOS多线程总结之NSOperation 和 NSOperationQueue | 大神的iOS开发博客 </title>
+
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<body class="home-template no-js">
 
-  <!--[if lte IE 8]>
-  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
-    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
-      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
-           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
-           style='margin-left:auto;margin-right:auto;display: block;'/>
+    <span class="mobile btn-mobile-menu">
+        <i class="fa fa-list btn-mobile-menu__icon"></i>
+        <i class="fa fa-angle-up btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+<header class="panel-cover panel-cover--collapsed" style="background-image: url(/images/background-cover.jpg)">
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        <a href="/" title="前往 大神的iOS开发博客 的主页"><img src="/images/logo2.jpg" width="80" alt="大神的iOS开发博客 logo" class="panel-cover__logo logo" /></a>
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage for 大神的iOS开发博客">大神的iOS开发博客</a></h1>
+        
+        <span class="panel-cover__subtitle panel-subtitle">知识来源于分解</span>
+        
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">我们都在为自己的梦想奋斗中.....</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+
+        <div class="navigation-wrapper">
+          <div>
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+              <li class="navigation__item"><a href="/#blog" title="访问博客" class="blog-button">文章归档</a></li>
+            
+              <li class="navigation__item"><a href="/projects">项目作品</a></li>
+            
+              <li class="navigation__item"><a href="/about">关于我</a></li>
+            
+            </ul>
+          </nav>
+          </div>
+          <div>
+          <nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+  <!-- Weibo-->
+  
+  <li class="navigation__item">
+    <a href="http://weibo.com/2502328960/profile?topnav=1&amp;wvr=6" title="我的微博" target="_blank">
+      <i class='social fa fa-weibo'></i>
+      <span class="label">Weibo</span>
     </a>
-  </div>
-<![endif]-->
+  </li> 
+
+
+  <!-- Github -->
   
-
-
-
-  <script type="text/javascript">
-    var _hmt = _hmt || [];
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "//hm.baidu.com/hm.js?7c3a425add5fae9a1970c9b53a04242a";
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
-  </script>
-
-
-
-
-  <div class="container one-column page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-meta ">
-  
-
-  <div class="custom-logo-site-title">
-    <a href="/"  class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <span class="site-title">大神的iOS开发博客</span>
-      <span class="logo-line-after"><i></i></span>
+  <li class="navigation__item">
+    <a href="https://github.com/ludaye123" title="查看我的GitHub主页" target="_blank">
+      <i class='social fa fa-github'></i>
+      <span class="label">Github</span>
     </a>
-  </div>
-  <p class="site-subtitle">知识来源于分解</p>
-</div>
+  </li>
 
-<div class="site-nav-toggle">
-  <button>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-  </button>
-</div>
 
-<nav class="site-nav">
+<!-- Stack Overflow -->
+        
+
+  <!-- Google Plus -->
   
 
-  
-    <ul id="menu" class="menu ">
-      
-        
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            
-              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
-            
-            首页
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-archives">
-          <a href="/archives" rel="section">
-            
-              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
-            
-            归档
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-projects">
-          <a href="/projects" rel="section">
-            
-              <i class="menu-item-icon fa fa-file fa-fw"></i> <br />
-            
-            项目
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-about">
-          <a href="/about" rel="section">
-            
-              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
-            
-            关于
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-commonweal">
-          <a href="/404.html" rel="section">
-            
-              <i class="menu-item-icon fa fa-heartbeat fa-fw"></i> <br />
-            
-            公益404
-          </a>
-        </li>
-      
-
-      
-      
-    </ul>
-  
+<!-- Facebook -->
 
   
+<!-- Twitter -->
+
+  
+
+
+  <li class="navigation__item">
+    <a href="mailto:1057105719@qq.com" title="邮件联系我" target="_blank">
+      <i class='social fa fa-envelope'></i>
+      <span class="label">Email</span>
+    </a>
+  </li>
+
+
+  </ul>
 </nav>
 
- </div>
-    </header>
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div id="content" class="content">
-          
-
-  <div id="posts" class="posts-expand">
-    
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                iOS多线程总结之NSOperation 和 NSOperationQueue
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-09-22T13:11:32+08:00" content="2015-09-22">
-              2015-09-22
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index">
-                    <span itemprop="name">iOS</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/09/22/thread-summary-nsoperate/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/09/22/thread-summary-nsoperate/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
+          </div>
         </div>
-      </header>
-    
 
+      </div>
 
-    <div class="post-body">
+    </div>
 
-      
-      
+    <div class="panel-cover--overlay cover-blue"></div>
+  </div>
+</header>
 
-      
-        <span itemprop="articleBody"><h2 id="NSOperation">NSOperation</h2><h3 id="1-NSOperation概述">1.NSOperation概述</h3><p><code>NSOperation</code>类是一个抽象类，你用来封装代码和数据与单一任务关联。因为它是抽象的，不能直接使用这个类，但可以直接子类化或者是使用系统定义好的子类(<code>NSInvocationOperation</code> or <code>NSBlockOperation</code>)去执行实际任务。尽管是抽象的，<code>NSOperation</code>基本实现包括了重要的逻辑确保安全执行你的任务。这些内建的逻辑允许你集中精力在实际实现的任务中，而不是粘合代码来确保它和系统其他的对象正常运行。</p>
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner">
+            <article class="post-container post-container--single">
+
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="2015-09-22T05:11:32.000Z" class="post-list__meta--date date">2015-09-22</time> &#8226; <span class="post-meta__tags tags">于&nbsp;
+  <a class="tag-link" href="/tags/iOS多线程/">iOS多线程</a>
+</span>
+    </div>
+    <h1 class="post-title">iOS多线程总结之NSOperation 和 NSOperationQueue</h1>
+  </header>
+
+  <section class="post">
+    <h2 id="NSOperation">NSOperation</h2><h3 id="1-NSOperation概述">1.NSOperation概述</h3><p><code>NSOperation</code>类是一个抽象类，你用来封装代码和数据与单一任务关联。因为它是抽象的，不能直接使用这个类，但可以直接子类化或者是使用系统定义好的子类(<code>NSInvocationOperation</code> or <code>NSBlockOperation</code>)去执行实际任务。尽管是抽象的，<code>NSOperation</code>基本实现包括了重要的逻辑确保安全执行你的任务。这些内建的逻辑允许你集中精力在实际实现的任务中，而不是粘合代码来确保它和系统其他的对象正常运行。</p>
 <p>一个操作对象是一个单一的对象，它只执行任务一次并且不能用来重复执行。你执行操作通过把它们加入到一个操作队列(<code>NSOperationQueue</code>的对象)中，操作队列中的操作就会直接执行在一个不同的线程，间接的使用<code>libdispatch</code>库(通常讲的GCD)</p>
 <h3 id="2-NSOperation的子类">2.NSOperation的子类</h3><p><code>NSOperation</code>是一个抽象类，系统预先给我们提供了两个子类，分别是:<code>NSInvocationOperation</code>和<code>NSBlockOperation</code>.</p>
 <h4 id="2-1_NSInvocationOperation">2.1 NSInvocationOperation</h4><p><code>NSInvocationOperation</code>类是<code>NSOperation</code>的具体子类，管理执行单一封装的任务，你可以使用这个类去启动一个操作，由指定的对象调用选择器。这个类实现非并发操作。</p>
@@ -351,472 +237,77 @@ TODO: 不要把操作设置依赖为自己本身，如果这样做会造成死�
 <h4 id="2-2_属性">2.2 属性</h4><p><code>@property NSInteger maxConcurrentOperationCount</code> 队列中能够同时执行的最大操作个数，默认没有限制<br><code>@property(getter=isSuspended) BOOL suspended</code> 队列是否处于活动状态 </p>
 <h3 id="3-NSOperationQueue的使用">3.NSOperationQueue的使用</h3><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSInvocationOperation</span> *operation1 = [[<span class="built_in">NSInvocationOperation</span> alloc] initWithTarget:<span class="keyword">self</span> selector:<span class="keyword">@selector</span>(processOperation) object:<span class="literal">nil</span>];</span><br><span class="line">    <span class="built_in">NSBlockOperation</span> *operation2 = [<span class="built_in">NSBlockOperation</span> blockOperationWithBlock:^&#123;</span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"操作2"</span>);</span><br><span class="line">    &#125;];</span><br><span class="line">    </span><br><span class="line"><span class="built_in">NSOperationQueue</span> *operationQueue = [[<span class="built_in">NSOperationQueue</span> alloc] init];</span><br><span class="line">[operationQueue addOperation:operation1];</span><br><span class="line">[operationQueue addOperation:operation2];</span><br><span class="line">[operationQueue addOperationWithBlock:^&#123;</span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"操作3"</span>);</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)processOperation</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"操作1"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="参考">参考</h3><p><a href="https://developer.apple.com/library/prerelease/ios/documentation/Cocoa/Reference/NSOperation_class/index.html" target="_blank" rel="external">NSOperation</a><br><a href="https://developer.apple.com/library/prerelease/ios/documentation/Cocoa/Reference/NSInvocationOperation_Class/index.html" target="_blank" rel="external">NSInvocationOperation</a><br><a href="https://developer.apple.com/library/prerelease/ios/documentation/Cocoa/Reference/NSBlockOperation_class/index.html#//apple_ref/doc/uid/TP40008157-CH1-SW2" target="_blank" rel="external">NSBlockOperation</a><br><a href="https://developer.apple.com/library/prerelease/ios/documentation/Cocoa/Reference/NSOperationQueue_class/" target="_blank" rel="external">NSOperationQueue</a></p>
-</span>
-      
-    </div>
 
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/iOS多线程/" rel="tag">#iOS多线程</a>
-          
-        </div>
-      
+  </section>
 
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2015/09/16/thread-summary-nsthread/" rel="next" title="iOS多线程总结之NSThread">
-                <i class="fa fa-chevron-left"></i> iOS多线程总结之NSThread
-              </a>
-            
-          </div>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2015/09/23/associated-object/" rel="prev" title="Associated Objects实现用Block代替UIAlertView代理方法">
-                Associated Objects实现用Block代替UIAlertView代理方法 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
-  </article>
+</article>
 
 
-
-    <div class="post-spread">
-      
-        <div class="ds-share flat" data-thread-key="2015/09/22/thread-summary-nsoperate/"
-     data-title="iOS多线程总结之NSOperation 和 NSOperationQueue"
-     data-content=""
-     data-url="http://linfeng1009.gitcafe.io/2015/09/22/thread-summary-nsoperate/">
-  <div class="ds-share-inline">
-    <ul  class="ds-share-icons-16">
-
-      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
-      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
-      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
-      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
-      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
-
-    </ul>
-    <div class="ds-share-icons-more">
-    </div>
-  </div>
-</div>
-      
-    </div>
-  </div>
-
-
-        </div>
-
-        
-
-  <p>热评文章</p>
-  <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
-
-
-        
-  <div class="comments" id="comments">
-    
-      <div class="ds-thread" data-thread-key="2015/09/22/thread-summary-nsoperate/"
-           data-title="iOS多线程总结之NSOperation 和 NSOperationQueue" data-url="http://linfeng1009.gitcafe.io/2015/09/22/thread-summary-nsoperate/">
-      </div>
-    
-  </div>
-
-
-      </div>
-
-      
-        
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <section class="site-overview sidebar-panel ">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" src="/images/default_avatar.jpg" alt="大神" itemprop="image"/>
-          <p class="site-author-name" itemprop="name">大神</p>
-        </div>
-        <p class="site-description motion-element" itemprop="description">我们都在为自己的梦想奋斗中.....</p>
-        <nav class="site-state motion-element">
-          <div class="site-state-item site-state-posts">
-            <a href="/archives">
-              <span class="site-state-item-count">22</span>
-              <span class="site-state-item-name">日志</span>
-            </a>
-          </div>
-
-          <div class="site-state-item site-state-categories">
-            
-              <span class="site-state-item-count">5</span>
-              <span class="site-state-item-name">分类</span>
-              
-          </div>
-
-          <div class="site-state-item site-state-tags">
-            
-              <span class="site-state-item-count">11</span>
-              <span class="site-state-item-name">标签</span>
-              
-          </div>
-
-        </nav>
-
-        
-          <div class="feed-link motion-element">
-            <a href="/atom.xml" rel="alternate">
-              <i class="fa fa-rss"></i>
-              RSS
-            </a>
-          </div>
-        
-
-        <div class="links-of-author motion-element">
-          
-            
-              <span class="links-of-author-item">
-                <a href="https://github.com/ludaye123" target="_blank">
-                  
-                    <i class="fa fa-github"></i> GitHub
-                  
-                </a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://weibo.com/2502328960/profile?rightmod=1&wvr=6&mod=personinfo&is_all=1" target="_blank">
-                  
-                    <i class="fa fa-weibo"></i> Weibo
-                  
-                </a>
-              </span>
-            
-          
-        </div>
-
-        
-        
-
-        <div class="links-of-author motion-element">
-          
-            <p class="site-author-name">Links</p>
-            
-              <span class="links-of-author-item">
-                <a href="http://www.cocoachina.com" target="_blank">CocoaChina</a>
-              </span>
-            
-          
-        </div>
-
-      </section>
-
-      
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc-indicator-top post-toc-indicator">
-            <i class="fa fa-angle-double-up"></i>
-          </div>
-          <div class="post-toc">
-            
-              
-            
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#NSOperation"><span class="nav-number">1.</span> <span class="nav-text">NSOperation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-NSOperation概述"><span class="nav-number">1.1.</span> <span class="nav-text">1.NSOperation概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-NSOperation的子类"><span class="nav-number">1.2.</span> <span class="nav-text">2.NSOperation的子类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1_NSInvocationOperation"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 NSInvocationOperation</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-1_使用方法"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.1.1 使用方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2_NSBlockOperation"><span class="nav-number">1.2.3.</span> <span class="nav-text">2.2 NSBlockOperation</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-1_使用方法"><span class="nav-number">1.2.4.</span> <span class="nav-text">2.2.1 使用方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3_自定义NSOperation"><span class="nav-number">1.2.5.</span> <span class="nav-text">2.3 自定义NSOperation</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-NSOperation_依赖"><span class="nav-number">1.3.</span> <span class="nav-text">3.NSOperation 依赖</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NSOperationQueue"><span class="nav-number">2.</span> <span class="nav-text">NSOperationQueue</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-NSOperationQueue的概述"><span class="nav-number">2.1.</span> <span class="nav-text">1.NSOperationQueue的概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-NSOperationQueue常用方法和属性"><span class="nav-number">2.2.</span> <span class="nav-text">2.NSOperationQueue常用方法和属性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1_方法"><span class="nav-number">2.2.1.</span> <span class="nav-text">2.1 方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2_属性"><span class="nav-number">2.2.2.</span> <span class="nav-text">2.2 属性</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-NSOperationQueue的使用"><span class="nav-number">2.3.</span> <span class="nav-text">3.NSOperationQueue的使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">2.4.</span> <span class="nav-text">参考</span></a></li></ol></li></ol></div>
-            
-          </div>
-          <div class="post-toc-indicator-bottom post-toc-indicator">
-            <i class="fa fa-angle-double-down"></i>
-          </div>
-        </section>
-      
-
-    </div>
-  </aside>
-
-
-      
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright" >
-  
-  &copy;  2014 - 
-  <span itemprop="copyrightYear">2016</span>
-  <span class="with-love">
-    <i class="icon-next-heart fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">大神 </span>
-
-</div>
-
-<div class="powered-by">
-  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
-</div>
-
-<div class="theme-info">
-  主题 -
-  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
-    NexT
-
-      <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1255886342'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s4.cnzz.com/z_stat.php%3Fid%3D1255886342%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
-  </a>
-  
-</div>
- 
-
-
-      </div>
-    </footer>
-
-    <div class="back-to-top"></div>
-  </div>
-
-  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
-
-  
-  
-
-  
-    
-
-  
-    
-  
-
+<section class="post-comments">
+  <!-- 多说评论框 start -->
+  <div class="ds-thread" data-thread-key="http://linfeng1009.gitcafe.io/2015/09/22/thread-summary-nsoperate/" data-title="iOS多线程总结之NSOperation 和 NSOperationQueue" data-url="http://linfeng1009.gitcafe.io/2015/09/22/thread-summary-nsoperate/"></div>
+  <!-- 多说评论框 end -->
+  <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
   <script type="text/javascript">
-    var duoshuoQuery = {short_name:"dashen1009"};
-    (function() {
-      var ds = document.createElement('script');
-      ds.type = 'text/javascript';ds.async = true;
-      ds.id = 'duoshuo-script';
-      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-      ds.charset = 'UTF-8';
-      (document.getElementsByTagName('head')[0]
-      || document.getElementsByTagName('body')[0]).appendChild(ds);
-    })();
+  var duoshuoQuery = {short_name:"dashen1009"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
   </script>
-    
+<!-- 多说公共JS代码 end -->
+</section>
+
+
+
+            <footer class="footer">
+    <span class="footer__copyright">
+        本站点采用<a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>
+    </span>
+    <span class="footer__copyright">
+        基于 <a href="http://hexo.io">Hexo</a> 搭建，感谢 <a href="https://gitcafe.com/">GitCafe</a> 提供免费的托管服务
+    </span>
+    <span class="footer__copyright">
+        &copy; 2016 - 本站由 <a href="/">@大神</a> 创建,
+        使用<a href="https://github.com/lenbo-ma/hexo-theme-vno">hexo-theme-vno</a>主题,
+        修改自<a href="http://github.com/onevcat/vno" target="_blank">Vno</a>
+    </span>
+
+   <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?7c3a425add5fae9a1970c9b53a04242a";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+    <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1255886342'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s4.cnzz.com/z_stat.php%3Fid%3D1255886342%26online%3D1%26show%3Dline' type='text/javascript'%3E%3C/script%3E"));</script>
+
+</footer>
+
+        </div>
+    </div>
+
+    <script src="http://cdn.bootcss.com/jquery/2.1.4/jquery.min.js" type="text/javascript"></script>
+    <script src="/js/main.js" type="text/javascript"></script>
+
      
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-
-    
-  
-
-  
-  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
-  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
-
-
-  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
-  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
-<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
-
-<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
-
-
-  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-
-  
-  
-<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
-
-
-<script type="text/javascript" id="sidebar.toc.highlight">
-  $(document).ready(function () {
-    var tocSelector = '.post-toc';
-    var $tocSelector = $(tocSelector);
-    var activeCurrentSelector = '.active-current';
-
-    $tocSelector
-      .on('activate.bs.scrollspy', function () {
-        var $currentActiveElement = $(tocSelector + ' .active').last();
-
-        removeCurrentActiveClass();
-        $currentActiveElement.addClass('active-current');
-
-        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
-      })
-      .on('clear.bs.scrollspy', function () {
-        removeCurrentActiveClass();
-      });
-
-    function removeCurrentActiveClass () {
-      $(tocSelector + ' ' + activeCurrentSelector)
-        .removeClass(activeCurrentSelector.substring(1));
-    }
-
-    function processTOC () {
-      getTOCMaxHeight();
-      toggleTOCOverflowIndicators();
-    }
-
-    function getTOCMaxHeight () {
-      var height = $('.sidebar').height() -
-                   $tocSelector.position().top -
-                   $('.post-toc-indicator-bottom').height();
-
-      $tocSelector.css('height', height);
-
-      return height;
-    }
-
-    function toggleTOCOverflowIndicators () {
-      tocOverflowIndicator(
-        '.post-toc-indicator-top',
-        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
-      );
-
-      tocOverflowIndicator(
-        '.post-toc-indicator-bottom',
-        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
-      )
-    }
-
-    $(document).on('sidebar.motion.complete', function () {
-      processTOC();
-    });
-
-    $('body').scrollspy({ target: tocSelector });
-    $(window).on('resize', function () {
-      if ( $('.sidebar').hasClass('sidebar-active') ) {
-        processTOC();
-      }
-    });
-
-    onScroll($tocSelector);
-
-    function onScroll (element) {
-      element.on('mousewheel DOMMouseScroll', function (event) {
-          var oe = event.originalEvent;
-          var delta = oe.wheelDelta || -oe.detail;
-
-          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
-          event.preventDefault();
-
-          toggleTOCOverflowIndicators();
-      });
-    }
-
-    function tocOverflowIndicator (indicator, action) {
-      var $indicator = $(indicator);
-      var opacity = action === 'show' ? 1 : 0;
-      $indicator.velocity ?
-        $indicator.velocity('stop').velocity({
-          opacity: opacity
-        }, { duration: 100 }) :
-        $indicator.stop().animate({
-          opacity: opacity
-        }, 100);
-    }
-
-  });
+	ga('create', 'UA-42596364-1', 'auto');
+	ga('send', 'pageview');
 </script>
-
-<script type="text/javascript" id="sidebar.nav">
-  $(document).ready(function () {
-    var html = $('html');
-    var TAB_ANIMATE_DURATION = 200;
-    var hasVelocity = $.isFunction(html.velocity);
-
-    $('.sidebar-nav li').on('click', function () {
-      var item = $(this);
-      var activeTabClassName = 'sidebar-nav-active';
-      var activePanelClassName = 'sidebar-panel-active';
-      if (item.hasClass(activeTabClassName)) {
-        return;
-      }
-
-      var currentTarget = $('.' + activePanelClassName);
-      var target = $('.' + item.data('target'));
-
-      hasVelocity ?
-        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
-          target
-            .velocity('stop')
-            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
-            .addClass(activePanelClassName);
-        }) :
-        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
-          currentTarget.hide();
-          target
-            .stop()
-            .css({'opacity': 0, 'display': 'block'})
-            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
-              currentTarget.removeClass(activePanelClassName);
-              target.addClass(activePanelClassName);
-            });
-        });
-
-      item.siblings().removeClass(activeTabClassName);
-      item.addClass(activeTabClassName);
-    });
-
-    $('.post-toc a').on('click', function (e) {
-      e.preventDefault();
-      var targetSelector = escapeSelector(this.getAttribute('href'));
-      var offset = $(targetSelector).offset().top;
-      hasVelocity ?
-        html.velocity('stop').velocity('scroll', {
-          offset: offset  + 'px',
-          mobileHA: false
-        }) :
-        $('html, body').stop().animate({
-          scrollTop: offset
-        }, 500);
-    });
-
-    // Expand sidebar on post detail page by default, when post has a toc.
-    motionMiddleWares.sidebar = function () {
-      var $tocContent = $('.post-toc-content');
-      if (CONFIG.sidebar === 'post') {
-        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
-          displaySidebar();
-        }
-      }
-    };
-  });
-</script>
-
-
-
-  <script type="text/javascript" src="/js/bootstrap.js"></script>
-
-  
-  
-
-  
-  
 
 </body>
 </html>
